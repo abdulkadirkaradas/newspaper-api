@@ -15,6 +15,7 @@ class UserAuthTokens extends Model
     protected $fillable = [
         "token",
         "user_id",
-        "expired_date"
+        "expired_date",
+        "last_login"
     ];
 }
