@@ -10,7 +10,7 @@ class UserAuthTokens extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = "user_messages";
+    protected $table = "user_auth_tokens";
 
     protected $fillable = [
         "token",
