@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('token');
             $table->timestamp('expired_date')->useCurrent();
+            $table->string('last_login');
             $table->timestamps();
         });
     }

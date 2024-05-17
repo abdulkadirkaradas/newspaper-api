@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('blocked')->default(false);
             $table->integer('warning_count')->default(0);
-            $table->string('last_login');
             $table->rememberToken();
             $table->timestamps();
         });
