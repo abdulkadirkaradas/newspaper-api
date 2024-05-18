@@ -19,5 +19,6 @@ class Users extends Model
         "email",
         "password",
         "blocked",
+        "role_id"
     ];
 }
