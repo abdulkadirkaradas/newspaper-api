@@ -2,4 +2,4 @@
 
 const ADMINISTRATOR = 'administrator';
 const MODERATOR = 'moderator';
-const USER = 'user';
+const WRITER = 'writer';
