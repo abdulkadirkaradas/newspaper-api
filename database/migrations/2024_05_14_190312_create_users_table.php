@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('blocked')->default(false);
             $table->integer('warning_count')->default(0);
-            $table->foreignUuid('role_id');
+            $table->foreignId('role_id');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
