@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\v1\RegisterController;
+use App\Http\Middleware\CheckAuthorization;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::prefix('v1/auth')->middleware([CheckAuthorization::class])->group(function () {
+    Route::post('/register', [RegisterController::class, 'register']);
+});
