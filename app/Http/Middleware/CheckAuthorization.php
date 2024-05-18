@@ -12,6 +12,7 @@ class CheckAuthorization
      * Handle incoming authorization requests.
      *
      * Expected behaviours;
+     * - check if token exists and not expired
      * - Check user role
      * - Store user role for the processes
      *
