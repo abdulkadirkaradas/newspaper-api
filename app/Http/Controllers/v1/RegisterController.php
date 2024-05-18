@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1;
 
+use App\Helpers\UserRoles;
 use App\Validators\UserRegisterValidator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,9 +17,9 @@ class RegisterController extends Controller
             return $validated;
         }
 
-        // $validated['role_id'] = ROLE_WRITER;
+        $validated['role_id'] = UserRoles::$writer;
 
-        [$name, $lastname, $username, $email, $password] = array_values($validated);
+        [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
         $user = new Users();
         $user->name = $name;
@@ -26,6 +27,7 @@ class RegisterController extends Controller
         $user->username = $username;
         $user->email = $email;
         $user->password = $password;
+        $user->role_id = $role_id;
         $save = $user->save();
 
         if ($save) {
