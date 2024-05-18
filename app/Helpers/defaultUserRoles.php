@@ -1,5 +1,5 @@
 <?php
 
-const ADMINISTRATOR = 'administrator';
-const MODERATOR = 'moderator';
-const WRITER = 'writer';
+const ROLE_ADMINISTRATOR = 'administrator';
+const ROLE_MODERATOR = 'moderator';
+const ROLE_WRITER = 'writer';
