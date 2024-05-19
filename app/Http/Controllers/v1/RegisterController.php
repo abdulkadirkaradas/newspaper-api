@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request): array
+    {
         $validated = UserRegisterValidator::validate($request);
 
         if (gettype($validated) === 'array' && isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
@@ -34,10 +35,7 @@ class RegisterController extends Controller
         $userSave = $user->save();
 
         if (!$userSave) {
-            return [
-                'status' => FAIL,
-                'message' => AN_ERROR_OCCURED
-            ];
+            $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
         $userAuth = new UserAuthTokens();
@@ -46,15 +44,20 @@ class RegisterController extends Controller
         $authSave = $userAuth->save();
 
         if (!$authSave) {
-            return [
-                'status' => FAIL,
-                'message' => AN_ERROR_OCCURED
-            ];
+            $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
         return [
             'status' => SUCCESS,
             'message' => 'User has been created successfully.'
+        ];
+    }
+
+    private function errorMessage($status, $message) : array
+    {
+        return [
+            'status' => $status,
+            'message' => $message
         ];
     }
 }
