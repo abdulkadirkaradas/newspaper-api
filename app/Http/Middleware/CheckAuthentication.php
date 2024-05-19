@@ -40,7 +40,7 @@ class CheckAuthentication
         }
 
         $expiredDate = strtotime($user->expired_date);
-        $currentTS = strtotime(time());
+        $currentTS = time();
 
         if ($expiredDate > $currentTS) {
             return response()->json([
