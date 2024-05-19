@@ -23,6 +23,10 @@ class CheckAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!$request->header('auth-token')) {
+            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+        }
+
         // This condition will be changed in the future
         // This condition currently passes '/register' route directly without checking any token existence
         if (str_contains($request->route()->getActionName(), 'register')) {
@@ -34,13 +38,17 @@ class CheckAuthentication
         }
 
         // This condition passes requests if the incoming requests are for login
-        if (!$request->header('auth-token') && str_contains($request->route()->getActionName(), 'login')) {
+        if (str_contains($request->route()->getActionName(), 'login')) {
             return $next($request);
         }
 
         $authToken = $request->header('auth-token');
 
         $auth = UserAuthTokens::where('token', $authToken)->first();
+        if ($auth) {
+            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+        }
+
         $user = Users::find($auth->user_id);
 
         $expireDateTS = strtotime($auth->expire_date);
