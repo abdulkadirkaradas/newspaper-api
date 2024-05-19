@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             App\Http\Middleware\CheckAuthentication::class,
             App\Http\Middleware\CheckAuthorization::class,
+            App\Http\Middleware\RegisterMiddleware::class,
+            App\Http\Middleware\LoginMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
