@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\UserAuthTokens;
 use Illuminate\Http\Request;
 use App\Models\Users;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
@@ -25,6 +24,14 @@ class RegisterController extends Controller
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
+        if ($this->checkValueExists('email', $email)) {
+            return $this->errorMessage(BAD_REQUEST, 'This email has already been obtained!');
+        }
+
+        if ($this->checkValueExists('username', $username)) {
+            return $this->errorMessage(BAD_REQUEST, 'This username has already been obtained!');
+        }
+
         $user = new Users();
         $user->name = $name;
         $user->lastname = $lastname;
@@ -35,7 +42,7 @@ class RegisterController extends Controller
         $userSave = $user->save();
 
         if (!$userSave) {
-            $this->errorMessage(FAIL, AN_ERROR_OCCURED);
+            return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
         $userAuth = new UserAuthTokens();
@@ -44,7 +51,7 @@ class RegisterController extends Controller
         $authSave = $userAuth->save();
 
         if (!$authSave) {
-            $this->errorMessage(FAIL, AN_ERROR_OCCURED);
+            return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
         return [
@@ -53,11 +60,16 @@ class RegisterController extends Controller
         ];
     }
 
-    private function errorMessage($status, $message) : array
+    private function errorMessage(int $status, string $message) : array
     {
         return [
             'status' => $status,
             'message' => $message
         ];
+    }
+
+    private function checkValueExists(string $key, string $value)
+    {
+        return Users::where($key, $value)->exists();
     }
 }
