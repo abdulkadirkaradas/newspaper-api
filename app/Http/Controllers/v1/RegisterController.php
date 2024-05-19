@@ -24,14 +24,6 @@ class RegisterController extends Controller
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
-        if ($this->checkValueExists('email', $email)) {
-            return $this->errorMessage(BAD_REQUEST, 'This email has already been obtained!');
-        }
-
-        if ($this->checkValueExists('username', $username)) {
-            return $this->errorMessage(BAD_REQUEST, 'This username has already been obtained!');
-        }
-
         $user = new Users();
         $user->name = $name;
         $user->lastname = $lastname;
@@ -66,10 +58,5 @@ class RegisterController extends Controller
             'status' => $status,
             'message' => $message
         ];
-    }
-
-    private function checkValueExists(string $key, string $value)
-    {
-        return Users::where($key, $value)->exists();
     }
 }
