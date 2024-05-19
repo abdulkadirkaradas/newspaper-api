@@ -6,21 +6,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Users extends Model
+class UserWarnings extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $primaryKey = 'id';
-
-    protected $table = "users";
+    protected $table = "user_warnings";
 
     protected $fillable = [
-        "name",
-        "lastname",
-        "username",
-        "email",
-        "password",
-        "blocked",
-        "role_id"
+        "message",
+        "warning_level",
+        "user_id",
     ];
 }
