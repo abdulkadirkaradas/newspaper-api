@@ -5,8 +5,11 @@ namespace App\Http\Controllers\v1;
 use App\Helpers\UserRoles;
 use App\Validators\UserRegisterValidator;
 use App\Http\Controllers\Controller;
+use App\Models\UserAuthTokens;
 use Illuminate\Http\Request;
 use App\Models\Users;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -26,20 +29,32 @@ class RegisterController extends Controller
         $user->lastname = $lastname;
         $user->username = $username;
         $user->email = $email;
-        $user->password = $password;
+        $user->password = Hash::make($password);
         $user->role_id = $role_id;
-        $save = $user->save();
+        $userSave = $user->save();
 
-        if ($save) {
-            return [
-                'status' => SUCCESS,
-                'message' => 'User has been created successfully.'
-            ];
-        } else {
+        if (!$userSave) {
             return [
                 'status' => FAIL,
                 'message' => AN_ERROR_OCCURED
             ];
         }
+
+        $userAuth = new UserAuthTokens();
+        $userAuth->token = $userAuth->generateTokenString();
+        $userAuth->user_id = $user->id;
+        $authSave = $userAuth->save();
+
+        if (!$authSave) {
+            return [
+                'status' => FAIL,
+                'message' => AN_ERROR_OCCURED
+            ];
+        }
+
+        return [
+            'status' => SUCCESS,
+            'message' => 'User has been created successfully.'
+        ];
     }
 }
