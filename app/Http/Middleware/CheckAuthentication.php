@@ -26,17 +26,8 @@ class CheckAuthentication
         // This condition will be changed in the future
         // This condition currently passes '/register' route directly without checking any token existence
         if (str_contains($request->route()->getActionName(), 'register')) {
-            $username = $request->input('username');
-            $email = $request->input('email');
-
-            if ($this->checkValueExists('email', $email)) {
-                return response()
-                    ->json($this->errorMessage(BAD_REQUEST, 'This email has already been obtained!'));
-            }
-
-            if ($this->checkValueExists('username', $username)) {
-                return response()
-                    ->json($this->errorMessage(BAD_REQUEST, 'This username has already been obtained!'));
+            if ($request->header('auth-token')) {
+                response()->json($this->errorMessage(BAD_REQUEST, BAD_REQUEST_MSG));
             }
 
             return $next($request);
@@ -44,21 +35,7 @@ class CheckAuthentication
 
         // This condition passes requests if the incoming requests are for login
         if (!$request->header('auth-token') && str_contains($request->route()->getActionName(), 'login')) {
-            $email = $request->input('email');
-            $password = $request->input('password');
-
-            $user = Users::where([
-                ['email', $email],
-                ['password', Hash::make($password)]
-            ])->first();
-
-            if ($user) {
-                $request['user'] = $user;
-
-                return $next($request);
-            }
-
-            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return $next($request);
         }
 
         $authToken = $request->header('auth-token');
@@ -78,11 +55,6 @@ class CheckAuthentication
         $request['user'] = $user;
 
         return $next($request);
-    }
-
-    private function checkValueExists(string $key, string $value)
-    {
-        return Users::where($key, $value)->exists();
     }
 
     private function errorMessage(int $status, string $message): array
