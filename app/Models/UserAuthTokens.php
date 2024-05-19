@@ -11,6 +11,15 @@ class UserAuthTokens extends Model
 {
     use HasFactory, HasUuids, HasApiTokens;
 
+    protected static function boot() {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->setExpireDate();
+            $model->setLastLogin();
+        });
+    }
+
     protected $table = "user_auth_tokens";
 
     protected $fillable = [
@@ -19,4 +28,17 @@ class UserAuthTokens extends Model
         "expire_date",
         "last_login"
     ];
+
+    protected $dates = [
+        "expire_date",
+        "last_login"
+    ];
+
+    private function setExpireDate() {
+        $this->attributes['expire_date'] = now()->addDays(15);
+    }
+
+    private function setLastLogin() {
+        $this->attributes['last_login'] = now();
+    }
 }
