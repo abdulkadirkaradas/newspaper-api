@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserAuthTokens;
 use Illuminate\Http\Request;
 use App\Models\Users;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
@@ -24,31 +25,36 @@ class RegisterController extends Controller
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
-        $user = new Users();
-        $user->name = $name;
-        $user->lastname = $lastname;
-        $user->username = $username;
-        $user->email = $email;
-        $user->password = Hash::make($password);
-        $user->role_id = $role_id;
-        $userSave = $user->save();
+        $user = Users::create([
+            'name' => $name,
+            'lastname' => $lastname,
+            'username' => $username,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'role_id' => $role_id,
+        ]);
 
-        if (!$userSave) {
+        if (!$user) {
             return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
-        $userAuth = new UserAuthTokens();
-        $userAuth->token = $userAuth->generateTokenString();
-        $userAuth->user_id = $user->id;
-        $authSave = $userAuth->save();
+        $token = Auth::guard('api')->login($user);
 
-        if (!$authSave) {
+        $userAuth = UserAuthTokens::create([
+            'token' => $token,
+            'user_id' => $user->id
+        ]);
+
+        if (!$userAuth) {
             return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
         return [
             'status' => SUCCESS,
-            'message' => 'User has been created successfully.'
+            'message' => 'User has been created successfully.',
+            'authorisation' => [
+                'token' => $token
+            ]
         ];
     }
 
