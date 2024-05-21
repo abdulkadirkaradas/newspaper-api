@@ -17,6 +17,10 @@ class LoginMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->header('auth-token') && str_contains($request->route()->getActionName(), 'refreshAuthToken')) {
+            return $next($request);
+        }
+
         $email = $request->input('email');
         $password = $request->input('password');
 
