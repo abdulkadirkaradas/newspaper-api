@@ -26,17 +26,17 @@ class CheckAuthentication
         // This condition will be changed in the future
         // This condition currently passes '/register' route directly without checking any token existence
         // This condition passes requests if the incoming requests are for '/login' route
-        if (!$request->header('auth-token')
+        if (!$request->bearerToken()
             && (str_contains($request->route()->getActionName(), 'register') || str_contains($request->route()->getActionName(), 'login'))) {
             return $next($request);
         }
 
-        // Refuse request if it's not have 'auth-token' header
-        if (!$request->header('auth-token')) {
+        // Refuse request if it's not have 'Authorization' header
+        if (!$request->bearerToken()) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
-        $authToken = $request->header('auth-token');
+        $authToken = $request->bearerToken();
 
         $auth = UserAuthTokens::where('token', $authToken)->first();
         if (!$auth) {
