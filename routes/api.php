@@ -18,6 +18,7 @@ Route::prefix('v1')->middleware([CheckAuthentication::class/*, CheckAuthorizatio
 
         Route::middleware([LoginMiddleware::class])->group(function () {
             Route::post('/login', [LoginController::class, 'login']);
+            Route::post('/refresh-auth-token', [LoginController::class, 'refreshAuthToken']);
         });
     });
 });
