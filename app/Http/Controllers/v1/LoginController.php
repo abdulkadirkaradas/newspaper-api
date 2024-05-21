@@ -17,7 +17,7 @@ class LoginController extends Controller
             return $validated;
         }
 
-        Auth::attempt($validated);
+        Auth::guard('api')->attempt($validated);
         $token = UserAuthTokens::where('user_id', $request->user->id)->first();
 
         if (!$token) {
@@ -34,6 +34,25 @@ class LoginController extends Controller
                     'type' => 'bearer',
                 ]
             ]);
+    }
+
+    public function logout(Request $request) {
+        $user = $request->user;
+
+        $auth = UserAuthTokens::where('user_id', $user->id)->first();
+        if ($auth) {
+            $auth->expire_date = now();
+            $auth->last_login = now();
+            $auth->expired = true;
+            $auth->save();
+        }
+
+        Auth::guard('api')->logout();
+
+        return response()->json([
+            'status' => SUCCESS,
+            'message' => 'You have been logged out.'
+        ]);
     }
 
     public function refreshAuthToken(Request $request) {
