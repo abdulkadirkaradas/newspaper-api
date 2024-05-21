@@ -19,14 +19,9 @@ class RegisterMiddleware
         $username = $request->input('username');
         $email = $request->input('email');
 
-        if ($this->checkValueExists('email', $email)) {
+        if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
             return response()
-                ->json($this->errorMessage(BAD_REQUEST, 'This email has already been obtained!'));
-        }
-
-        if ($this->checkValueExists('username', $username)) {
-            return response()
-                ->json($this->errorMessage(BAD_REQUEST, 'This username has already been obtained!'));
+                ->json($this->errorMessage(BAD_REQUEST, "This email|username has already been obtained!"));
         }
 
         return $next($request);
