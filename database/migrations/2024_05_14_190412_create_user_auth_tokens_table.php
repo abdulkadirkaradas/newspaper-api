@@ -15,9 +15,10 @@ return new class extends Migration
             $table->uuid('id');
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('token');
+            $table->text('token');
             $table->timestamp('expire_date');
             $table->string('last_login');
+            $table->boolean('expired')->default(false);
             $table->timestamps();
         });
     }

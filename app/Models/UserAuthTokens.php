@@ -26,7 +26,8 @@ class UserAuthTokens extends Model
         "token",
         "user_id",
         "expire_date",
-        "last_login"
+        "last_login",
+        "expired"
     ];
 
     protected $dates = [
