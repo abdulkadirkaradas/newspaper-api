@@ -17,6 +17,7 @@ class LoginController extends Controller
             return $validated;
         }
 
+        Auth::attempt($validated);
         $token = UserAuthTokens::where('user_id', $request->user->id)->first();
 
         if (!$token) {
@@ -33,5 +34,25 @@ class LoginController extends Controller
                     'type' => 'bearer',
                 ]
             ]);
+    }
+
+    public function refreshAuthToken(Request $request) {
+        $token = Auth::guard('api')->refresh();
+
+        $auth = UserAuthTokens::where('user_id', $request->user->id)->first();
+
+        if ($auth) {
+            $auth->token = $token;
+            $auth->expire_date = now()->addDays(15);
+            $auth->save();
+        }
+
+        return response()->json([
+            'status' => SUCCESS,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
     }
 }
