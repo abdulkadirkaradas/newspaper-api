@@ -41,6 +41,8 @@ class CheckAuthentication
         $auth = UserAuthTokens::where('token', $authToken)->first();
         if (!$auth) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+        } else if ($auth->expired === true) {
+            return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
         $user = Users::find($auth->user_id);
