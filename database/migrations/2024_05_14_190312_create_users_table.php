@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('lastname');
             $table->string('username');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('password');
             $table->boolean('blocked')->default(false);
             $table->integer('warning_count')->default(0);
