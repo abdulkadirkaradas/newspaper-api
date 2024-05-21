@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('token');
             $table->timestamp('expire_date');
             $table->string('last_login');
+            $table->boolean('expired')->default(false);
             $table->timestamps();
         });
     }
