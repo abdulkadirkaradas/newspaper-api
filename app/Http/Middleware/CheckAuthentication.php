@@ -38,6 +38,11 @@ class CheckAuthentication
             return $next($request);
         }
 
+        // Refuse request if it's not have 'auth-token' header
+        if (!$request->header('auth-token')) {
+            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+        }
+
         $authToken = $request->header('auth-token');
 
         $auth = UserAuthTokens::where('token', $authToken)->first();
