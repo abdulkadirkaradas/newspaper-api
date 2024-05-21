@@ -21,11 +21,10 @@ class LoginMiddleware
         $password = $request->input('password');
 
         $user = Users::where([
-            ['email', $email],
-            ['password', Hash::make($password)]
+            ['email', $email]
         ])->first();
 
-        if (!$user) {
+        if (!$user && !Hash::check($password, $user->password)) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
