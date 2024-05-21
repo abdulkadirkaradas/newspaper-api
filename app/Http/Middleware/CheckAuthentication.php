@@ -25,16 +25,9 @@ class CheckAuthentication
     {
         // This condition will be changed in the future
         // This condition currently passes '/register' route directly without checking any token existence
-        if (str_contains($request->route()->getActionName(), 'register')) {
-            if ($request->header('auth-token')) {
-                response()->json($this->errorMessage(BAD_REQUEST, BAD_REQUEST_MSG));
-            }
-
-            return $next($request);
-        }
-
-        // This condition passes requests if the incoming requests are for login
-        if (!$request->header('auth-token') && str_contains($request->route()->getActionName(), 'login')) {
+        // This condition passes requests if the incoming requests are for '/login' route
+        if (!$request->header('auth-token')
+            && (str_contains($request->route()->getActionName(), 'register') || str_contains($request->route()->getActionName(), 'login'))) {
             return $next($request);
         }
 
@@ -46,7 +39,7 @@ class CheckAuthentication
         $authToken = $request->header('auth-token');
 
         $auth = UserAuthTokens::where('token', $authToken)->first();
-        if ($auth) {
+        if (!$auth) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
@@ -55,10 +48,8 @@ class CheckAuthentication
         $expireDateTS = strtotime($auth->expire_date);
         $currentTS = time();
 
-        if ($expireDateTS < $currentTS) {
-            $auth->expire_date = now()->addDays(15);
-            $auth->save();
-            // return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
+        if (($expireDateTS < $currentTS) && !str_contains($request->route()->getActionName(), 'refreshAuthToken')) {
+            return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
         $request['user'] = $user;
