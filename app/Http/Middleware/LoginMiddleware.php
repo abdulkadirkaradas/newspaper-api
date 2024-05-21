@@ -17,7 +17,8 @@ class LoginMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->bearerToken() && str_contains($request->route()->getActionName(), 'refreshAuthToken')) {
+        if ($request->bearerToken() &&
+            (str_contains($request->route()->getActionName(), 'refreshAuthToken') || str_contains($request->route()->getActionName(), 'logout'))) {
             return $next($request);
         }
 
