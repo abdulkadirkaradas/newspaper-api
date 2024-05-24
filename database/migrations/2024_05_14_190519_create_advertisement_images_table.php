@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('fullpath');
             $table->foreign('ads_id')->references('id')->on('advertisements')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

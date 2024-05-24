@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->boolean('granted_by_default')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
