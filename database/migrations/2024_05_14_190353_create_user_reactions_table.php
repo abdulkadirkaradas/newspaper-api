@@ -15,11 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id');
             $table->foreignUuid('news_id');
-            $table->foreignUuid('reaction_id');
             $table->string('reaction');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('news_id')->references('id')->on('news')->onDelete('cascade');
-            $table->foreign('reaction_id')->references('id')->on('news_reactions')->onDelete('cascade');
             $table->timestamps();
         });
     }

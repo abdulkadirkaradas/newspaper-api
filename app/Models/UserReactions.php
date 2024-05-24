@@ -13,9 +13,8 @@ class UserReactions extends Model
     protected $table = "user_reactions";
 
     protected $fillable = [
-        "reaction",
         "user_id",
         "news_id",
-        "reaction_id",
+        "reaction",
     ];
 }
