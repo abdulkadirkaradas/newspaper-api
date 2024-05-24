@@ -8,6 +8,7 @@ use App\Models\NewsImages;
 use App\Models\NewsReactions;
 use App\Models\Permissions;
 use App\Models\Roles;
+use App\Models\UserAuthTokens;
 use App\Models\UserMessages;
 use App\Models\UserNews;
 use App\Models\UserNotifications;
@@ -16,6 +17,7 @@ use App\Models\UserReactions;
 use App\Models\Users;
 use App\Models\UserWarnings;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -35,20 +37,24 @@ class TestingSeeder extends Seeder
 
         // Create users
         $users = Users::create([
-            'name' => Str::random(10),
-            'lastname' => Str::random(10),
-            'username' => Str::random(10),
-            'email' => Str::random(5) . '@gmail.com',
-            'password' => Hash::make(Str::random(10))
+            'name' => 'test',
+            'lastname' => 'test',
+            'username' => 'test',
+            'email' => 'test123@gmail.com',
+            'password' => Hash::make('Abcdef123')
         ]);
 
-        // Assign roles to users
-        for ($i = 0; $i < 5; $i++) {
-            UserRoles::create([
-                'user_id' => $users->id,
-                'role_id' => rand(1, 3)
-            ]);
-        }
+        UserRoles::create([
+            'user_id' => $users->id,
+            'role_id' => rand(1, 3)
+        ]);
+
+        $token = Auth::guard('api')->login($users);
+
+        UserAuthTokens::create([
+            'token' => $token,
+            'user_id' => $users->id
+        ]);
 
         // Assign permissions to users
         for ($i = 0; $i < 5; $i++) {
