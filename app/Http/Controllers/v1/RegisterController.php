@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserAuthTokens;
 use App\Models\UserRoles as UserRolesModel;
 use Illuminate\Http\Request;
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,7 +26,7 @@ class RegisterController extends Controller
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
-        $user = Users::create([
+        $user = User::create([
             'name' => $name,
             'lastname' => $lastname,
             'username' => $username,

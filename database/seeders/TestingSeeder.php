@@ -14,7 +14,7 @@ use App\Models\UserNews;
 use App\Models\UserNotifications;
 use App\Models\UserPermissions;
 use App\Models\UserReactions;
-use App\Models\Users;
+use App\Models\User;
 use App\Models\UserWarnings;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +36,7 @@ class TestingSeeder extends Seeder
         }
 
         // Create users
-        $users = Users::create([
+        $users = User::create([
             'name' => 'test',
             'lastname' => 'test',
             'username' => 'test',

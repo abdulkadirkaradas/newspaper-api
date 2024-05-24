@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Users;
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +25,7 @@ class LoginMiddleware
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $user = Users::where([
+        $user = User::where([
             ['email', $email]
         ])->first();
 

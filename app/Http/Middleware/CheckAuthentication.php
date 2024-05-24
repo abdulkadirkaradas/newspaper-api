@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\UserAuthTokens;
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -45,7 +45,7 @@ class CheckAuthentication
             return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
-        $user = Users::find($auth->user_id);
+        $user = User::find($auth->user_id);
 
         $expireDateTS = strtotime($auth->expire_date);
         $currentTS = time();

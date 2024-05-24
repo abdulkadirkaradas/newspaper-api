@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Users;
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +29,7 @@ class RegisterMiddleware
 
     private function checkValueExists(string $key, string $value)
     {
-        return Users::where($key, $value)->exists();
+        return User::where($key, $value)->exists();
     }
 
     private function errorMessage(int $status, string $message): array

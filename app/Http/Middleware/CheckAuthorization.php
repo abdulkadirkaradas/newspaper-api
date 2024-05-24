@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\UserRoles;
 use App\Models\UserAuthTokens;
-use App\Models\Users;
+use App\Models\User;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
