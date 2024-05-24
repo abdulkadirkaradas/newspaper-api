@@ -16,4 +16,8 @@ class UserNotifications extends Model
         "notification",
         "user_id",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

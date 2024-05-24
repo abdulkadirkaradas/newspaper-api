@@ -17,4 +17,8 @@ class UserWarnings extends Model
         "warning_level",
         "user_id",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

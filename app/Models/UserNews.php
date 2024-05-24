@@ -17,4 +17,8 @@ class UserNews extends Model
         "user_id",
         "reaction_id",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

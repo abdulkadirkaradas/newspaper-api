@@ -17,4 +17,8 @@ class UserNewsImages extends Model
         "news_id",
         "news_img_id",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

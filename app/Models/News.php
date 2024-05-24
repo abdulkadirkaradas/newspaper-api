@@ -17,4 +17,12 @@ class News extends Model
         "content",
         "user_id"
     ];
+
+    public function newsImages() {
+        return $this->hasMany(NewsImages::class);
+    }
+
+    public function newsReactions() {
+        return $this->hasMany(NewsReactions::class);
+    }
 }

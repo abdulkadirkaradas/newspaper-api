@@ -17,4 +17,8 @@ class UserPermissions extends Model
         "permission_id",
         "user_id"
     ];
+
+    public function user() {
+        return $this->belongsToMany(User::class);
+    }
 }

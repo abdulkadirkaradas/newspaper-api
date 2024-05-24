@@ -13,8 +13,12 @@ class UserReactions extends Model
     protected $table = "user_reactions";
 
     protected $fillable = [
+        "reaction",
         "user_id",
         "news_id",
-        "reaction",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

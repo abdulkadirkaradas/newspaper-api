@@ -16,4 +16,8 @@ class UserMessages extends Model
         "warning_text",
         "user_id"
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
-use App\Enums\UserRoles;
+use App\Enums\UserRoles as DefaultRoles;
+use App\Models\UserRoles as Roles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class Users extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, HasUuids;
 
@@ -35,13 +39,53 @@ class Users extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
+    public function news(): HasMany
+    {
+        return $this->hasMany(UserNews::class);
+    }
+
+    public function newsImages(): HasMany
+    {
+        return $this->hasMany(UserNewsImages::class);
+    }
+
+    public function roles(): HasOne
+    {
+        return $this->hasOne(Roles::class);
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(UserMessages::class);
+    }
+
+    public function warnings(): HasMany
+    {
+        return $this->hasMany(UserWarnings::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(UserNotifications::class);
+    }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(UserReactions::class);
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(UserPermissions::class);
+    }
+
     /**
      * Check if the user role is administrator
      *
      * @return boolean
      */
     public function isAdministrator() {
-        return $this->role_id === UserRoles::Admin->value;
+        return $this->role_id === DefaultRoles::Admin->value;
     }
 
     /**
@@ -50,7 +94,7 @@ class Users extends Authenticatable implements JWTSubject
      * @return boolean
      */
     public function isModerator() {
-        return $this->role_id === UserRoles::Moderator->value;
+        return $this->role_id === DefaultRoles::Moderator->value;
     }
 
     /**
@@ -59,7 +103,7 @@ class Users extends Authenticatable implements JWTSubject
      * @return boolean
      */
     public function isWriter() {
-        return $this->role_id === UserRoles::Writer->value;
+        return $this->role_id === DefaultRoles::Writer->value;
     }
 
      /**
