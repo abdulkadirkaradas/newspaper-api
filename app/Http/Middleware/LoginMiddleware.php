@@ -29,7 +29,7 @@ class LoginMiddleware
             ['email', $email]
         ])->first();
 
-        if (!$user && !Hash::check($password, $user->password)) {
+        if (!isset($user) || !Hash::check($password, $user->password)) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
