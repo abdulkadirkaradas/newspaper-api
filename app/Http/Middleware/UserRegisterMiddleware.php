@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RegisterMiddleware
+class UserRegisterMiddleware
 {
     /**
      * Handle an incoming request.
