@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\v1\LoginController;
-use App\Http\Controllers\v1\RegisterController;
-use App\Http\Middleware\CheckAuthentication;
-use App\Http\Middleware\CheckAuthorization;
-use App\Http\Middleware\LoginMiddleware;
-use App\Http\Middleware\RegisterMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\LoginMiddleware;
+use App\Http\Middleware\CheckAuthorization;
+use App\Http\Middleware\RegisterMiddleware;
+use App\Http\Middleware\CheckAuthentication;
+use App\Http\Controllers\v1\Users\LoginController;
+use App\Http\Controllers\v1\Users\RegisterController;
 
 /**
  * Admin authentication routes
