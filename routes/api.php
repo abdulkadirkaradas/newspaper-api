@@ -8,7 +8,7 @@ use App\Http\Middleware\LoginMiddleware;
 use App\Http\Middleware\RegisterMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1/auth')->middleware('api')->group(function () {
+Route::prefix('v1/auth')->group(function () {
     Route::middleware([RegisterMiddleware::class])->group(function () {
         Route::post('/register', [RegisterController::class, 'register']);
     });
