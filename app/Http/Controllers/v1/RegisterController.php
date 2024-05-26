@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Helpers\UserRoles;
+use App\Enums\UserRoles;
 use App\Validators\UserRegisterValidator;
 use App\Http\Controllers\Controller;
 use App\Models\UserAuthTokens;
+use App\Models\UserRoles as UserRolesModel;
 use Illuminate\Http\Request;
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,20 +22,28 @@ class RegisterController extends Controller
             return $validated;
         }
 
-        $validated['role_id'] = UserRoles::$writer;
+        $validated['role_id'] = UserRoles::Writer->value;
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
-        $user = Users::create([
+        $user = User::create([
             'name' => $name,
             'lastname' => $lastname,
             'username' => $username,
             'email' => $email,
             'password' => Hash::make($password),
-            'role_id' => $role_id,
         ]);
 
         if (!$user) {
+            return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
+        }
+
+        $role = UserRolesModel::create([
+            'user_id' => $user->id,
+            'role_id' => $role_id,
+        ]);
+
+        if (!$role) {
             return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 

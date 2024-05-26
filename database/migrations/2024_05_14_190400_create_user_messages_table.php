@@ -17,6 +17,7 @@ return new class extends Migration
             $table->longText('warning_text');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

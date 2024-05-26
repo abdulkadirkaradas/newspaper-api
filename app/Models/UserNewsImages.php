@@ -7,16 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sessions extends Model
+class UserNewsImages extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasUuids, SoftDeletes;
 
-    protected $table = "sessions";
+    protected $table = "user_news";
 
     protected $fillable = [
         "user_id",
-        "ip_address",
-        "user_agent",
-        "last_activity"
+        "news_id",
+        "news_img_id",
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

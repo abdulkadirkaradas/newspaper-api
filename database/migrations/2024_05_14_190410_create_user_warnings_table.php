@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_warnings', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
             $table->string('message');
             $table->integer('warning_level')->default(0);
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

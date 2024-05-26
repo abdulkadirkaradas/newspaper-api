@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('last_login');
             $table->boolean('expired')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

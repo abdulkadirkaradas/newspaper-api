@@ -17,20 +17,33 @@ class LoginController extends Controller
             return $validated;
         }
 
-        Auth::guard('api')->attempt($validated);
-        $token = UserAuthTokens::where('user_id', $request->user->id)->first();
+        $token = Auth::guard('api')->attempt($validated);
 
-        if (!$token) {
+        if ($token === false) {
             return response()->json([
                 'status' => UNAUTHORIZED,
                 'message' => UNAUTHORIZED_ACCESS,
-            ], 401);
+            ], UNAUTHORIZED);
+        }
+
+        $user = auth()->guard('api')->user();
+
+        $userAuth = UserAuthTokens::create([
+            'token' => $token,
+            'user_id' => $user->id
+        ]);
+
+        if (!$userAuth) {
+            return response()->json([
+                'status' => FAIL,
+                'message' => AN_ERROR_OCCURED,
+            ], FAIL);
         }
 
         return response()->json([
                 'status' => SUCCESS,
                 'authorisation' => [
-                    'token' => $token->token,
+                    'token' => $token,
                     'type' => 'bearer',
                 ]
             ]);
@@ -45,6 +58,7 @@ class LoginController extends Controller
             $auth->last_login = now();
             $auth->expired = true;
             $auth->save();
+            $auth->delete();
         }
 
         Auth::guard('api')->logout();

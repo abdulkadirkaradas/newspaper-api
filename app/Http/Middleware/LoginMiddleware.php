@@ -2,7 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Users;
+use App\Models\User;
+use App\Models\UserAuthTokens;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,19 +18,16 @@ class LoginMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->bearerToken() &&
-            (str_contains($request->route()->getActionName(), 'refreshAuthToken') || str_contains($request->route()->getActionName(), 'logout'))) {
+        if (str_contains($request->route()->getActionName(), 'refreshAuthToken') || str_contains($request->route()->getActionName(), 'logout')) {
             return $next($request);
         }
 
-        $email = $request->input('email');
-        $password = $request->input('password');
+        $token = $request->bearerToken();
 
-        $user = Users::where([
-            ['email', $email]
-        ])->first();
+        $auth = UserAuthTokens::whereNull('deleted_at')->where('expired', '!=', true)->where('token', $token)->first();
+        $user = User::find($auth->user_id);
 
-        if (!$user && !Hash::check($password, $user->password)) {
+        if (!$auth || !isset($user)) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\UserAuthTokens;
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,14 +23,6 @@ class CheckAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // This condition will be changed in the future
-        // This condition currently passes '/register' route directly without checking any token existence
-        // This condition passes requests if the incoming requests are for '/login' route
-        if (!$request->bearerToken()
-            && (str_contains($request->route()->getActionName(), 'register') || str_contains($request->route()->getActionName(), 'login'))) {
-            return $next($request);
-        }
-
         // Refuse request if it's not have 'Authorization' header
         if (!$request->bearerToken()) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
@@ -38,14 +30,14 @@ class CheckAuthentication
 
         $authToken = $request->bearerToken();
 
-        $auth = UserAuthTokens::where('token', $authToken)->first();
+        $auth = UserAuthTokens::whereNull('deleted_at')->where('expired', '!=', true)->where('token', $authToken)->first();
         if (!$auth) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         } else if ($auth->expired === true) {
             return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
-        $user = Users::find($auth->user_id);
+        $user = User::find($auth->user_id);
 
         $expireDateTS = strtotime($auth->expire_date);
         $currentTS = time();
