@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\LoginMiddleware;
 use App\Http\Middleware\CheckAuthorization;
-use App\Http\Middleware\RegisterMiddleware;
 use App\Http\Middleware\CheckAuthentication;
+use App\Http\Middleware\UserLoginMiddleware;
+use App\Http\Middleware\UserRegisterMiddleware;
 use App\Http\Controllers\v1\Users\LoginController;
 use App\Http\Controllers\v1\Users\RegisterController;
 
@@ -20,7 +20,7 @@ Route::prefix('v1/admin')->group(function () {
  * User authentication routes
 */
 Route::prefix('v1/auth')->group(function () {
-    Route::middleware([RegisterMiddleware::class])->group(function () {
+    Route::middleware([UserRegisterMiddleware::class])->group(function () {
         Route::post('/register', [RegisterController::class, 'register']);
     });
 
@@ -30,7 +30,7 @@ Route::prefix('v1/auth')->group(function () {
 Route::prefix('v1')->middleware([CheckAuthentication::class/*, CheckAuthorization::class*/])->group(function () {
     // Authentication Routes
     Route::prefix('auth')->group(function () {
-        Route::middleware([LoginMiddleware::class])->group(function () {
+        Route::middleware([UserLoginMiddleware::class])->group(function () {
             Route::post('/logout', [LoginController::class, 'logout']);
             Route::post('/refresh-auth-token', [LoginController::class, 'refreshAuthToken']);
         });
