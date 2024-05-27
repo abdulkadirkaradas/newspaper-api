@@ -75,6 +75,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UserReactions::class);
     }
 
+    public function hasPermission(string $permission_id) {
+        $this->roles->permissions()->where('permission_id', $permission_id)->exists();
+    }
+
     /**
      * Check if the user role is administrator
      *

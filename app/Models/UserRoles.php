@@ -25,7 +25,7 @@ class UserRoles extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function userPermission(): HasMany
+    public function permissions(): HasMany
     {
         return $this->hasMany(UserPermissions::class);
     }
