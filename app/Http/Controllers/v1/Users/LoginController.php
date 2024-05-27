@@ -75,11 +75,16 @@ class LoginController extends Controller
 
         $auth = UserAuthTokens::where('user_id', $request->user->id)->first();
 
-        if ($auth) {
-            $auth->token = $token;
-            $auth->expire_date = now()->addDays(15);
-            $auth->save();
+        if (!$auth) {
+            return response()->json([
+                'status' => FAIL,
+                'message' => "Invalid token"
+            ]);
         }
+
+        $auth->token = $token;
+        $auth->expire_date = now()->addDays(15);
+        $auth->save();
 
         return response()->json([
             'status' => SUCCESS,
