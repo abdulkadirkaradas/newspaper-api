@@ -23,7 +23,7 @@ class CheckAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Refuse request if it's not have 'Authorization' header
+        // Refuse request if its not have bearer token
         if (!$request->bearerToken()) {
             return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
