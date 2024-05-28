@@ -20,13 +20,16 @@ class CheckHeaders
         }
 
         $bodyContent = $request->getContent();
-        $data = json_decode($bodyContent, true);
+        if ($bodyContent !== "") {
+            $data = json_decode($bodyContent, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json($this->errorMessage(BAD_REQUEST, "The fields must be made with JSON!"));
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json($this->errorMessage(BAD_REQUEST, "The fields must be made with JSON!"));
+            }
+
+            $request['bodyContent'] = $data;
         }
 
-        $request['bodyContent'] = $data;
         return $next($request);
     }
 
