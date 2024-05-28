@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * This model is the pivot.
+ * It's used solely for establishing relations between the User and Roles models.
+ */
 class UserRoles extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -17,13 +21,8 @@ class UserRoles extends Model
 
     protected $fillable = [
         "user_id",
-        "role_id",
+        "roles_id",
     ];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function permissions(): HasMany
     {

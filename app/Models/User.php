@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserRoles as DefaultRoles;
-use App\Models\UserRoles as Roles;
+use App\Models\Roles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -52,9 +52,10 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('user_id', 'news_id', 'news_img_id');
     }
 
-    public function roles(): HasOne
+    public function roles(): BelongsToMany
     {
-        return $this->hasOne(Roles::class);
+        return $this->belongsToMany(Roles::class, 'user_roles')
+            ->withPivot('user_id', 'roles_id', 'created_at');
     }
 
     public function messages(): HasMany
