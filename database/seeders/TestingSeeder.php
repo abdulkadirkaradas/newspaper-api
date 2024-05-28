@@ -36,7 +36,7 @@ class TestingSeeder extends Seeder
         }
 
         // Create users
-        $users = User::create([
+        $user = User::create([
             'name' => 'test',
             'lastname' => 'test',
             'username' => 'test',
@@ -44,24 +44,25 @@ class TestingSeeder extends Seeder
             'password' => Hash::make('Abcdef123')
         ]);
 
-        UserRoles::create([
-            'user_id' => $users->id,
+        $userRole = UserRoles::create([
+            'user_id' => $user->id,
             'role_id' => rand(1, 3)
         ]);
 
-        $token = Auth::guard('api')->login($users);
+        $token = Auth::guard('api')->login($user);
 
         UserAuthTokens::create([
             'token' => $token,
-            'user_id' => $users->id
+            'user_id' => $user->id
         ]);
 
         // Assign permissions to users
         for ($i = 0; $i < 5; $i++) {
             UserPermissions::create([
-                'granted' => (bool)random_int(0, 1),
+                'user_id' => $user->id,
+                'user_role_id' => $userRole->id,
                 'permission_id' => $permissions[$i]->id,
-                'user_id' => $users->id
+                'granted' => (bool)random_int(0, 1),
             ]);
         }
 
@@ -71,7 +72,7 @@ class TestingSeeder extends Seeder
             $news[$i] = News::create([
                 'title' => Str::random(10),
                 'content' => Str::random(10),
-                'user_id' => $users->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -81,7 +82,7 @@ class TestingSeeder extends Seeder
                 'name' => Str::random(50),
                 'ext' => Str::random(50),
                 'fullpath' => Str::random(50),
-                'user_id' => $users->id,
+                'user_id' => $user->id,
                 'news_id' => $news[$i]->id
             ]);
         }
@@ -91,7 +92,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $newsReactions[$i] = NewsReactions::create([
                 'reaction' => Str::random(50),
-                'user_id' => $users->id,
+                'user_id' => $user->id,
                 'news_id' => $news[$i]->id
             ]);
         }
@@ -101,7 +102,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $userReactions[$i] = UserReactions::create([
                 'reaction' => Str::random(50),
-                'user_id' => $users->id,
+                'user_id' => $user->id,
                 'news_id' => $news[$i]->id
             ]);
         }
@@ -110,7 +111,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             UserNews::create([
                 'news_id' => $news[$i]->id,
-                'user_id' => $users->id,
+                'user_id' => $user->id,
                 'reaction_id' => $newsReactions[$i]->id // veya $userReactions[$i]->id
             ]);
         }
@@ -119,7 +120,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             UserMessages::create([
                 'warning_text' => Str::random(50),
-                'user_id' => $users->id
+                'user_id' => $user->id
             ]);
         }
 
@@ -127,7 +128,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             UserNotifications::create([
                 'notification' => Str::random(50),
-                'user_id' => $users->id
+                'user_id' => $user->id
             ]);
         }
 
@@ -136,7 +137,7 @@ class TestingSeeder extends Seeder
             UserWarnings::create([
                 'message' => Str::random(50),
                 'warning_level' => rand(1, 5),
-                'user_id' => $users->id
+                'user_id' => $user->id
             ]);
         }
     }
