@@ -42,19 +42,22 @@ class User extends Authenticatable implements JWTSubject
 
     public function news(): BelongsToMany
     {
-        return $this->belongsToMany(News::class, 'user_news')
+        return $this->belongsToMany(News::class)
+            ->using(UserNews::class)
             ->withPivot('user_id', 'news_id', 'reaction_id');
     }
 
     public function newsImages(): BelongsToMany
     {
-        return $this->belongsToMany(NewsImages::class, 'user_news_images')
+        return $this->belongsToMany(NewsImages::class)
+            ->using(UserNewsImages::class)
             ->withPivot('user_id', 'news_id', 'news_img_id');
     }
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Roles::class, 'user_roles')
+        return $this->belongsToMany(Roles::class)
+            ->using(UserRoles::class)
             ->withPivot('user_id', 'roles_id');
     }
 
@@ -80,12 +83,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permissions::class, 'user_permissions')
+        return $this->belongsToMany(Permissions::class)
+            ->using(UserPermissions::class)
             ->withPivot('user_id', 'user_role_id', 'permission_id');
     }
 
     public function hasPermission(string $permission_id) {
-        $this->roles->permissions()->where('permission_id', $permission_id)->exists();
+        return $this->roles()->whereHas('permissions', function ($query) use($permission_id) {
+            $query->where('id', $permission_id);
+        })->exists();
     }
 
     /**
