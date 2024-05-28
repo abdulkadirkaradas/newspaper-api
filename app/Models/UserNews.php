@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * This model is the pivot.
+ * It's used solely for establishing relations between the User, News, and NewsReactions models.
+ */
 class UserNews extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -18,8 +22,4 @@ class UserNews extends Model
         "user_id",
         "reaction_id",
     ];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
 }
