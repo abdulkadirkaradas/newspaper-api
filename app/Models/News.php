@@ -26,4 +26,9 @@ class News extends Model
     public function newsReactions() {
         return $this->hasMany(NewsReactions::class);
     }
+
+    public function user() {
+        return $this->belongsToMany(User::class, 'user_news')
+            ->withPivot('user_id', 'news_id', 'reaction_id');
+    }
 }

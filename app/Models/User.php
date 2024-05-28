@@ -40,14 +40,16 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
-    public function news(): HasMany
+    public function news(): BelongsToMany
     {
-        return $this->hasMany(UserNews::class);
+        return $this->belongsToMany(News::class, 'user_news')
+            ->withPivot('user_id', 'news_id', 'reaction_id');
     }
 
-    public function newsImages(): HasMany
+    public function newsImages(): BelongsToMany
     {
-        return $this->hasMany(UserNewsImages::class);
+        return $this->belongsToMany(NewsImages::class, 'user_news_images')
+            ->withPivot('user_id', 'news_id', 'news_img_id');
     }
 
     public function roles(): HasOne

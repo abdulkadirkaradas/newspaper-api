@@ -21,6 +21,11 @@ class NewsImages extends Model
         "news_id"
     ];
 
+    public function user() {
+        return $this->belongsToMany(User::class, 'user_news_images')
+            ->withPivot('user_id', 'news_id', 'news_img_id');
+    }
+
     public function news() {
         return $this->belongsTo(News::class);
     }
