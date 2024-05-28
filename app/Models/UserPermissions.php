@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserPermissions extends Model
+/**
+ * This model is the pivot.
+ * It's used solely for establishing relations between the User, Roles and Permissions models.
+ */
+class UserPermissions extends Pivot
 {
     use HasFactory, HasUuids, SoftDeletes;
 
@@ -19,9 +23,4 @@ class UserPermissions extends Model
         "user_role_id",
         "permission_id",
     ];
-
-    public function userRoles(): BelongsTo
-    {
-        return $this->belongsTo(UserRoles::class);
-    }
 }
