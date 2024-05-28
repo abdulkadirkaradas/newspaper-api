@@ -55,7 +55,7 @@ class User extends Authenticatable implements JWTSubject
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Roles::class, 'user_roles')
-            ->withPivot('user_id', 'roles_id', 'created_at');
+            ->withPivot('user_id', 'roles_id');
     }
 
     public function messages(): HasMany
@@ -76,6 +76,12 @@ class User extends Authenticatable implements JWTSubject
     public function reactions(): HasMany
     {
         return $this->hasMany(UserReactions::class);
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permissions::class, 'user_permissions')
+            ->withPivot('user_id', 'user_role_id', 'permission_id');
     }
 
     public function hasPermission(string $permission_id) {
