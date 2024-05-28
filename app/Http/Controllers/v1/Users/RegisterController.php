@@ -22,7 +22,7 @@ class RegisterController extends Controller
             return $validated;
         }
 
-        $validated['role_id'] = UserRoles::Writer->value;
+        $validated['roles_id'] = UserRoles::Writer->value;
 
         [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
 
@@ -40,7 +40,7 @@ class RegisterController extends Controller
 
         $role = UserRolesModel::create([
             'user_id' => $user->id,
-            'role_id' => $role_id,
+            'roles_id' => $role_id,
         ]);
 
         if (!$role) {

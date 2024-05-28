@@ -46,7 +46,7 @@ class TestingSeeder extends Seeder
 
         $userRole = UserRoles::create([
             'user_id' => $user->id,
-            'role_id' => rand(1, 3)
+            'roles_id' => rand(1, 3)
         ]);
 
         $token = Auth::guard('api')->login($user);
