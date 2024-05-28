@@ -15,7 +15,6 @@ class UserPermissions extends Model
     protected $table = "user_permissions";
 
     protected $fillable = [
-        "granted",
         "user_id",
         "user_role_id",
         "permission_id",

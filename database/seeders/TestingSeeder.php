@@ -31,7 +31,7 @@ class TestingSeeder extends Seeder
             $permissions[$i] = Permissions::create([
                 'name' => fake()->word(),
                 'description' => fake()->sentence(),
-                'granted_by_default' => (bool)random_int(0, 1),
+                'granted' => (bool)random_int(0, 1),
             ]);
         }
 
@@ -62,7 +62,6 @@ class TestingSeeder extends Seeder
                 'user_id' => $user->id,
                 'user_role_id' => $userRole->id,
                 'permission_id' => $permissions[$i]->id,
-                'granted' => (bool)random_int(0, 1),
             ]);
         }
 

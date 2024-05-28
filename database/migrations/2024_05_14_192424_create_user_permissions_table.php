@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignUuid('user_id');
             $table->foreignUuid('user_role_id');
             $table->foreignUuid('permission_id');
-            $table->boolean('granted')->default(false);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('user_role_id')->references('id')->on('user_roles')->onDelete('cascade');
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
