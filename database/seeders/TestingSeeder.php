@@ -2,24 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\UserRoles;
 use App\Models\News;
-use App\Models\NewsImages;
-use App\Models\NewsReactions;
-use App\Models\Permissions;
-use App\Models\Roles;
-use App\Models\UserAuthTokens;
-use App\Models\UserMessages;
-use App\Models\UserNews;
-use App\Models\UserNotifications;
-use App\Models\UserPermissions;
-use App\Models\UserReactions;
 use App\Models\User;
-use App\Models\UserWarnings;
+use App\Models\Badge;
+use App\Models\Warning;
+use App\Models\Reaction;
+use App\Models\UserRoles;
+use App\Models\NewsImages;
+use App\Models\BadgeImages;
+use App\Models\Permissions;
+use App\Models\NewsReactions;
+use App\Models\Notification;
+use App\Models\UserAuthTokens;
+use App\Models\UserPermissions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class TestingSeeder extends Seeder
 {
@@ -31,11 +29,11 @@ class TestingSeeder extends Seeder
             $permissions[$i] = Permissions::create([
                 'name' => fake()->word(),
                 'description' => fake()->sentence(),
-                'granted' => (bool)random_int(0, 1),
+                'granted' => (bool) random_int(0, 1),
             ]);
         }
 
-        // Create users
+        // Create user
         $user = User::create([
             'name' => fake()->name(),
             'lastname' => fake()->lastName(),
@@ -46,7 +44,7 @@ class TestingSeeder extends Seeder
 
         $userRole = UserRoles::create([
             'user_id' => $user->id,
-            'roles_id' => rand(1, 3)
+            'role_id' => rand(1, 3)
         ]);
 
         $token = Auth::guard('api')->login($user);
@@ -73,71 +71,83 @@ class TestingSeeder extends Seeder
                 'content' => fake()->paragraph(),
                 'user_id' => $user->id,
             ]);
+
+            $user->news()->save($news[$i]);
         }
 
-        // Create news images
+        // Create news images and reactions
         for ($i = 0; $i < 5; $i++) {
-            NewsImages::create([
+            $image = NewsImages::create([
                 'name' => fake()->name(),
                 'ext' => fake()->fileExtension(),
                 'fullpath' => fake()->filePath(),
-                'user_id' => $user->id,
                 'news_id' => $news[$i]->id
             ]);
-        }
 
-        // Create news reactions
-        $newsReactions = [];
-        for ($i = 0; $i < 5; $i++) {
-            $newsReactions[$i] = NewsReactions::create([
+            $reaction = NewsReactions::create([
                 'reaction' => fake()->word(),
-                'user_id' => $user->id,
+                'type' => fake()->word(),
                 'news_id' => $news[$i]->id
             ]);
+
+            $news[$i]->newsImages()->save($image);
+            $news[$i]->newsReactions()->save($reaction);
         }
 
-        // Create user reactions
-        $userReactions = [];
+        // Create badges and images
         for ($i = 0; $i < 5; $i++) {
-            $userReactions[$i] = UserReactions::create([
-                'reaction' => fake()->word(),
+            $badge = Badge::create([
+                'name' => fake()->title(),
+                'description' => fake()->paragraph(),
+                'type' => fake()->word(),
                 'user_id' => $user->id,
-                'news_id' => $news[$i]->id
             ]);
+
+            $image = BadgeImages::create([
+                'name' => fake()->name(),
+                'ext' => fake()->fileExtension(),
+                'fullpath' => fake()->filePath(),
+                'badge_id' => $badge->id
+            ]);
+
+            $badge->badgeImages()->save($image);
+            $user->badges()->save($badge);
         }
 
-        // Create user news
+        ///
+
+        // Create reactions
         for ($i = 0; $i < 5; $i++) {
-            UserNews::create([
-                'news_id' => $news[$i]->id,
+            $reaction = Reaction::create([
+                'reaction_type' => fake()->word(),
                 'user_id' => $user->id,
-                'reaction_id' => $newsReactions[$i]->id // veya $userReactions[$i]->id
             ]);
-        }
 
-        // Create user messages
-        for ($i = 0; $i < 5; $i++) {
-            UserMessages::create([
-                'warning_text' => fake()->sentence(),
-                'user_id' => $user->id
-            ]);
+            $user->reactions()->save($reaction);
         }
 
         // Create user notifications
         for ($i = 0; $i < 5; $i++) {
-            UserNotifications::create([
-                'notification' => fake()->sentence(),
+            $notif = Notification::create([
+                'type' => fake()->word(),
+                'message' => fake()->sentence(),
+                'is_read' => false,
                 'user_id' => $user->id
             ]);
+
+            $user->notifications()->save($notif);
         }
 
         // Create user warnings
         for ($i = 0; $i < 5; $i++) {
-            UserWarnings::create([
+            $warns = Warning::create([
                 'message' => fake()->sentence(),
+                'reason' => fake()->word(),
                 'warning_level' => rand(1, 5),
                 'user_id' => $user->id
             ]);
+
+            $user->warnings()->save($warns);
         }
     }
 }
