@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Roles extends Model
+class Role extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -22,6 +22,6 @@ class Roles extends Model
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_roles')
-            ->withPivot('user_id', 'roles_id', 'created_at');
+            ->withPivot('user_id', 'role_id', 'created_at');
     }
 }

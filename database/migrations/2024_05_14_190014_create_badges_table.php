@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_reactions', function (Blueprint $table) {
+        Schema::create('badges', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('description');
+            $table->string('type');
             $table->foreignUuid('user_id');
-            $table->foreignUuid('news_id');
-            $table->string('reaction');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('news_id')->references('id')->on('news')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_reactions');
+        Schema::dropIfExists('badges');
     }
 };

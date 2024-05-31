@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('news_reactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('news_id');
-            $table->foreignUuid('user_id');
             $table->string('reaction');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('type');
+            $table->foreignUuid('news_id');
             $table->foreign('news_id')->references('id')->on('news')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

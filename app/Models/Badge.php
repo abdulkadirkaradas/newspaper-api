@@ -9,28 +9,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class News extends Model
+class Badge extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $table = "news";
+    protected $table = "badges";
 
     protected $fillable = [
-        "title",
-        "content",
+        "name",
+        "description",
+        "type",
         "user_id",
     ];
 
-    public function user(): belongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function newsImages(): HasMany
+    public function badgeImages(): HasMany
     {
-        return $this->hasMany(NewsImages::class);
-    }
-    public function newsReactions(): HasMany
-    {
-        return $this->hasMany(NewsReactions::class);
+        return $this->hasMany(BadgeImages::class);
     }
 }

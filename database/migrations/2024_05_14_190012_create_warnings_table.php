@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_notifications', function (Blueprint $table) {
+        Schema::create('warnings', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('message');
+            $table->string('reason');
+            $table->integer('warning_level')->default(0);
             $table->foreignUuid('user_id');
-            $table->longText('notification');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_notifications');
+        Schema::dropIfExists('warnings');
     }
 };

@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Enums\UserRoles as DefaultRoles;
 use App\Models\Roles;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Enums\UserRoles as DefaultRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -40,52 +39,39 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
-    public function news(): BelongsToMany
+    public function news(): HasMany
     {
-        return $this->belongsToMany(News::class)
-            ->using(UserNews::class)
-            ->withPivot('user_id', 'news_id', 'reaction_id');
-    }
-
-    public function newsImages(): BelongsToMany
-    {
-        return $this->belongsToMany(NewsImages::class)
-            ->using(UserNewsImages::class)
-            ->withPivot('user_id', 'news_id', 'news_img_id');
+        return $this->hasMany(News::class);
     }
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Roles::class)
-            ->using(UserRoles::class)
-            ->withPivot('user_id', 'roles_id');
-    }
-
-    public function messages(): HasMany
-    {
-        return $this->hasMany(UserMessages::class);
+        return $this->belongsToMany(Role::class, 'user_roles');
     }
 
     public function warnings(): HasMany
     {
-        return $this->hasMany(UserWarnings::class);
+        return $this->hasMany(Warning::class);
     }
 
     public function notifications(): HasMany
     {
-        return $this->hasMany(UserNotifications::class);
+        return $this->hasMany(Notification::class);
     }
 
     public function reactions(): HasMany
     {
-        return $this->hasMany(UserReactions::class);
+        return $this->hasMany(Reaction::class);
+    }
+
+    public function badges(): HasMany
+    {
+        return $this->hasMany(Badge::class);
     }
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permissions::class)
-            ->using(UserPermissions::class)
-            ->withPivot('user_id', 'user_role_id', 'permission_id');
+        return $this->belongsToMany(Permissions::class, 'user_permissions');
     }
 
     public function hasPermission(string $permission_id) {
