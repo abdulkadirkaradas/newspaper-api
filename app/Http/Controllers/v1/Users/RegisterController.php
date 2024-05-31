@@ -7,7 +7,6 @@ use App\Validators\UserRegisterValidator;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\UserAuthTokens;
-use App\Models\UserRoles;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +36,7 @@ class RegisterController extends Controller
             return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
         }
 
-        $userRole = Role::find(3);
+        $userRole = Role::find(DefaultRoles::Writer->value);
         $user->roles()->save($userRole);
 
         $token = Auth::guard('api')->login($user);
