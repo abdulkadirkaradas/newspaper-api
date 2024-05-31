@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * This model is the pivot.
@@ -21,4 +23,9 @@ class UserRoles extends Pivot
         "user_id",
         "role_id",
     ];
+
+    public function roles(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
