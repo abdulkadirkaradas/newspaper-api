@@ -23,9 +23,7 @@ class RegisterController extends Controller
             return $validated;
         }
 
-        $validated['role_id'] = DefaultRoles::Writer->value;
-
-        [$name, $lastname, $username, $email, $password, $role_id] = array_values($validated);
+        [$name, $lastname, $username, $email, $password] = array_values($validated);
 
         $user = User::create([
             'name' => $name,
