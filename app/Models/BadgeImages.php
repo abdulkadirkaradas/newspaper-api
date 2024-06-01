@@ -18,7 +18,8 @@ class BadgeImages extends Model
         "name",
         "ext",
         "fullpath",
-        "badge_id"
+        "user_id",
+        "badge_id",
     ];
 
     public function badges(): BelongsTo

@@ -109,7 +109,8 @@ class TestingSeeder extends Seeder
                 'name' => fake()->name(),
                 'ext' => fake()->fileExtension(),
                 'fullpath' => fake()->filePath(),
-                'badge_id' => $badge->id
+                'user_id' => $user->id,
+                'badge_id' => $badge->id,
             ]);
 
             $badge->badgeImages()->save($image);

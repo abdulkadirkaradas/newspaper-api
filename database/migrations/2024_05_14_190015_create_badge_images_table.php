@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('ext');
             $table->string('fullpath');
+            $table->foreignUuid('user_id');
             $table->foreignUuid('badge_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
