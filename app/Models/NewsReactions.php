@@ -17,6 +17,7 @@ class NewsReactions extends Model
     protected $fillable = [
         "reaction",
         "type",
+        "user_id",
         "news_id",
     ];
 

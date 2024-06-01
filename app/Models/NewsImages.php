@@ -18,6 +18,7 @@ class NewsImages extends Model
         "name",
         "ext",
         "fullpath",
+        "user_id",
         "news_id",
     ];
 

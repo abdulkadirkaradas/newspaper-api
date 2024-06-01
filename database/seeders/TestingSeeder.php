@@ -81,12 +81,14 @@ class TestingSeeder extends Seeder
                 'name' => fake()->name(),
                 'ext' => fake()->fileExtension(),
                 'fullpath' => fake()->filePath(),
-                'news_id' => $news[$i]->id
+                'user_id' => $user->id,
+                'news_id' => $news[$i]->id,
             ]);
 
             $reaction = NewsReactions::create([
                 'reaction' => fake()->word(),
                 'type' => fake()->word(),
+                'user_id' => $user->id,
                 'news_id' => $news[$i]->id
             ]);
 
