@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\News;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Badge;
 use App\Models\Warning;
 use App\Models\Reaction;
-use App\Models\UserRoles;
 use App\Models\BadgeImage;
 use App\Models\NewsImages;
 use App\Models\Permissions;
@@ -18,6 +18,7 @@ use App\Models\UserPermissions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\UserRoles as DefaultRoles;
 
 class TestingSeeder extends Seeder
 {
@@ -42,10 +43,8 @@ class TestingSeeder extends Seeder
             'password' => Hash::make('Abcdef123')
         ]);
 
-        $userRole = UserRoles::create([
-            'user_id' => $user->id,
-            'role_id' => rand(1, 3)
-        ]);
+        $userRole = Role::find(DefaultRoles::Writer->value);
+        $user->roles()->save($userRole);
 
         $token = Auth::guard('api')->login($user);
 
