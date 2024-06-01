@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\v1\Users;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
 {
@@ -29,11 +29,10 @@ class UsersController extends Controller
                 $query->select('user_id', 'reaction_type');
             },
             'badges' => function ($query) {
-                $query->select('user_id', 'name', 'type');
-            },
-            //TODO add user_id column to the badge_images table
-            'badges.badgeImages' => function ($query) {
-                $query->select('badge_id', 'fullpath');
+                $query->select('id', 'user_id', 'name', 'type')
+                      ->with(['badgeImages' => function ($query) {
+                          $query->select('id', 'badge_id', 'fullpath');
+                      }]);
             },
             'roles' => function ($query) {
                 $query->select('name');
@@ -51,7 +50,7 @@ class UsersController extends Controller
             'warnings' => $userInfo->warnings,
             'reactions' => $userInfo->reactions,
             'badges' => $userInfo->badges,
-            'role' => $userInfo->role
+            'role' => $userInfo->roles
         ];
     }
 }
