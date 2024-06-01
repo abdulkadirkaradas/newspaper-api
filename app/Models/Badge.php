@@ -28,6 +28,6 @@ class Badge extends Model
     }
     public function badgeImages(): HasMany
     {
-        return $this->hasMany(BadgeImages::class);
+        return $this->hasMany(BadgeImage::class);
     }
 }

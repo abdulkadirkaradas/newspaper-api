@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class BadgeImages extends Model
+class BadgeImage extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 

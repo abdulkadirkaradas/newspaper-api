@@ -8,11 +8,11 @@ use App\Models\Badge;
 use App\Models\Warning;
 use App\Models\Reaction;
 use App\Models\UserRoles;
+use App\Models\BadgeImage;
 use App\Models\NewsImages;
-use App\Models\BadgeImages;
 use App\Models\Permissions;
-use App\Models\NewsReactions;
 use App\Models\Notification;
+use App\Models\NewsReactions;
 use App\Models\UserAuthTokens;
 use App\Models\UserPermissions;
 use Illuminate\Database\Seeder;
@@ -105,7 +105,7 @@ class TestingSeeder extends Seeder
                 'user_id' => $user->id,
             ]);
 
-            $image = BadgeImages::create([
+            $image = BadgeImage::create([
                 'name' => fake()->name(),
                 'ext' => fake()->fileExtension(),
                 'fullpath' => fake()->filePath(),
