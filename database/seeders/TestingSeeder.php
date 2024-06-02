@@ -10,7 +10,7 @@ use App\Models\Warning;
 use App\Models\Reaction;
 use App\Models\BadgeImage;
 use App\Models\NewsImages;
-use App\Models\Permissions;
+use App\Models\Permission;
 use Illuminate\Support\Str;
 use App\Models\Notification;
 use App\Models\NewsReactions;
@@ -26,16 +26,6 @@ class TestingSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create permissions
-        $permissions = [];
-        for ($i = 0; $i < 5; $i++) {
-            $permissions[$i] = Permissions::create([
-                'name' => fake()->word(),
-                'description' => fake()->sentence(),
-                'granted' => (bool) random_int(0, 1),
-            ]);
-        }
-
         // Create user
         $user = User::create([
             'name' => fake()->name(),
@@ -46,14 +36,18 @@ class TestingSeeder extends Seeder
         ]);
 
         $userRole = Role::find(DefaultRoles::Writer->value);
+        $user->roles()->attach($userRole->id, ['created_at' => now(), 'updated_at' => now()]);
 
-        DB::table('user_roles')->insert([
-            'id' => Str::uuid(),
-            'role_id' => $userRole->id,
-            'user_id' => $user->id
-        ]);
+        // Create and assign permissions
+        for ($i = 0; $i < 5; $i++) {
+            $permission = Permission::create([
+                'name' => fake()->word(),
+                'description' => fake()->sentence(),
+                'granted' => (bool) random_int(0, 1),
+            ]);
 
-        $insertedUR = DB::table('user_roles')->latest('created_at')->first();
+            $user->permissions()->attach($permission->id, ['created_at' => now(), 'updated_at' => now()]);
+        }
 
         $token = Auth::guard('api')->login($user);
 
@@ -61,15 +55,6 @@ class TestingSeeder extends Seeder
             'token' => $token,
             'user_id' => $user->id
         ]);
-
-        // Assign permissions to users
-        for ($i = 0; $i < 5; $i++) {
-            UserPermissions::create([
-                'user_id' => $user->id,
-                'user_role_id' => $insertedUR->id,
-                'permission_id' => $permissions[$i]->id,
-            ]);
-        }
 
         // Create news
         $news = [];
@@ -110,19 +95,17 @@ class TestingSeeder extends Seeder
                 'name' => fake()->title(),
                 'description' => fake()->paragraph(),
                 'type' => fake()->word(),
-                'user_id' => $user->id,
             ]);
 
             $image = BadgeImage::create([
                 'name' => fake()->name(),
                 'ext' => fake()->fileExtension(),
                 'fullpath' => fake()->filePath(),
-                'user_id' => $user->id,
                 'badge_id' => $badge->id,
             ]);
 
             $badge->badgeImages()->save($image);
-            $user->badges()->save($badge);
+            $user->badges()->attach($badge->id, ['created_at' => now(), 'updated_at' => now()]);
         }
 
         ///
