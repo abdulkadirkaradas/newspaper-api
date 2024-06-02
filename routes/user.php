@@ -1,13 +1,21 @@
 <?php
 
-use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Middleware\CheckAuthentication;
+use App\Http\Controllers\v1\Users\NotificationsController;
 use App\Http\Middleware\CheckHeaders;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CheckAuthentication;
+use App\Http\Controllers\v1\Users\UsersController;
 
 /**
- * User routes
+ * 'Writer' routes
  */
-Route::prefix('v1/user')->middleware([CheckAuthentication::class, CheckHeaders::class])->group(function () {
-    Route::get('/profile', [UsersController::class, 'profile']);
+Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class])->group(function () {
+    //
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [UsersController::class, 'profile']);
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/get-latest-notifications', [NotificationsController::class, 'getLatestNotifications']);
+    });
 });

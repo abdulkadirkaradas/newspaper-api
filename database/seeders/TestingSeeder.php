@@ -125,7 +125,7 @@ class TestingSeeder extends Seeder
             $notif = Notification::create([
                 'type' => fake()->word(),
                 'message' => fake()->sentence(),
-                'is_read' => false,
+                'is_read' => (bool)rand(0, 1),
                 'user_id' => $user->id
             ]);
 
