@@ -10,8 +10,11 @@ class UsersController extends Controller
 {
     /**
      * Returns logged user profile informations
+     *
+     * @var Request $request
+     * @return array
      */
-    public function profile(Request $request)
+    public function profile(Request $request): array
     {
         $user = $request->user;
 
