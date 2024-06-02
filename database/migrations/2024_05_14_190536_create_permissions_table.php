@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('description');
-            $table->boolean('granted_by_default')->default(false);
+            $table->boolean('granted')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

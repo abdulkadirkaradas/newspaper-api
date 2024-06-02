@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RegisterMiddleware
+class UserRegisterMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,13 @@ class RegisterMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $username = $request->input('username');
-        $email = $request->input('email');
+        $username = $request->bodyContent['username'];
+        $email = $request->bodyContent['email'];
+
+        if (!isset($username) && !isset($email)) {
+            return response()
+                ->json($this->errorMessage(BAD_REQUEST, "Fields should be filled!"));
+        }
 
         if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
             return response()

@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->loadRoutesFrom(base_path('routes/auth.php'));
+        $this->loadRoutesFrom(base_path('routes/admin.php'));
+        $this->loadRoutesFrom(base_path('routes/user.php'));
     }
 }

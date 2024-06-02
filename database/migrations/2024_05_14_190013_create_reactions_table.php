@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_news_images', function (Blueprint $table) {
+        Schema::create('reactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('reaction_type');
             $table->foreignUuid('user_id');
-            $table->foreignUuid('news_id');
-            $table->foreignUuid('news_img_id');
-            $table->foreign('news_id')->references('id')->on('news')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('news_img_id')->references('id')->on('news_images')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_news_images');
+        Schema::dropIfExists('reactions');
     }
 };

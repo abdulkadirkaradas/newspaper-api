@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NewsImages extends Model
@@ -18,10 +19,11 @@ class NewsImages extends Model
         "ext",
         "fullpath",
         "user_id",
-        "news_id"
+        "news_id",
     ];
 
-    public function news() {
+    public function news(): BelongsTo
+    {
         return $this->belongsTo(News::class);
     }
 }

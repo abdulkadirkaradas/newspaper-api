@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Roles;
+use App\Models\Role;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
         /**
         * Create initial roles
         */
-        Roles::insert([
+        Role::insert([
             ["name" => "Admin", "type" => "administrator"],
             ["name" => "Moderator", "type" => "moderator"],
             ["name" => "Writer", "type" => "writer"],
@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
         /**
          * Creates the test values
         */
-        // $this->call(TestingSeeder::class);
+        $this->call(TestingSeeder::class);
     }
 }

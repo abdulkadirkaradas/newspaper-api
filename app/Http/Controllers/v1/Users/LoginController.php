@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\v1\Users;
 
 use App\Validators\UserLoginValidator;
 use App\Http\Controllers\Controller;
@@ -69,16 +69,22 @@ class LoginController extends Controller
         ]);
     }
 
+    //TODO Soft delete old token and give new token to the user
     public function refreshAuthToken(Request $request) {
         $token = Auth::guard('api')->refresh();
 
         $auth = UserAuthTokens::where('user_id', $request->user->id)->first();
 
-        if ($auth) {
-            $auth->token = $token;
-            $auth->expire_date = now()->addDays(15);
-            $auth->save();
+        if (!$auth) {
+            return response()->json([
+                'status' => FAIL,
+                'message' => "Invalid token"
+            ]);
         }
+
+        $auth->token = $token;
+        $auth->expire_date = now()->addDays(15);
+        $auth->save();
 
         return response()->json([
             'status' => SUCCESS,

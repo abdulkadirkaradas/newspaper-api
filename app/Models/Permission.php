@@ -5,20 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserNotifications extends Model
+class Permission extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $table = "user_notifications";
+    protected $table = "permissions";
 
     protected $fillable = [
-        "notification",
-        "user_id",
+        "name",
+        "description",
+        "granted"
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function user(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_permissions');
     }
 }
