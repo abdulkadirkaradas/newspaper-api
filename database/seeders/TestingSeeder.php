@@ -11,11 +11,13 @@ use App\Models\Reaction;
 use App\Models\BadgeImage;
 use App\Models\NewsImages;
 use App\Models\Permissions;
+use Illuminate\Support\Str;
 use App\Models\Notification;
 use App\Models\NewsReactions;
 use App\Models\UserAuthTokens;
 use App\Models\UserPermissions;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRoles as DefaultRoles;
@@ -44,7 +46,14 @@ class TestingSeeder extends Seeder
         ]);
 
         $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->save($userRole);
+
+        DB::table('user_roles')->insert([
+            'id' => Str::uuid(),
+            'role_id' => $userRole->id,
+            'user_id' => $user->id
+        ]);
+
+        $insertedUR = DB::table('user_roles')->latest('created_at')->first();
 
         $token = Auth::guard('api')->login($user);
 
@@ -57,7 +66,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             UserPermissions::create([
                 'user_id' => $user->id,
-                'user_role_id' => $userRole->id,
+                'user_role_id' => $insertedUR->id,
                 'permission_id' => $permissions[$i]->id,
             ]);
         }
