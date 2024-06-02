@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Permissions extends Model
+class Permission extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
@@ -22,7 +22,6 @@ class Permissions extends Model
 
     public function user(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_permissions')
-            ->withPivot('user_id', 'user_role_id', 'permission_id');
+        return $this->belongsToMany(User::class, 'user_permissions');
     }
 }
