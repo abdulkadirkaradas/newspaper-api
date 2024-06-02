@@ -37,7 +37,7 @@ class RegisterController extends Controller
         }
 
         $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->save($userRole);
+        $user->roles()->attach($userRole);
 
         $token = Auth::guard('api')->login($user);
 
