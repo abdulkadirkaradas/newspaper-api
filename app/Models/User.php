@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Roles;
 use App\Enums\UserRoles as DefaultRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -64,14 +63,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Reaction::class);
     }
 
-    public function badges(): HasMany
+    public function badges(): BelongsToMany
     {
-        return $this->hasMany(Badge::class);
+        return $this->belongsToMany(Badge::class, 'user_badges');
     }
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permissions::class, 'user_permissions');
+        return $this->belongsToMany(Permission::class, 'user_permissions');
     }
 
     public function hasPermission(string $permission_id) {
