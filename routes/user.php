@@ -16,6 +16,6 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
     });
 
     Route::prefix('notifications')->group(function () {
-        Route::get('/get-latest-notifications', [NotificationsController::class, 'getLatestNotifications']);
+        Route::get('/get-all-notifications', [NotificationsController::class, 'getAllNotifications']);
     });
 });
