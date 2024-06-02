@@ -18,6 +18,7 @@ class News extends Model
     protected $fillable = [
         "title",
         "content",
+        "removed_by_user_id",
         "user_id",
     ];
 
