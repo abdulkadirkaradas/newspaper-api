@@ -16,6 +16,7 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
     });
 
     Route::prefix('notifications')->group(function () {
-        Route::get('/get-all-notifications', [NotificationsController::class, 'getAllNotifications']);
+        // Returns all unread notifications
+        Route::get('/', [NotificationsController::class, 'notifications']);
     });
 });

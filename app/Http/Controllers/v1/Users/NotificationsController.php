@@ -14,7 +14,7 @@ class NotificationsController extends Controller
      * @var Request $request
      * @return array
      */
-    public function getAllNotifications(Request $request): array
+    public function notifications(Request $request): array
     {
         $user = $request->user;
 
