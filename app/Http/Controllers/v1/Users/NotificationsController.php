@@ -26,7 +26,7 @@ class NotificationsController extends Controller
 
         $info = User::with([
             'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'message', 'is_read', 'created_at');
+                $query->select('user_id', 'type', 'message', 'created_at');
 
                 if ($params['type'] !== 'all') {
                     $query->where('is_read', $params['type'] === 'read');
