@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1\Users;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
 
 class NotificationsController extends Controller
@@ -17,10 +18,19 @@ class NotificationsController extends Controller
     public function notifications(Request $request): array
     {
         $user = $request->user;
+        $params = $request->only('type');
+
+        if (count($params) === 0 || !isset($params['type'])) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
 
         $info = User::with([
-            'notifications' => function ($query) {
-                $query->select('user_id', 'type', 'message', 'created_at')->where('is_read', false);
+            'notifications' => function ($query) use ($params) {
+                $query->select('user_id', 'type', 'message', 'is_read', 'created_at');
+
+                if ($params['type'] !== 'all') {
+                    $query->where('is_read', $params['type'] === 'read');
+                }
             }
         ])->findOrFail($user->id);
 
