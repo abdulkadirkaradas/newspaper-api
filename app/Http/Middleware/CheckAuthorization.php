@@ -25,12 +25,4 @@ class CheckAuthorization
     {
         return $next($request);
     }
-
-    private function errorMessage(int $status, string $message): array
-    {
-        return [
-            "status" => $status,
-            "message" => $message
-        ];
-    }
 }

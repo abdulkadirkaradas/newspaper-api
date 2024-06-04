@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserAuthTokens;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Helpers\CommonFunctions;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckAuthentication
@@ -25,7 +25,7 @@ class CheckAuthentication
     {
         // Refuse request if its not have bearer token
         if (!$request->bearerToken()) {
-            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return response()->json(CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
         $authToken = $request->bearerToken();
@@ -33,16 +33,16 @@ class CheckAuthentication
         // Check if the user deactived or session expired
         $auth = UserAuthTokens::whereNull('deleted_at')->where('expired', '!=', true)->where('token', $authToken)->first();
         if (!$auth) {
-            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return response()->json(CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         } else if ($auth->expired === true) {
-            return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
+            return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
         $user = User::find($auth->user_id);
 
         // Check if the user blocked
         if ($user->blocked === true) {
-            return response()->json($this->errorMessage(FORBIDDEN, "User '{$user->username}' has been blocked!"));
+            return response()->json(CommonFunctions::response(FORBIDDEN, "User '{$user->username}' has been blocked!"));
         }
 
         $expireDateTS = strtotime($auth->expire_date);
@@ -50,19 +50,11 @@ class CheckAuthentication
 
         // Check if the user session expired
         if (($expireDateTS < $currentTS) && !str_contains($request->route()->getActionName(), 'refreshAuthToken')) {
-            return response()->json($this->errorMessage(UNAUTHORIZED, SESSION_EXPIRED));
+            return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
         $request['user'] = $user;
 
         return $next($request);
-    }
-
-    private function errorMessage(int $status, string $message): array
-    {
-        return [
-            "status" => $status,
-            "message" => $message
-        ];
     }
 }

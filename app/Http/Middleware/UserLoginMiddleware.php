@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
-use App\Models\UserAuthTokens;
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Models\UserAuthTokens;
+use App\Helpers\CommonFunctions;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserLoginMiddleware
@@ -28,19 +28,11 @@ class UserLoginMiddleware
         $user = User::find($auth->user_id);
 
         if (!$auth || !isset($user)) {
-            return response()->json($this->errorMessage(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return response()->json(CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
         }
 
         $request['user'] = $user;
 
         return $next($request);
-    }
-
-    private function errorMessage(int $status, string $message): array
-    {
-        return [
-            "status" => $status,
-            "message" => $message
-        ];
     }
 }
