@@ -17,12 +17,13 @@ class UserRegisterMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $username = $request->bodyContent['username'];
-        $email = $request->bodyContent['email'];
+        $username = $request->bodyContent['username'] ?? null;
+        $email = $request->bodyContent['email'] ?? null;
+        $password = $request->bodyContent['password'] ?? null;
 
-        if (!isset($username) && !isset($email)) {
+        if (!isset($username) || !isset($email) || !isset($password)) {
             return response()
-                ->json(CommonFunctions::response(BAD_REQUEST, "Fields should be filled!"));
+                ->json(CommonFunctions::response(BAD_REQUEST, "The mandatory fields should be filled!"));
         }
 
         if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
