@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 class NotificationsController extends Controller
 {
     /**
-     * Returns logged user notifications
+     * Returns logged user notifications | all, read, unread | time-range (optional)
      *
      * @var Request $request
      * @return array

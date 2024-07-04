@@ -15,6 +15,7 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
         Route::get('/profile', [UsersController::class, 'profile']);
     });
 
+    // All routes support the return of notifications based on a time-range (optional).
     Route::prefix('notifications')->group(function () {
         // Returns all unread notifications
         Route::get('/all', [NotificationsController::class, 'notifications']);
