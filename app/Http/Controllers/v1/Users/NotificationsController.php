@@ -18,7 +18,7 @@ class NotificationsController extends Controller
     public function notifications(Request $request): array
     {
         $user = $request->user;
-        $params = $request->only('type');
+        $params = $request->only(['type', 'from', 'to']);
 
         if (count($params) === 0 || !isset($params['type'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
@@ -27,6 +27,10 @@ class NotificationsController extends Controller
         $info = User::with([
             'notifications' => function ($query) use ($params) {
                 $query->select('user_id', 'type', 'message', 'created_at');
+
+                if (isset($params['from']) || isset($params['to'])) {
+                    $query->whereBetween('created_at', [$params['from'], $params['to']]);
+                }
 
                 if ($params['type'] !== 'all') {
                     $query->where('is_read', $params['type'] === 'read');

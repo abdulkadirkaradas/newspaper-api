@@ -22,6 +22,5 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
         Route::get('/read', [NotificationsController::class, 'notifications']);
         // Returns only readed notifications
         Route::get('/unread', [NotificationsController::class, 'notifications']);
-        //TODO Add time-range based routes
     });
 });
