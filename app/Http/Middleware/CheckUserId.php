@@ -20,11 +20,7 @@ class CheckUserId
         // Take id parameter
         $id = $request->route('id');
 
-        $uuidRegex = '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/';
-
-        // Compare taken id parameter with the uuid regex string
-        if (!preg_match($uuidRegex, $id)) {
-            // Return response message if it not match
+        if (!CommonFunctions::checkUUIDValid($id)) {
             return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_USER_ID));
         }
 
