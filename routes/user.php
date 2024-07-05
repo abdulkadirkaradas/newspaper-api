@@ -19,6 +19,11 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
     // Returns logged user informations
     Route::get('/profile', [UsersController::class, 'profile']);
 
+    Route::prefix('news')->group(function () {
+        // Return news by related id
+        Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
+    });
+
     // All routes support the return of notifications based on a time-range (optional).
     Route::prefix('notifications')->group(function () {
         // Returns all unread notifications
