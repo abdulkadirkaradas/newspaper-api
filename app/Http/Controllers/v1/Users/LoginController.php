@@ -69,7 +69,6 @@ class LoginController extends Controller
         ]);
     }
 
-    //TODO Soft delete old token and give new token to the user
     public function refreshAuthToken(Request $request) {
         $user = $request->user;
         $token = Auth::guard('api')->refresh();
