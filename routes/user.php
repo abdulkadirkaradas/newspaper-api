@@ -11,9 +11,11 @@ use App\Http\Middleware\CheckUserId;
  * 'Writer' routes
  */
 Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class])->group(function () {
-    //
+
     Route::prefix('user')->group(function () {
+        // Returns requested user informations
         Route::get('/{id}', [UsersController::class, 'user'])->middleware(CheckUserId::class);
+        // Returns logged user informations
         Route::get('/profile', [UsersController::class, 'profile']);
     });
 
