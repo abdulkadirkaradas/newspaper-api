@@ -3,11 +3,12 @@
 namespace App\Helpers;
 
 class CommonFunctions {
-    public static function response(int $status, string $message) : array
+    public static function response(int $status, string $error, string $message = null) : array
     {
         return [
             'status' => $status,
-            'message' => $message
+            'error'  => $error,
+            'message' => $message ?? '',
         ];
     }
 }
