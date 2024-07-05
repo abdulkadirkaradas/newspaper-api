@@ -28,10 +28,14 @@ class NotificationsController extends Controller
             'notifications' => function ($query) use ($params) {
                 $query->select('user_id', 'type', 'message', 'created_at');
 
+                // Check if 'from' and 'to' parameters exists
+                // and make query by the creation time
                 if (isset($params['from']) || isset($params['to'])) {
                     $query->whereBetween('created_at', [$params['from'], $params['to']]);
                 }
 
+                // Check if 'type' parameter is not equal 'all' value
+                // and make query by the 'is_read' column
                 if ($params['type'] !== 'all') {
                     $query->where('is_read', $params['type'] === 'read');
                 }
