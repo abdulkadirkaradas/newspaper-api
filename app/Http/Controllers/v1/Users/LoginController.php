@@ -71,9 +71,9 @@ class LoginController extends Controller
 
     //TODO Soft delete old token and give new token to the user
     public function refreshAuthToken(Request $request) {
+        $user = $request->user;
         $token = Auth::guard('api')->refresh();
-
-        $auth = UserAuthTokens::where('user_id', $request->user->id)->first();
+        $auth = UserAuthTokens::where('user_id', $request->user->id)->latest()->first();
 
         if (!$auth) {
             return response()->json([
@@ -82,14 +82,19 @@ class LoginController extends Controller
             ]);
         }
 
-        $auth->token = $token;
-        $auth->expire_date = now()->addDays(15);
+        $auth->expired = true;
         $auth->save();
+        $auth->delete();
+
+        $userAuth = UserAuthTokens::create([
+            'token' => $token,
+            'user_id' => $user->id
+        ]);
 
         return response()->json([
             'status' => SUCCESS,
             'authorisation' => [
-                'token' => $token,
+                'token' => $userAuth->token,
                 'type' => 'bearer',
             ]
         ]);
