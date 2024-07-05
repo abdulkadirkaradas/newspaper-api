@@ -20,6 +20,8 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
     Route::get('/profile', [UsersController::class, 'profile']);
 
     Route::prefix('news')->group(function () {
+        // Return logged user news
+        Route::get('/post/{id}', [NewsController::class, 'news'])->middleware(CheckNewsId::class);
         // Return news by related id
         Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
     });
