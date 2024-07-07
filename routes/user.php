@@ -35,4 +35,8 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
         // Returns only readed notifications
         Route::get('/unread', [NotificationsController::class, 'notifications']);
     });
+
+    Route::prefix('warnings')->group(function () {
+        Route::get('/', [UsersController::class, 'warnings']);
+    });
 });
