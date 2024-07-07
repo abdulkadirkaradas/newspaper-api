@@ -92,4 +92,27 @@ class UsersController extends Controller
             'badges' => $info->badges,
         ];
     }
+
+    /**
+     * Returns logged user warnings
+     *
+     * @var Request $request
+     * @return array
+     */
+    public function warnings(Request $request): array
+    {
+        $user = $request->user;
+
+        $warnings = User::select('id', 'name', 'lastname', 'username')
+            ->with([
+                'warnings' => function ($query) {
+                    $query->select('user_id', 'message', 'reason', 'warning_level')
+                    ->orderBy('warning_level', 'asc');
+                }
+            ])->findOrFail($user->id);
+
+        return [
+            'warnings' => $warnings
+        ];
+    }
 }
