@@ -35,4 +35,8 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
     Route::prefix('warnings')->group(function () {
         Route::get('/', [UsersController::class, 'warnings']);
     });
+
+    Route::prefix('reactions')->group(function () {
+        Route::get('/', [UsersController::class, 'reactions']);
+    });
 });
