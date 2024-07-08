@@ -34,9 +34,11 @@ class UsersController extends Controller
             },
             'badges' => function ($query) {
                 $query->select('id', 'user_id', 'name', 'type')
-                      ->with(['badgeImages' => function ($query) {
-                          $query->select('id', 'badge_id', 'fullpath');
-                      }]);
+                    ->with([
+                        'badgeImages' => function ($query) {
+                            $query->select('id', 'badge_id', 'fullpath');
+                        }
+                    ]);
             },
             'roles' => function ($query) {
                 $query->select('name');
@@ -77,9 +79,11 @@ class UsersController extends Controller
             },
             'badges' => function ($query) {
                 $query->select('id', 'user_id', 'name', 'type')
-                      ->with(['badgeImages' => function ($query) {
-                          $query->select('id', 'badge_id', 'fullpath');
-                      }]);
+                    ->with([
+                        'badgeImages' => function ($query) {
+                            $query->select('id', 'badge_id', 'fullpath');
+                        }
+                    ]);
             },
         ])->findOrFail($user->id);
 
@@ -94,7 +98,7 @@ class UsersController extends Controller
         ];
     }
 
-        /**
+    /**
      * Returns logged user notifications | all, read, unread | time-range (optional)
      *
      * @var Request $request
@@ -146,7 +150,7 @@ class UsersController extends Controller
             ->with([
                 'warnings' => function ($query) {
                     $query->select('user_id', 'message', 'reason', 'warning_level')
-                    ->orderBy('warning_level', 'asc');
+                        ->orderBy('warning_level', 'asc');
                 }
             ])->findOrFail($user->id);
 
