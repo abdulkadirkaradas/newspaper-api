@@ -24,6 +24,8 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
         Route::get('/post/{id}', [NewsController::class, 'news'])->middleware(CheckNewsId::class);
         // Return news by related id
         Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
+        // Return all news reactions
+        Route::get('/reactions', [NewsController::class, 'reactions']);
     });
 
     // All routes support the return of notifications based on a time-range (optional).
@@ -34,9 +36,5 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
 
     Route::prefix('warnings')->group(function () {
         Route::get('/', [UsersController::class, 'warnings']);
-    });
-
-    Route::prefix('reactions')->group(function () {
-        Route::get('/', [UsersController::class, 'reactions']);
     });
 });
