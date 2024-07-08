@@ -68,7 +68,7 @@ class UsersController extends Controller
      */
     public function user(Request $request): array
     {
-        $user = $request->user;
+        $user = $request->model;
 
         $info = User::with([
             'news' => function ($query) {

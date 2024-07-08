@@ -48,7 +48,7 @@ class NewsController extends Controller
      */
     public function news(Request $request): array
     {
-        $news = $request->news;
+        $news = $request->model;
 
         $news = News::select('id', 'title', 'content', 'created_at')
             ->with([
