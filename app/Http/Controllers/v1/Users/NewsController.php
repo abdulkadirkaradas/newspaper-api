@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1\Users;
 
 use App\Models\News;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -61,6 +62,33 @@ class NewsController extends Controller
 
         return [
             'news' => $news,
+        ];
+    }
+
+    /**
+     * Returns all news reactions of logged user
+     *
+     * @var Request $request
+     * @return array
+     */
+    public function reactions(Request $request): array
+    {
+        $user = $request->user;
+
+        $reactions = User::select('id', 'name', 'lastname', 'username')
+            ->with([
+                'news' => function ($query) {
+                    $query->select('id', 'user_id', 'title', 'created_at')
+                        ->with([
+                            'newsReactions' => function ($query) {
+                                $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
+                            }
+                        ]);
+                }
+            ])->findOrFail($user->id);
+
+        return [
+            "reactions" => $reactions
         ];
     }
 }
