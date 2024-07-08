@@ -7,21 +7,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Controllers\v1\Users\NotificationsController;
 
 /**
  * 'Writer' routes
  */
 Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders::class])->group(function () {
 
-    // Returns requested user informations
-    Route::get('/user/{id}', [UsersController::class, 'user'])->middleware(CheckUserId::class);
     // Returns logged user informations
     Route::get('/profile', [UsersController::class, 'profile']);
 
     Route::prefix('news')->group(function () {
-        // Return logged user news
-        Route::get('/post/{id}', [NewsController::class, 'news'])->middleware(CheckNewsId::class);
         // Return news by related id
         Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
         // Return all news reactions
