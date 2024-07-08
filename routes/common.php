@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Middleware\CheckNewsId;
-use App\Http\Middleware\CheckUserId;
 use App\Http\Middleware\ValidateUserAndNewsIDs;
 use Illuminate\Support\Facades\Route;
 
