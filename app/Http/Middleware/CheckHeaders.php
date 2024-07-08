@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Helpers\CommonFunctions;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckHeaders
@@ -16,7 +17,7 @@ class CheckHeaders
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->header('Content-Type') !== 'application/json') {
-            return response()->json($this->errorMessage(BAD_REQUEST, INCORRECT_CONTENT_TYPE));
+            return response()->json(CommonFunctions::response(BAD_REQUEST, INCORRECT_CONTENT_TYPE));
         }
 
         $bodyContent = $request->getContent();
@@ -24,20 +25,12 @@ class CheckHeaders
             $data = json_decode($bodyContent, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                return response()->json($this->errorMessage(BAD_REQUEST, "The fields must be made with JSON!"));
+                return response()->json(CommonFunctions::response(BAD_REQUEST, "The fields must be made with JSON!"));
             }
 
             $request['bodyContent'] = $data;
         }
 
         return $next($request);
-    }
-
-    private function errorMessage(int $status, string $message): array
-    {
-        return [
-            "status" => $status,
-            "message" => $message
-        ];
     }
 }

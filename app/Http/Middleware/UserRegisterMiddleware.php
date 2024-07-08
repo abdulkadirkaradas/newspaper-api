@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\CommonFunctions;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserRegisterMiddleware
@@ -16,17 +17,18 @@ class UserRegisterMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $username = $request->bodyContent['username'];
-        $email = $request->bodyContent['email'];
+        $username = $request->bodyContent['username'] ?? null;
+        $email = $request->bodyContent['email'] ?? null;
+        $password = $request->bodyContent['password'] ?? null;
 
-        if (!isset($username) && !isset($email)) {
+        if (!isset($username) || !isset($email) || !isset($password)) {
             return response()
-                ->json($this->errorMessage(BAD_REQUEST, "Fields should be filled!"));
+                ->json(CommonFunctions::response(BAD_REQUEST, "The mandatory fields should be filled!"));
         }
 
         if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
             return response()
-                ->json($this->errorMessage(BAD_REQUEST, "This email|username has already been obtained!"));
+                ->json(CommonFunctions::response(BAD_REQUEST, "This email|username has already been obtained!"));
         }
 
         return $next($request);
@@ -35,13 +37,5 @@ class UserRegisterMiddleware
     private function checkValueExists(string $key, string $value)
     {
         return User::where($key, $value)->exists();
-    }
-
-    private function errorMessage(int $status, string $message): array
-    {
-        return [
-            "status" => $status,
-            "message" => $message
-        ];
     }
 }

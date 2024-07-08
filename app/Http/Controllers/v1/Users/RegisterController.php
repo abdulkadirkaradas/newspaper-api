@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\v1\Users;
 
-use App\Enums\UserRoles as DefaultRoles;
-use App\Validators\UserRegisterValidator;
-use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\UserAuthTokens;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\UserAuthTokens;
+use App\Helpers\CommonFunctions;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\UserRoles as DefaultRoles;
+use App\Validators\UserRegisterValidator;
 
 class RegisterController extends Controller
 {
@@ -33,7 +34,7 @@ class RegisterController extends Controller
         ]);
 
         if (!$user) {
-            return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
+            return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
         }
 
         $userRole = Role::find(DefaultRoles::Writer->value);
@@ -47,7 +48,7 @@ class RegisterController extends Controller
         ]);
 
         if (!$userAuth) {
-            return $this->errorMessage(FAIL, AN_ERROR_OCCURED);
+            return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
         }
 
         return [
@@ -56,14 +57,6 @@ class RegisterController extends Controller
             'authorisation' => [
                 'token' => $token
             ]
-        ];
-    }
-
-    private function errorMessage(int $status, string $message) : array
-    {
-        return [
-            'status' => $status,
-            'message' => $message
         ];
     }
 }

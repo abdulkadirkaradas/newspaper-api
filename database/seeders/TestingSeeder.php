@@ -122,11 +122,16 @@ class TestingSeeder extends Seeder
 
         // Create user notifications
         for ($i = 0; $i < 5; $i++) {
+            $startDate = '2024-01-01 00:00:00';
+            $endDate = '2024-12-31 23:59:59';
+            $randomDate = $this->randomDateBetween($startDate, $endDate);
             $notif = Notification::create([
                 'type' => fake()->word(),
                 'message' => fake()->sentence(),
-                'is_read' => false,
-                'user_id' => $user->id
+                'is_read' => (bool)rand(0, 1),
+                'user_id' => $user->id,
+                'created_at' => $randomDate,
+                'updated_at' => $randomDate
             ]);
 
             $user->notifications()->save($notif);
@@ -143,5 +148,13 @@ class TestingSeeder extends Seeder
 
             $user->warnings()->save($warns);
         }
+    }
+
+    function randomDateBetween($startDate, $endDate) {
+        $startTimestamp = strtotime($startDate);
+        $endTimestamp = strtotime($endDate);
+        $randomTimestamp = mt_rand($startTimestamp, $endTimestamp);
+
+        return date("Y-m-d H:i:s", $randomTimestamp);
     }
 }

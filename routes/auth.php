@@ -32,10 +32,8 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
     // Authentication Routes
     Route::prefix('auth')->group(function () {
         Route::middleware([UserLoginMiddleware::class])->group(function () {
-            Route::post('/logout', [UsersLoginController::class, 'logout'])
-                ->withoutMiddleware([CheckHeaders::class]);
-            Route::post('/refresh-auth-token', [UsersLoginController::class, 'refreshAuthToken'])
-                ->withoutMiddleware([CheckHeaders::class]);
+            Route::post('/logout', [UsersLoginController::class, 'logout']);
+            Route::post('/refresh-auth-token', [UsersLoginController::class, 'refreshAuthToken']);
         });
     });
 });
