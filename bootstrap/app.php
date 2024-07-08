@@ -17,8 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             App\Http\Middleware\CheckAuthentication::class,
             App\Http\Middleware\CheckAuthorization::class,
             App\Http\Middleware\CheckHeaders::class,
-            App\Http\Middleware\CheckUserId::class,
-            App\Http\Middleware\CheckNewsId::class,
+            App\Http\Middleware\ValidateUserAndNewsIDs::class,
             App\Http\Middleware\UserRegisterMiddleware::class,
             App\Http\Middleware\UserLoginMiddleware::class,
         ]);
