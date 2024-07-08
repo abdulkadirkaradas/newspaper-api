@@ -81,6 +81,7 @@ class NewsController extends Controller
                     $query->select('id', 'user_id', 'title', 'created_at')
                         ->with([
                             'newsReactions' => function ($query) {
+                                //TODO Add time-range based query
                                 $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
                             }
                         ]);
