@@ -39,6 +39,28 @@ class NewsController extends Controller
         ];
     }
 
+    public function create(Request $request)
+    {
+        $user = $request->user;
+        $news_content = $request->news_content;
+
+        $post = new News();
+        $post->title = $news_content['title'];
+        $post->content = $news_content['content'];
+
+        if ($user->news()->save($post)) {
+            return [
+                "status" => SUCCESS,
+                "message" => NEWS_CREATED
+            ];
+        } else {
+            return [
+                "status" => FAIL,
+                "message" => NEWS_CREATION_FAILED
+            ];
+        }
+    }
+
     /**
      * Returns all news reactions of logged user
      *
