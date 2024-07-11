@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\v1\Users;
 
+use App\Helpers\CommonFunctions;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Validators\CreateNewsValidator;
 
 class NewsController extends Controller
 {
@@ -42,11 +44,16 @@ class NewsController extends Controller
     public function create(Request $request)
     {
         $user = $request->user;
-        $news_content = $request->news_content;
+
+        $validated = CommonFunctions::validateRequest($request, CreateNewsValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
 
         $post = new News();
-        $post->title = $news_content['title'];
-        $post->content = $news_content['content'];
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
 
         if ($user->news()->save($post)) {
             return [
