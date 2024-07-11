@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\Users;
 
+use App\Helpers\CommonFunctions;
 use App\Validators\UserLoginValidator;
 use App\Http\Controllers\Controller;
 use App\Models\UserAuthTokens;
@@ -11,9 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     public function login(Request $request) {
-        $validated = UserLoginValidator::validate($request);
+        $validated = CommonFunctions::validateRequest($request, UserLoginValidator::class);
 
-        if (gettype($validated) === 'array' && isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
             return $validated;
         }
 

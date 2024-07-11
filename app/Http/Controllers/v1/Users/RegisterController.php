@@ -17,9 +17,9 @@ class RegisterController extends Controller
 {
     public function register(Request $request): array
     {
-        $validated = UserRegisterValidator::validate($request);
+        $validated = CommonFunctions::validateRequest($request, UserRegisterValidator::class);
 
-        if (gettype($validated) === 'array' && isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
             return $validated;
         }
 

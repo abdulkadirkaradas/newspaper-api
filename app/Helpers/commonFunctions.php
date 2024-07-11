@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Http\Request;
+
 class CommonFunctions {
     public static function response(int $status, string $error, string $message = null) : array
     {
@@ -23,5 +25,16 @@ class CommonFunctions {
         }
 
         return true;
+    }
+
+    public static function validateRequest(Request $request, $validator)
+    {
+        $validated = $validator::validate($request);
+
+        if (gettype($validated) === 'array' && isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        return $validated;
     }
 }
