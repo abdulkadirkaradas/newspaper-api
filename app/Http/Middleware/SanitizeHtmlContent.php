@@ -23,12 +23,10 @@ class SanitizeHtmlContent
 
             $cleanHtml = $purifier->purify($request->input('content'));
 
-            $request->merge([
-                'news_content' => [
-                    "title" => $request->input('title'),
-                    "content" => $cleanHtml
-                ]
-            ]);
+            $request['news_content'] = [
+                "title" => $request->input('title'),
+                "content" => $cleanHtml
+            ];
         }
 
         return $next($request);
