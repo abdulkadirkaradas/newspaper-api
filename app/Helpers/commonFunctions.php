@@ -24,7 +24,7 @@ class CommonFunctions {
 
     /**
      * Validates provided UUID's
-     * 
+     *
      * @param string $uuid
      * @return bool
      */

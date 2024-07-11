@@ -56,15 +56,9 @@ class NewsController extends Controller
         $post->content = $validated['content'];
 
         if ($user->news()->save($post)) {
-            return [
-                "status" => SUCCESS,
-                "message" => NEWS_CREATED
-            ];
+            return CommonFunctions::response(SUCCESS, NEWS_CREATED);
         } else {
-            return [
-                "status" => FAIL,
-                "message" => NEWS_CREATION_FAILED
-            ];
+            return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
         }
     }
 
