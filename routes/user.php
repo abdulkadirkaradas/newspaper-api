@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
+use App\Http\Middleware\SanitizeHtmlContent;
 
 /**
  * 'Writer' routes
@@ -21,6 +22,8 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
         Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
         // Return all news reactions
         Route::get('/reactions', [NewsController::class, 'reactions']);
+        // Create a new post
+        Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
     });
 
     // All routes support the return of notifications based on a time-range (optional).
