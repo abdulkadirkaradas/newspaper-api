@@ -15,7 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             App\Http\Middleware\CheckAuthentication::class,
-            App\Http\Middleware\CheckAuthorization::class,
             App\Http\Middleware\CheckHeaders::class,
             App\Http\Middleware\ValidateUserAndNewsIDs::class,
             App\Http\Middleware\UserRegisterMiddleware::class,
