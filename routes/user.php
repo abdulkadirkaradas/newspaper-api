@@ -12,7 +12,7 @@ use App\Http\Middleware\SanitizeHtmlContent;
 /**
  * 'Writer' routes
  */
-Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders::class])->group(function () {
+Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders::class, 'throttle:20,1'])->group(function () {
 
     // Returns logged user informations
     Route::get('/profile', [UsersController::class, 'profile']);
