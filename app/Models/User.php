@@ -10,6 +10,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -43,9 +44,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(News::class);
     }
 
-    public function roles(): BelongsToMany
+    public function roles(): HasOne
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->hasOne(Role::class);
     }
 
     public function warnings(): HasMany
