@@ -32,11 +32,9 @@ class TestingSeeder extends Seeder
             'lastname' => fake()->lastName(),
             'username' => fake()->userName(),
             'email' => fake()->email(),
-            'password' => Hash::make('Abcdef123')
+            'password' => Hash::make('Abcdef123'),
+            'role_id' => DefaultRoles::Writer->value
         ]);
-
-        $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->attach($userRole->id, ['created_at' => now(), 'updated_at' => now()]);
 
         // Create and assign permissions
         for ($i = 0; $i < 5; $i++) {
