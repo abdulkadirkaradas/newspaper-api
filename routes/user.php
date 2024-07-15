@@ -12,7 +12,7 @@ use App\Http\Middleware\VerifyImageUploadHeader;
 /**
  * 'Writer' routes
  */
-Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders::class, 'throttle:20,1'])->group(function () {
+Route::prefix('v1/writer')->middleware([CheckHeaders::class, CheckAuthentication::class, 'throttle:20,1'])->group(function () {
 
     // Returns logged user informations
     Route::get('/profile', [UsersController::class, 'profile']);
