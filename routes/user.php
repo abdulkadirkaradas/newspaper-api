@@ -19,7 +19,7 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
 
     Route::prefix('news')->group(function () {
         // Return news by related id
-        Route::get('/logged-user-news', [NewsController::class, 'loggedUserNews']);
+        Route::get('/logged-user-news', [NewsController::class, 'logged_user_news']);
         // Return all news reactions
         Route::get('/reactions', [NewsController::class, 'reactions']);
         // Create a new post

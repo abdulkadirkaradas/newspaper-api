@@ -19,7 +19,7 @@ class NewsController extends Controller
      * @var Request $request
      * @return array
      */
-    public function loggedUserNews(Request $request): array
+    public function logged_user_news(Request $request): array
     {
         $user = $request->user;
 
