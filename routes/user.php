@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Middleware\CheckNewsId;
-use App\Http\Middleware\CheckUserId;
 use App\Http\Middleware\CheckHeaders;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\VerifyNewsExists;
 use App\Http\Middleware\CheckAuthentication;
+use App\Http\Middleware\SanitizeHtmlContent;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Middleware\SanitizeHtmlContent;
+use App\Http\Middleware\VerifyImageUploadHeader;
 
 /**
  * 'Writer' routes
@@ -24,6 +24,13 @@ Route::prefix('v1/writer')->middleware([CheckAuthentication::class, CheckHeaders
         Route::get('/reactions', [NewsController::class, 'reactions']);
         // Create a new post
         Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        // Create a new post image
+        Route::post('/upload-image', [NewsController::class, 'upload_news_image'])
+            ->middleware([
+                VerifyImageUploadHeader::class,
+                VerifyNewsExists::class
+            ])
+            ->withoutMiddleware([CheckHeaders::class]);
     });
 
     // All routes support the return of notifications based on a time-range (optional).
