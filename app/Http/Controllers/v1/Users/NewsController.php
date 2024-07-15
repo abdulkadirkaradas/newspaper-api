@@ -7,7 +7,9 @@ use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\NewsImages;
 use App\Validators\CreateNewsValidator;
+use App\Validators\UploadNewsImageValidator;
 
 class NewsController extends Controller
 {
@@ -56,9 +58,41 @@ class NewsController extends Controller
         $post->content = $validated['content'];
 
         if ($user->news()->save($post)) {
-            return CommonFunctions::response(SUCCESS, NEWS_CREATED);
+            return CommonFunctions::response(SUCCESS, NEWS_CREATED, [
+                'newsId' => $post->id
+            ]);
         } else {
             return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
+        }
+    }
+
+    public function upload_news_image(Request $request)
+    {
+        $user = $request->user;
+        $news = $request->news;
+
+        $validated = CommonFunctions::validateRequest($request, UploadNewsImageValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        // Remove all characters before index 18 and merge IDs
+        $compoundKey = substr($user->id, 19) . '-' . substr($news->id, 19);
+
+        $fullpath = time() . '_' . $compoundKey . '_' . $validated['name'] . '.' . $request['ext'];
+        $request->image->move(public_path('images'), $fullpath);
+
+        $newsImage = new NewsImages();
+        $newsImage->name = $validated['name'];
+        $newsImage->ext = $validated['ext'];
+        $newsImage->fullpath = $fullpath;
+        $newsImage->user_id = $user->id;
+
+        if ($news->newsImages()->save($newsImage)) {
+            return CommonFunctions::response(SUCCESS, NEWS_IMAGE_CREATED);
+        } else {
+            return CommonFunctions::response(FAIL, NEWS_IMAGE_CREATION_FAILED);
         }
     }
 
