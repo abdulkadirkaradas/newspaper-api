@@ -10,9 +10,7 @@ Route::prefix('v1/admin')->middleware([CheckHeaders::class, CheckAuthentication:
 
     // User processes
     Route::prefix('user')->group(function () {
-        // Return user informations by id
+        // Return user informations | id, type['all, blocked']
         Route::get('/', [UsersController::class, 'user']);
-        // Return all user informations
-        Route::get('/all', [UsersController::class, 'user']);
     });
 });
