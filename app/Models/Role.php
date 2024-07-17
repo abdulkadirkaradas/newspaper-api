@@ -19,9 +19,4 @@ class Role extends Model
         "description",
         "type"
     ];
-
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class);
-    }
 }

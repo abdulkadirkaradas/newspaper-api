@@ -44,11 +44,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(News::class);
     }
 
-    public function roles(): HasOne
-    {
-        return $this->hasOne(Role::class);
-    }
-
     public function warnings(): HasMany
     {
         return $this->hasMany(Warning::class);
