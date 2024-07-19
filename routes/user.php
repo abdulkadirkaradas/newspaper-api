@@ -35,7 +35,7 @@ Route::prefix('v1/writer')->middleware([CheckHeaders::class, CheckAuthentication
 
     // All routes support the return of notifications based on a time-range (optional).
     Route::prefix('notifications')->group(function () {
-        // Returns all unread notifications
+        // Returns all notifications|all, read, unread, time-range based
         Route::get('/', [UsersController::class, 'notifications']);
     });
 
