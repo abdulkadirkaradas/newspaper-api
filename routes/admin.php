@@ -11,12 +11,20 @@ Route::prefix('v1/admin')->middleware([CheckHeaders::class, CheckAuthentication:
 
     // User processes
     Route::prefix('user')->group(function () {
+        //--------------------------------------------------------------------//
+        //                          GET Routes                                //
+        //--------------------------------------------------------------------//
+
         // Return user informations | id, type['all, blocked']
         Route::get('/', [UsersController::class, 'user'])
             ->middleware([ValidateUUID::class]);
         // Return user notifications|all, read, unread, time-range based
         Route::get('notifications', [UsersController::class, 'notifications'])
             ->middleware([ValidateUUID::class]);
+
+        //--------------------------------------------------------------------//
+        //                          POST Routes                               //
+        //--------------------------------------------------------------------//
 
         // Block user
         Route::post('/block', [UsersController::class, 'block_user'])
