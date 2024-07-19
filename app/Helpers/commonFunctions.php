@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CommonFunctions {
     /**
@@ -30,15 +31,7 @@ class CommonFunctions {
      */
     public static function checkUUIDValid(string $uuid)
     {
-        $uuidRegex = '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/';
-
-        // Compare taken id parameter with the uuid regex string
-        if (!preg_match($uuidRegex, $uuid)) {
-            // Return response message if it not match
-            return false;
-        }
-
-        return true;
+        return Str::isUuid($uuid);
     }
 
     /**
