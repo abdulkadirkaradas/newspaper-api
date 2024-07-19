@@ -15,24 +15,23 @@ Route::prefix('v1/admin')->middleware([
     'throttle:30,1'
 ])->group(function () {
 
-    // User processes
+    // User based function routes
     Route::prefix('user')->group(function () {
-        //--------------------------------------------------------------------//
-        //                          GET Routes                                //
-        //--------------------------------------------------------------------//
-
         // Return user informations | id, type['all, blocked']
         Route::get('/', [UsersController::class, 'user']);
-        // Return user notifications|all, read, unread, time-range based
-        Route::get('notifications', [UsersController::class, 'get_user_notifications']);
         // Return user warnings
         Route::get('warnings', [UsersController::class, 'get_user_warnings']);
 
-        //--------------------------------------------------------------------//
-        //                          POST Routes                               //
-        //--------------------------------------------------------------------//
-
         // Block user
         Route::post('/block', [UsersController::class, 'block_user']);
+    });
+
+    // Notification based function routes
+    Route::prefix('notifications')->group(function () {
+        // Return user notifications|all, read, unread, time-range based
+        Route::get('/', [UsersController::class, 'get_user_notifications']);
+
+        // Create notification for the provided user
+        Route::post('/create', [UsersController::class, 'create_notification']);
     });
 });
