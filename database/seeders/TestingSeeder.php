@@ -26,15 +26,27 @@ class TestingSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create user
+        // Create admin user
         $user = User::create([
             'name' => fake()->name(),
             'lastname' => fake()->lastName(),
             'username' => fake()->userName(),
             'email' => fake()->email(),
             'password' => Hash::make('Abcdef123'),
-            'role_id' => DefaultRoles::Writer->value
+            'role_id' => DefaultRoles::Admin->value
         ]);
+
+        // Create blank users
+        for ($i = 0; $i < 5; $i++) {
+            User::create([
+                'name' => fake()->name(),
+                'lastname' => fake()->lastName(),
+                'username' => fake()->userName(),
+                'email' => fake()->email(),
+                'password' => Hash::make('Abcdef123'),
+                'role_id' => random_int(2, 3)
+            ]);
+        }
 
         // Create and assign permissions
         for ($i = 0; $i < 5; $i++) {
