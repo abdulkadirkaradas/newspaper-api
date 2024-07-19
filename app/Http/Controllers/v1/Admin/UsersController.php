@@ -7,6 +7,8 @@ use App\Enums\UserRoles;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
+use App\Validators\CreateNotificationValidator;
 
 class UsersController extends Controller
 {
@@ -116,7 +118,7 @@ class UsersController extends Controller
 
         $info = User::with([
             'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'message', 'created_at');
+                $query->select('user_id', 'type', 'title', 'message', 'created_at');
 
                 // Check if 'from' and 'to' parameters exists
                 // and make query by the creation time
@@ -135,6 +137,36 @@ class UsersController extends Controller
         return [
             'notifications' => $info->notifications
         ];
+    }
+
+    /**
+     * Create notification for user by id
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function create_notification(Request $request): array
+    {
+        $user = $request->providedUser;
+
+        $validated = CommonFunctions::validateRequest($request, CreateNotificationValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $notification = new Notification();
+        $notification->type = $validated['type'];
+        $notification->title = $validated['title'];
+        $notification->message = $validated['message'];
+
+        if ($user->notifications()->save($notification)) {
+            return CommonFunctions::response(SUCCESS, NOTIFICATION_CREATED, [
+                "notificationId" => $notification->id
+            ]);
+        } else {
+            return CommonFunctions::response(SUCCESS, NOTIFICATION_CREATION_FAILED);
+        }
     }
 
     /**
