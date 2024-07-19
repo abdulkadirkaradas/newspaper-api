@@ -21,7 +21,7 @@ class ValidateUserAndNewsIDs
         // Take id parameter
         $id = $request->route('id');
 
-        if (!CommonFunctions::checkUUIDValid($id)) {
+        if (!CommonFunctions::validateUUID($id)) {
             return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
 

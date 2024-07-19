@@ -19,7 +19,7 @@ class VerifyNewsExists
     {
         $newsId = $request->input('newsId');
 
-        if (!CommonFunctions::checkUUIDValid($newsId)) {
+        if (!CommonFunctions::validateUUID($newsId)) {
             return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
 

@@ -29,7 +29,7 @@ class CommonFunctions {
      * @param string $uuid
      * @return bool
      */
-    public static function checkUUIDValid(string $uuid)
+    public static function validateUUID(string $uuid)
     {
         return Str::isUuid($uuid);
     }

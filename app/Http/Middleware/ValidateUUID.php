@@ -18,7 +18,7 @@ class ValidateUUID
     {
         $id = $request->input('id');
 
-        if (!CommonFunctions::checkUUIDValid($id)) {
+        if (!CommonFunctions::validateUUID($id)) {
             return response()
                 ->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
