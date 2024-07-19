@@ -21,6 +21,9 @@ Route::prefix('v1/admin')->middleware([CheckHeaders::class, CheckAuthentication:
         // Return user notifications|all, read, unread, time-range based
         Route::get('notifications', [UsersController::class, 'notifications'])
             ->middleware([ValidateUUID::class]);
+        // Return user warnings
+        Route::get('warnings', [UsersController::class, 'warnings'])
+            ->middleware([ValidateUUID::class]);
 
         //--------------------------------------------------------------------//
         //                          POST Routes                               //
