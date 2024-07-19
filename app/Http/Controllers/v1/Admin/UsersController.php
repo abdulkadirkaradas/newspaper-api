@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\v1\Admin;
 
-use App\Enums\UserRoles;
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Enums\UserRoles;
 use Illuminate\Http\Request;
+use App\Helpers\CommonFunctions;
+use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
 {
@@ -75,5 +76,36 @@ class UsersController extends Controller
         return [
             'user' => $user
         ];
+    }
+
+    /**
+     * Block user by id no
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return
+     */
+    public function block_user(Request $request)
+    {
+        $id = $request->input('id');
+
+        if (!CommonFunctions::checkUUIDValid($id)) {
+            return CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+        }
+
+        if ($user->blocked === true) {
+            return CommonFunctions::response(BAD_REQUEST, "User already blocked!");
+        }
+
+        $user->blocked = true;
+
+        return $user->save()
+            ? CommonFunctions::response(SUCCESS, "User has been blocked!")
+            : CommonFunctions::response(FAIL, "Failed to block user.");
     }
 }
