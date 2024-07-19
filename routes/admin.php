@@ -12,5 +12,7 @@ Route::prefix('v1/admin')->middleware([CheckHeaders::class, CheckAuthentication:
     Route::prefix('user')->group(function () {
         // Return user informations | id, type['all, blocked']
         Route::get('/', [UsersController::class, 'user']);
+        // Block user
+        Route::post('/block', [UsersController::class, 'block_user']);
     });
 });
