@@ -82,21 +82,11 @@ class UsersController extends Controller
      * Block user by id no
      *
      * @param \Illuminate\Http\Request $request
-     * @return
+     * @return array
      */
-    public function block_user(Request $request)
+    public function block_user(Request $request): array
     {
-        $id = $request->input('id');
-
-        if (!CommonFunctions::validateUUID($id)) {
-            return CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO);
-        }
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
-        }
+        $user = $request->providedUser;
 
         if ($user->blocked === true) {
             return CommonFunctions::response(BAD_REQUEST, "User already blocked!");
@@ -117,9 +107,10 @@ class UsersController extends Controller
      */
     public function get_user_notifications(Request $request): array
     {
-        $params = $request->only(['id', 'type', 'from', 'to']);
+        $user = $request->providedUser;
+        $params = $request->only(['type', 'from', 'to']);
 
-        if (count($params) === 0 || !isset($params['id']) || !isset($params['type'])) {
+        if (count($params) === 0 || !isset($params['type'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
@@ -139,7 +130,7 @@ class UsersController extends Controller
                     $query->where('is_read', $params['type'] === 'read');
                 }
             }
-        ])->find($params['id']);
+        ])->find($user->id);
 
         return [
             'notifications' => $info->notifications
@@ -154,7 +145,7 @@ class UsersController extends Controller
      */
     public function get_user_warnings(Request $request): array
     {
-        $id = $request->input('id');
+        $user = $request->providedUser;
 
         $warnings = User::select('id', 'name', 'lastname', 'username')
             ->with([
@@ -162,7 +153,7 @@ class UsersController extends Controller
                     $query->select('user_id', 'message', 'reason', 'warning_level')
                         ->orderBy('warning_level', 'asc');
                 }
-            ])->find($id);
+            ])->find($user->id);
 
         return [
             'warnings' => $warnings
