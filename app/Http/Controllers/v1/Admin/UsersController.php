@@ -88,7 +88,7 @@ class UsersController extends Controller
     {
         $id = $request->input('id');
 
-        if (!CommonFunctions::checkUUIDValid($id)) {
+        if (!CommonFunctions::validateUUID($id)) {
             return CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO);
         }
 
@@ -109,7 +109,7 @@ class UsersController extends Controller
             : CommonFunctions::response(FAIL, "Failed to block user.");
     }
 
-        /**
+    /**
      * Returns logged user notifications | all, read, unread | time-range (optional)
      *
      * @var Request $request
@@ -143,6 +143,29 @@ class UsersController extends Controller
 
         return [
             'notifications' => $info->notifications
+        ];
+    }
+
+    /**
+     * Returns logged user warnings
+     *
+     * @var Request $request
+     * @return array
+     */
+    public function warnings(Request $request): array
+    {
+        $id = $request->input('id');
+
+        $warnings = User::select('id', 'name', 'lastname', 'username')
+            ->with([
+                'warnings' => function ($query) {
+                    $query->select('user_id', 'message', 'reason', 'warning_level')
+                        ->orderBy('warning_level', 'asc');
+                }
+            ])->find($id);
+
+        return [
+            'warnings' => $warnings
         ];
     }
 }
