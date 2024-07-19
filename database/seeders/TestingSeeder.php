@@ -137,7 +137,8 @@ class TestingSeeder extends Seeder
             $randomDate = $this->randomDateBetween($startDate, $endDate);
             $notif = Notification::create([
                 'type' => fake()->word(),
-                'message' => fake()->sentence(),
+                'title' => fake()->sentence(),
+                'message' => fake()->paragraph(),
                 'is_read' => (bool)rand(0, 1),
                 'user_id' => $user->id,
                 'created_at' => $randomDate,

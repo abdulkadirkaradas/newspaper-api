@@ -77,7 +77,7 @@ class UsersController extends Controller
 
         $info = User::with([
             'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'message', 'created_at');
+                $query->select('user_id', 'type', 'title', 'message', 'created_at');
 
                 // Check if 'from' and 'to' parameters exists
                 // and make query by the creation time
