@@ -19,10 +19,10 @@ Route::prefix('v1/admin')->middleware([CheckHeaders::class, CheckAuthentication:
         Route::get('/', [UsersController::class, 'user'])
             ->middleware([ValidateUUID::class]);
         // Return user notifications|all, read, unread, time-range based
-        Route::get('notifications', [UsersController::class, 'notifications'])
+        Route::get('notifications', [UsersController::class, 'get_user_notifications'])
             ->middleware([ValidateUUID::class]);
         // Return user warnings
-        Route::get('warnings', [UsersController::class, 'warnings'])
+        Route::get('warnings', [UsersController::class, 'get_user_warnings'])
             ->middleware([ValidateUUID::class]);
 
         //--------------------------------------------------------------------//

@@ -115,7 +115,7 @@ class UsersController extends Controller
      * @var Request $request
      * @return array
      */
-    public function notifications(Request $request): array
+    public function get_user_notifications(Request $request): array
     {
         $params = $request->only(['id', 'type', 'from', 'to']);
 
@@ -152,7 +152,7 @@ class UsersController extends Controller
      * @var Request $request
      * @return array
      */
-    public function warnings(Request $request): array
+    public function get_user_warnings(Request $request): array
     {
         $id = $request->input('id');
 
