@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\v1\Admin;
 
-use App\Helpers\CommonFunctions;
-use App\Http\Controllers\Controller;
 use App\Models\News;
 use Illuminate\Http\Request;
+use App\Helpers\CommonFunctions;
+use App\Http\Controllers\Controller;
 
 class NewsController extends Controller
 {
     /**
-     * Returns news by id|type[all]
+     * Returns news by id|type[all, approved, unapproved]
      *
      * @param \Illuminate\Http\Request $request
      * @return array
@@ -24,7 +24,15 @@ class NewsController extends Controller
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
-        $news = News::select('id', 'title', 'content', 'created_at')
+        $news = News::select(
+            'id',
+            'title',
+            'content',
+            'approved',
+            'approved_by',
+            'removed_by',
+            'created_at'
+        )
             ->with([
                 'newsImages' => function ($query) {
                     $query->select('user_id', 'news_id', 'name', 'ext', 'fullpath', 'created_at');
@@ -35,15 +43,23 @@ class NewsController extends Controller
             ]);
 
         if (isset($params['id'])) {
-            $newsInfo = $news->where('user_id', $user->id)->get();
+            $newsInfo = $news->where('user_id', $user->id);
         }
 
         if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "all")) {
-            $newsInfo = $news->get();
+            $newsInfo = $news;
+        }
+
+        if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "approved")) {
+            $newsInfo = $news->where('approved', true);
+        }
+
+        if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "unapproved")) {
+            $newsInfo = $news->where('approved', false);
         }
 
         return [
-            'news' => $newsInfo,
+            'news' => $newsInfo->get(),
         ];
     }
 }
