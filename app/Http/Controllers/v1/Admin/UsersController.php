@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\Role;
 use App\Validators\CreateNotificationValidator;
 
 class UsersController extends Controller
@@ -78,6 +79,26 @@ class UsersController extends Controller
         return [
             'user' => $user
         ];
+    }
+
+    /**
+     * Change user role by id
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function change_user_role(Request $request): array
+    {
+        $params = $request->only(['id', 'role_id']);
+
+        $user = User::find($params['id']);
+        $user->role_id = $params['role_id'];
+
+        if ($user->save()) {
+            return CommonFunctions::response(SUCCESS, "User role has been changed successfully!");
+        } else {
+            return CommonFunctions::response(FAIL, "User role could not be changed!");
+        }
     }
 
     /**
