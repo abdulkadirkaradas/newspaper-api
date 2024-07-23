@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -50,5 +51,38 @@ class CommonFunctions {
         }
 
         return $validated;
+    }
+
+    /**
+     * Check if logged user role is Administrator
+     *
+     * @param \App\Models\User $user
+     * @return
+     */
+    public static function isAdmin(User $user)
+    {
+        return $user->isAdministrator();
+    }
+
+    /**
+     * Check if logged user role is Moderator
+     *
+     * @param \App\Models\User $user
+     * @return
+     */
+    public static function isModerator(User $user)
+    {
+        return $user->isModerator();
+    }
+
+    /**
+     * Check if logged user role is Writer
+     *
+     * @param \App\Models\User $user
+     * @return
+     */
+    public static function isWriter(User $user)
+    {
+        return $user->isWriter();
     }
 }
