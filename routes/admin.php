@@ -18,8 +18,6 @@ Route::prefix('v1/admin')->middleware([
     Route::prefix('user')->group(function () {
         // Return user informations | id, type['all, blocked']
         Route::get('/', [UsersController::class, 'user']);
-        // Return user warnings
-        Route::get('warnings', [UsersController::class, 'get_user_warnings']);
 
         // Change user role
         Route::put('change-role', [UsersController::class, 'change_user_role']);
@@ -34,5 +32,14 @@ Route::prefix('v1/admin')->middleware([
 
         // Create notification for the provided user
         Route::post('/create', [UsersController::class, 'create_notification']);
+    });
+
+    // Notification based function routes
+    Route::prefix('warnings')->group(function () {
+        // Return user warnings
+        Route::get('/', [UsersController::class, 'get_user_warnings']);
+
+        // Return user warnings
+        Route::post('/create', [UsersController::class, 'create_warning']);
     });
 });
