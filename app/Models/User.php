@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\UserRoles as DefaultRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +9,6 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -69,11 +67,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Permission::class, 'user_permissions');
     }
 
-    public function hasPermission(string $permission_id) {
-        return $this->roles()->whereHas('permissions', function ($query) use($permission_id) {
-            $query->where('id', $permission_id);
-        })->exists();
-    }
+    // public function hasPermission(string $permission_id) {
+    //     return $this->roles()->whereHas('permissions', function ($query) use($permission_id) {
+    //         $query->where('id', $permission_id);
+    //     })->exists();
+    // }
 
     /**
      * Check if user has proper role
