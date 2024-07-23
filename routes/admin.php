@@ -21,6 +21,8 @@ Route::prefix('v1/admin')->middleware([
         // Return user warnings
         Route::get('warnings', [UsersController::class, 'get_user_warnings']);
 
+        // Change user role
+        Route::put('change-role', [UsersController::class, 'change_user_role']);
         // Block user
         Route::post('/block', [UsersController::class, 'block_user']);
     });
