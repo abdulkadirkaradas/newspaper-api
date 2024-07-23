@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\v1\Admin\NewsController;
 use App\Http\Middleware\CheckHeaders;
 use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::prefix('v1/admin')->middleware([
         Route::put('change-role', [UsersController::class, 'change_user_role']);
         // Block user
         Route::post('/block', [UsersController::class, 'block_user']);
+    });
+
+    Route::prefix('news')->group(function () {
+        Route::get('/', [NewsController::class, 'news']);
     });
 
     // Notification based function routes
