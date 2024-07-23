@@ -9,7 +9,9 @@ use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Role;
+use App\Models\Warning;
 use App\Validators\CreateNotificationValidator;
+use App\Validators\CreateWarningValidator;
 
 class UsersController extends Controller
 {
@@ -211,5 +213,35 @@ class UsersController extends Controller
         return [
             'warnings' => $warnings
         ];
+    }
+
+        /**
+     * Create warning for user by id
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function create_warning(Request $request): array
+    {
+        $user = $request->providedUser;
+
+        $validated = CommonFunctions::validateRequest($request, CreateWarningValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $warning = new Warning();
+        $warning->message = $validated['message'];
+        $warning->reason = $validated['reason'];
+        $warning->warning_level = $validated['warning_level'];
+
+        if ($user->notifications()->save($warning)) {
+            return CommonFunctions::response(SUCCESS, WARNING_CREATED, [
+                "warningId" => $warning->id
+            ]);
+        } else {
+            return CommonFunctions::response(SUCCESS, WARNING_CREATION_FAILED);
+        }
     }
 }
