@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -36,6 +37,11 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'password' => 'hashed'
     ];
+
+    public function roles(): HasOne
+    {
+        return $this->hasOne(Role::class);
+    }
 
     public function news(): HasMany
     {
