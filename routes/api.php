@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Bind route files
  */
-require base_path('routes/common.php');
+require base_path('routes/public.php');
 
 require base_path('routes/auth.php');
 

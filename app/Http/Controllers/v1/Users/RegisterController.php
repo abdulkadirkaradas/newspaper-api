@@ -17,9 +17,9 @@ class RegisterController extends Controller
 {
     public function register(Request $request): array
     {
-        $validated = UserRegisterValidator::validate($request);
+        $validated = CommonFunctions::validateRequest($request, UserRegisterValidator::class);
 
-        if (gettype($validated) === 'array' && isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
             return $validated;
         }
 
@@ -31,14 +31,12 @@ class RegisterController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => Hash::make($password),
+            'role_id' => DefaultRoles::Writer->value,
         ]);
 
         if (!$user) {
             return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
         }
-
-        $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->attach($userRole);
 
         $token = Auth::guard('api')->login($user);
 

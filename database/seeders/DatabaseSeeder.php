@@ -13,11 +13,9 @@ class DatabaseSeeder extends Seeder
         /**
         * Create initial roles
         */
-        Role::insert([
-            ["name" => "Admin", "type" => "administrator"],
-            ["name" => "Moderator", "type" => "moderator"],
-            ["name" => "Writer", "type" => "writer"],
-        ]);
+        Role::create(["name" => "Admin", "type" => "administrator"]);
+        Role::create(["name" => "Moderator", "type" => "moderator"]);
+        Role::create(["name" => "Writer", "type" => "writer"]);
 
         /**
          * Creates the test values

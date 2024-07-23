@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\Users;
 
+use App\Enums\UserRoles;
 use App\Helpers\CommonFunctions;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,11 +40,10 @@ class UsersController extends Controller
                             $query->select('id', 'badge_id', 'fullpath');
                         }
                     ]);
-            },
-            'roles' => function ($query) {
-                $query->select('name');
             }
         ])->findOrFail($user->id);
+
+        $userInfo->role = UserRoles::getRole($user->role_id);
 
         return [
             'id' => $user->id,
@@ -56,45 +56,7 @@ class UsersController extends Controller
             'warnings' => $userInfo->warnings,
             'reactions' => $userInfo->reactions,
             'badges' => $userInfo->badges,
-            'role' => $userInfo->roles
-        ];
-    }
-
-    /**
-     * Returns any user profile informations
-     *
-     * @var Request $request
-     * @return array
-     */
-    public function user(Request $request): array
-    {
-        $user = $request->model;
-
-        $info = User::with([
-            'news' => function ($query) {
-                $query->select('user_id', 'title', 'created_at');
-            },
-            'reactions' => function ($query) {
-                $query->select('user_id', 'reaction_type');
-            },
-            'badges' => function ($query) {
-                $query->select('id', 'user_id', 'name', 'type')
-                    ->with([
-                        'badgeImages' => function ($query) {
-                            $query->select('id', 'badge_id', 'fullpath');
-                        }
-                    ]);
-            },
-        ])->findOrFail($user->id);
-
-        return [
-            'name' => $user->name,
-            'lastname' => $user->lastname,
-            'username' => $user->username,
-            'membership_date' => $user->created_at,
-            'news' => $info->news,
-            'reactions' => $info->reactions,
-            'badges' => $info->badges,
+            'role' => $userInfo->role
         ];
     }
 
@@ -115,7 +77,7 @@ class UsersController extends Controller
 
         $info = User::with([
             'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'message', 'created_at');
+                $query->select('user_id', 'type', 'title', 'message', 'created_at');
 
                 // Check if 'from' and 'to' parameters exists
                 // and make query by the creation time

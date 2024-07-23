@@ -19,6 +19,7 @@ class News extends Model
         "title",
         "content",
         "removed_by_user_id",
+        "priority",
         "user_id",
     ];
 

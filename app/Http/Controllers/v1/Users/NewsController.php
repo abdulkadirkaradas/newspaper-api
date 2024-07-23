@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\v1\Users;
 
+use App\Helpers\CommonFunctions;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\NewsImages;
+use App\Validators\CreateNewsValidator;
+use App\Validators\UploadNewsImageValidator;
 
 class NewsController extends Controller
 {
@@ -15,7 +19,7 @@ class NewsController extends Controller
      * @var Request $request
      * @return array
      */
-    public function loggedUserNews(Request $request): array
+    public function logged_user_news(Request $request): array
     {
         $user = $request->user;
 
@@ -39,30 +43,57 @@ class NewsController extends Controller
         ];
     }
 
-
-    /**
-     * Returns news by related id
-     *
-     * @var Request $request
-     * @return array
-     */
-    public function news(Request $request): array
+    public function create(Request $request)
     {
-        $news = $request->model;
+        $user = $request->user;
 
-        $news = News::select('id', 'title', 'content', 'created_at')
-            ->with([
-                'newsImages' => function ($query) {
-                    $query->select('user_id', 'news_id', 'name', 'ext', 'fullpath', 'created_at');
-                },
-                'newsReactions' => function ($query) {
-                    $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
-                }
-            ])->findOrFail($news->id);
+        $validated = CommonFunctions::validateRequest($request, CreateNewsValidator::class);
 
-        return [
-            'news' => $news,
-        ];
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $post = new News();
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
+
+        if ($user->news()->save($post)) {
+            return CommonFunctions::response(SUCCESS, NEWS_CREATED, [
+                'newsId' => $post->id
+            ]);
+        } else {
+            return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
+        }
+    }
+
+    public function upload_news_image(Request $request)
+    {
+        $user = $request->user;
+        $news = $request->news;
+
+        $validated = CommonFunctions::validateRequest($request, UploadNewsImageValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        // Remove all characters before index 18 and merge IDs
+        $compoundKey = substr($user->id, 19) . '-' . substr($news->id, 19);
+
+        $fullpath = time() . '_' . $compoundKey . '_' . $validated['name'] . '.' . $request['ext'];
+        $request->image->move(public_path('images'), $fullpath);
+
+        $newsImage = new NewsImages();
+        $newsImage->name = $validated['name'];
+        $newsImage->ext = $validated['ext'];
+        $newsImage->fullpath = $fullpath;
+        $newsImage->user_id = $user->id;
+
+        if ($news->newsImages()->save($newsImage)) {
+            return CommonFunctions::response(SUCCESS, NEWS_IMAGE_CREATED);
+        } else {
+            return CommonFunctions::response(FAIL, NEWS_IMAGE_CREATION_FAILED);
+        }
     }
 
     /**

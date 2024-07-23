@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\UserRoles as DefaultRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -38,14 +38,14 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
+    public function roles(): HasOne
+    {
+        return $this->hasOne(Role::class);
+    }
+
     public function news(): HasMany
     {
         return $this->hasMany(News::class);
-    }
-
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
     }
 
     public function warnings(): HasMany
@@ -73,37 +73,21 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Permission::class, 'user_permissions');
     }
 
-    public function hasPermission(string $permission_id) {
-        return $this->roles()->whereHas('permissions', function ($query) use($permission_id) {
-            $query->where('id', $permission_id);
-        })->exists();
-    }
+    // public function hasPermission(string $permission_id) {
+    //     return $this->roles()->whereHas('permissions', function ($query) use($permission_id) {
+    //         $query->where('id', $permission_id);
+    //     })->exists();
+    // }
 
     /**
-     * Check if the user role is administrator
+     * Check if user has proper role
      *
-     * @return boolean
+     * @param int $role_id
+     * @return bool
      */
-    public function isAdministrator() {
-        return $this->role_id === DefaultRoles::Admin->value;
-    }
-
-    /**
-     * Check if the user role is moderator
-     *
-     * @return boolean
-     */
-    public function isModerator() {
-        return $this->role_id === DefaultRoles::Moderator->value;
-    }
-
-    /**
-     * Check if the user role is writer
-     *
-     * @return boolean
-     */
-    public function isWriter() {
-        return $this->role_id === DefaultRoles::Writer->value;
+    public function hasRole(int $role_id)
+    {
+        return $this->role_id === $role_id;
     }
 
      /**

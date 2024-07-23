@@ -26,17 +26,27 @@ class TestingSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create user
+        // Create admin user
         $user = User::create([
             'name' => fake()->name(),
             'lastname' => fake()->lastName(),
             'username' => fake()->userName(),
             'email' => fake()->email(),
-            'password' => Hash::make('Abcdef123')
+            'password' => Hash::make('Abcdef123'),
+            'role_id' => DefaultRoles::Admin->value
         ]);
 
-        $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->attach($userRole->id, ['created_at' => now(), 'updated_at' => now()]);
+        // Create blank users
+        for ($i = 0; $i < 5; $i++) {
+            User::create([
+                'name' => fake()->name(),
+                'lastname' => fake()->lastName(),
+                'username' => fake()->userName(),
+                'email' => fake()->email(),
+                'password' => Hash::make('Abcdef123'),
+                'role_id' => random_int(2, 3)
+            ]);
+        }
 
         // Create and assign permissions
         for ($i = 0; $i < 5; $i++) {
@@ -127,7 +137,8 @@ class TestingSeeder extends Seeder
             $randomDate = $this->randomDateBetween($startDate, $endDate);
             $notif = Notification::create([
                 'type' => fake()->word(),
-                'message' => fake()->sentence(),
+                'title' => fake()->sentence(),
+                'message' => fake()->paragraph(),
                 'is_read' => (bool)rand(0, 1),
                 'user_id' => $user->id,
                 'created_at' => $randomDate,

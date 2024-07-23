@@ -4,35 +4,32 @@ namespace App\Http\Middleware;
 
 use App\Helpers\CommonFunctions;
 use App\Models\News;
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateUserAndNewsIDs
+class VerifyNewsExists
 {
     /**
-     * Handle an incoming request.
+     * Verify provided news id exists and return news model instance
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Take id parameter
-        $id = $request->route('id');
+        $newsId = $request->input('newsId');
 
-        if (!CommonFunctions::validateUUID($id)) {
+        if (!CommonFunctions::validateUUID($newsId)) {
             return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
 
-        $instance = str_contains($request->url(), '/post') ? News::find($id) : User::find($id);
+        $news = News::find($newsId);
 
-        // If user couldn't be found, return response message
-        if (!$instance) {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO, 'ID does not match!'));
+        if (!$news) {
+            return response()->json(CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG));
         }
 
-        $request['model'] = $instance;
+        $request['news'] = $news;
 
         return $next($request);
     }
