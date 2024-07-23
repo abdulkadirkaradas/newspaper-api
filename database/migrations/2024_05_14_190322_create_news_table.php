@@ -15,8 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->longText('content');
-            $table->uuid('removed_by_user_id')->nullable();
-            $table->integer('priority')->nullable();
+            $table->integer('priority')->default(3);
+            $table->boolean('approved')->default(false);
+            $table->uuid('approved_by')->nullable();
+            $table->uuid('removed_by')->nullable();
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

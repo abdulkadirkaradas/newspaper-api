@@ -18,8 +18,10 @@ class News extends Model
     protected $fillable = [
         "title",
         "content",
-        "removed_by_user_id",
         "priority",
+        "approved",
+        "approved_by",
+        "removed_by",
         "user_id",
     ];
 
