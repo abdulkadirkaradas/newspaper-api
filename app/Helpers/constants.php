@@ -9,6 +9,7 @@ const SESSION_EXPIRED = 'Session expired';
 const AN_ERROR_OCCURED = 'An unexpected error occured.';
 const INCORRECT_CONTENT_TYPE = 'The request header is incorrect. It should be application/json.';
 const INCORRECT_IMAGE_UPLOAD_CONTENT_TYPE = 'The request header is incorrect. It should be multipart/form-data.';
+const INVALID_ROLE = "You do not have necessary role to access this resource.";
 
 // API function returns
 const VALIDATOR_FAILED = "The request could not be understood or was missing required parameters.";
