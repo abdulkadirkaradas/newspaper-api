@@ -12,16 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
+        $middleware->api(append: [
             App\Http\Middleware\CheckAuthentication::class,
             App\Http\Middleware\CheckHeaders::class,
-            App\Http\Middleware\RoleAdminMiddleware::class,
-            App\Http\Middleware\SanitizeHtmlContent::class,
-            App\Http\Middleware\VerifyImageUploadHeader::class,
-            App\Http\Middleware\VerifyNewsExists::class,
-            App\Http\Middleware\ValidateUserAndNewsIDs::class,
-            App\Http\Middleware\UserRegisterMiddleware::class,
-            App\Http\Middleware\UserLoginMiddleware::class,
+        ]);
+        $middleware->alias([
+            'role' => App\Http\Middleware\CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
