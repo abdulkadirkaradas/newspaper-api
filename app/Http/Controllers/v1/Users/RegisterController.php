@@ -31,14 +31,12 @@ class RegisterController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => Hash::make($password),
+            'role_id' => DefaultRoles::Writer->value,
         ]);
 
         if (!$user) {
             return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
         }
-
-        $userRole = Role::find(DefaultRoles::Writer->value);
-        $user->roles()->attach($userRole);
 
         $token = Auth::guard('api')->login($user);
 
