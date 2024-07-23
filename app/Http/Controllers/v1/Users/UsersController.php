@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\Users;
 
+use App\Enums\UserRoles;
 use App\Helpers\CommonFunctions;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,11 +40,10 @@ class UsersController extends Controller
                             $query->select('id', 'badge_id', 'fullpath');
                         }
                     ]);
-            },
-            'roles' => function ($query) {
-                $query->select('name');
             }
         ])->findOrFail($user->id);
+
+        $userInfo->role = UserRoles::getRole($user->role_id);
 
         return [
             'id' => $user->id,
@@ -56,7 +56,7 @@ class UsersController extends Controller
             'warnings' => $userInfo->warnings,
             'reactions' => $userInfo->reactions,
             'badges' => $userInfo->badges,
-            'role' => $userInfo->roles
+            'role' => $userInfo->role
         ];
     }
 
