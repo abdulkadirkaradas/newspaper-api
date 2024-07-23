@@ -22,6 +22,10 @@ class UsersController extends Controller
      */
     public function user(Request $request): array
     {
+        if (!CommonFunctions::isAdmin($request->user)) {
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
+        }
+
         $params = $request->only(['id', 'type']);
 
         $userQuery = User::select(
@@ -88,6 +92,10 @@ class UsersController extends Controller
      */
     public function block_user(Request $request): array
     {
+        if (!CommonFunctions::isAdmin($request->user)) {
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
+        }
+
         $user = $request->providedUser;
 
         if ($user->blocked === true) {
@@ -109,6 +117,10 @@ class UsersController extends Controller
      */
     public function get_user_notifications(Request $request): array
     {
+        if (!CommonFunctions::isAdmin($request->user)) {
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
+        }
+
         $user = $request->providedUser;
         $params = $request->only(['type', 'from', 'to']);
 
@@ -147,6 +159,10 @@ class UsersController extends Controller
      */
     public function create_notification(Request $request): array
     {
+        if (!CommonFunctions::isAdmin($request->user)) {
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
+        }
+
         $user = $request->providedUser;
 
         $validated = CommonFunctions::validateRequest($request, CreateNotificationValidator::class);
@@ -177,6 +193,10 @@ class UsersController extends Controller
      */
     public function get_user_warnings(Request $request): array
     {
+        if (!CommonFunctions::isAdmin($request->user)) {
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
+        }
+
         $user = $request->providedUser;
 
         $warnings = User::select('id', 'name', 'lastname', 'username')
