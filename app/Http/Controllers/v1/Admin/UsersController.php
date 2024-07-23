@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\v1\Admin;
 
 use App\Models\User;
+use App\Models\Warning;
 use App\Enums\UserRoles;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
-use App\Models\Role;
-use App\Models\Warning;
-use App\Validators\CreateNotificationValidator;
 use App\Validators\CreateWarningValidator;
+use App\Validators\CreateNotificationValidator;
 
 class UsersController extends Controller
 {
@@ -215,7 +214,7 @@ class UsersController extends Controller
         ];
     }
 
-        /**
+    /**
      * Create warning for user by id
      *
      * @param \Illuminate\Http\Request $request
