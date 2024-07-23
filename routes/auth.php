@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\CheckHeaders;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\CheckAuthorization;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Middleware\UserLoginMiddleware;
 use App\Http\Middleware\UserRegisterMiddleware;

@@ -76,30 +76,14 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Check if the user role is administrator
+     * Check if user has proper role
      *
-     * @return boolean
+     * @param int $role_id
+     * @return bool
      */
-    public function isAdministrator() {
-        return $this->role_id === DefaultRoles::Admin->value;
-    }
-
-    /**
-     * Check if the user role is moderator
-     *
-     * @return boolean
-     */
-    public function isModerator() {
-        return $this->role_id === DefaultRoles::Moderator->value;
-    }
-
-    /**
-     * Check if the user role is writer
-     *
-     * @return boolean
-     */
-    public function isWriter() {
-        return $this->role_id === DefaultRoles::Writer->value;
+    public function hasRole(int $role_id)
+    {
+        return $this->role_id === $role_id;
     }
 
      /**

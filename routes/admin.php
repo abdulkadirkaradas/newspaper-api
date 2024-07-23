@@ -1,17 +1,16 @@
 <?php
 
 use App\Http\Middleware\CheckHeaders;
+use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAuthentication;
-use App\Http\Middleware\RoleAdminMiddleware;
 use App\Http\Controllers\v1\Admin\UsersController;
-use App\Http\Middleware\ValidateUUID;
 
 Route::prefix('v1/admin')->middleware([
     CheckHeaders::class,
     CheckAuthentication::class,
-    RoleAdminMiddleware::class,
     ValidateUUID::class,
+    'role:Admin',
     'throttle:30,1'
 ])->group(function () {
 
