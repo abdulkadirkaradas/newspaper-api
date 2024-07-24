@@ -92,4 +92,35 @@ class NewsController extends Controller
 
         return CommonFunctions::response(FAIL, "News could not be found!");
     }
+
+    /**
+     * Delete news
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function delete(Request $request): array
+    {
+        $loggedUser = $request->user;
+        $user = $request->providedUser;
+        $news = $request->providedNews;
+
+        $userNews = $user->news()->find($news->id);
+
+        if ($userNews->deleted_at !== null) {
+            return CommonFunctions::response(FAIL, "News has been already deleted!");
+        }
+
+        if ($userNews) {
+            $userNews->removed_by = $loggedUser->id;
+
+            if ($userNews->save()) {
+                $userNews->delete();
+
+                return CommonFunctions::response(SUCCESS, "News successfully deleted!");
+            }
+        }
+
+        return CommonFunctions::response(FAIL, "News could not be found!");
+    }
 }
