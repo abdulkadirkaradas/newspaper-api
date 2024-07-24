@@ -62,4 +62,30 @@ class NewsController extends Controller
             'news' => $newsInfo->get(),
         ];
     }
+
+    /**
+     * Approve news
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function approve(Request $request): array
+    {
+        $loggedUser = $request->user;
+        $user = $request->providedUser;
+        $news = $request->providedNews;
+
+        $userNews = $user->news()->find($news->id);
+
+        if ($userNews) {
+            $userNews->approved = true;
+            $userNews->approved_by = $loggedUser->id;
+
+            if ($userNews->save()) {
+                return CommonFunctions::response(SUCCESS, "News succesfully approved!");
+            }
+        } else {
+            return CommonFunctions::response(FAIL, "News could not be found!");
+        }
+    }
 }
