@@ -18,9 +18,9 @@ class NewsController extends Controller
     public function news(Request $request): array
     {
         $user = $request->providedUser;
-        $params = $request->only(['id', 'type']);
+        $params = $request->only(['type']);
 
-        if (count($params) === 0 && (!isset($params['id']) || !isset($params['type']))) {
+        if (count($params) === 0 && !$user) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
@@ -42,19 +42,19 @@ class NewsController extends Controller
                 }
             ]);
 
-        if (isset($params['id'])) {
+        if ($user) {
             $newsInfo = $news->where('user_id', $user->id);
         }
 
-        if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "all")) {
+        if (isset($params['type']) && ($params['type'] === "all")) {
             $newsInfo = $news;
         }
 
-        if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "approved")) {
+        if (isset($params['type']) && ($params['type'] === "approved")) {
             $newsInfo = $news->where('approved', true);
         }
 
-        if (!isset($params['id']) && isset($params['type']) && ($params['type'] === "unapproved")) {
+        if (isset($params['type']) && ($params['type'] === "unapproved")) {
             $newsInfo = $news->where('approved', false);
         }
 
