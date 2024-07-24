@@ -14,6 +14,7 @@ const INVALID_ROLE = "You do not have necessary role to access this resource.";
 // API function returns
 const VALIDATOR_FAILED = "The request could not be understood or was missing required parameters.";
 const USER_NOT_FOUND = "User could not be found!";
+const NEWS_NOT_FOUND = "News could not be found!";
 const NOTIFICATION_CREATED = "Notification has been created successfully!";
 const NOTIFICATION_CREATION_FAILED = "Notification could not be created!";
 const WARNING_CREATED = "Warning message has been created successfully!";
