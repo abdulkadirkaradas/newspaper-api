@@ -32,6 +32,9 @@ Route::prefix('v1/admin')->middleware([
 
         // Approve news by user and news id
         Route::post('/approve', [NewsController::class, 'approve']);
+
+        // Delete news by user and news id
+        Route::post('/delete', [NewsController::class, 'delete']);
     });
 
     // Notification based function routes
