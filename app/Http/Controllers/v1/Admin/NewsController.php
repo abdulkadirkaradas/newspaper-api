@@ -77,6 +77,10 @@ class NewsController extends Controller
 
         $userNews = $user->news()->find($news->id);
 
+        if ($userNews->approved === true) {
+            return CommonFunctions::response(FAIL, "News has been already approved!");
+        }
+
         if ($userNews) {
             $userNews->approved = true;
             $userNews->approved_by = $loggedUser->id;
