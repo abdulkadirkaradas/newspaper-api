@@ -88,8 +88,8 @@ class NewsController extends Controller
             if ($userNews->save()) {
                 return CommonFunctions::response(SUCCESS, "News succesfully approved!");
             }
-        } else {
-            return CommonFunctions::response(FAIL, "News could not be found!");
         }
+
+        return CommonFunctions::response(FAIL, "News could not be found!");
     }
 }
