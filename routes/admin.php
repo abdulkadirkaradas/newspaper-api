@@ -27,7 +27,11 @@ Route::prefix('v1/admin')->middleware([
     });
 
     Route::prefix('news')->group(function () {
+        // Return news | id, type[all, approve, unapproved]
         Route::get('/', [NewsController::class, 'news']);
+
+        // Approve news by user and news id
+        Route::post('/approve', [NewsController::class, 'approve']);
     });
 
     // Notification based function routes
