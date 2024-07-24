@@ -187,7 +187,7 @@ class UsersController extends Controller
                 "notificationId" => $notification->id
             ]);
         } else {
-            return CommonFunctions::response(SUCCESS, NOTIFICATION_CREATION_FAILED);
+            return CommonFunctions::response(FAIL, NOTIFICATION_CREATION_FAILED);
         }
     }
 
@@ -240,7 +240,7 @@ class UsersController extends Controller
                 "warningId" => $warning->id
             ]);
         } else {
-            return CommonFunctions::response(SUCCESS, WARNING_CREATION_FAILED);
+            return CommonFunctions::response(FAIL, WARNING_CREATION_FAILED);
         }
     }
 }
