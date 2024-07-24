@@ -30,8 +30,13 @@ class CommonFunctions {
      * @param string $uuid
      * @return bool
      */
-    public static function validateUUID(string $uuid)
+    public static function validateUUID(string|array $uuid)
     {
+        if (is_array($uuid)) {
+            $result = array_map([Str::class, 'isUuid'], $uuid);
+            return !in_array(false, $result, true);
+        }
+
         return Str::isUuid($uuid);
     }
 
