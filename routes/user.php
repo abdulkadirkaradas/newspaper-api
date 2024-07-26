@@ -5,9 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\VerifyNewsExists;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Middleware\SanitizeHtmlContent;
+use App\Http\Middleware\VerifyImageUploadHeader;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Middleware\VerifyImageUploadHeader;
+use App\Http\Middleware\VerifyNewsImagesFolderExists;
 
 /**
  * 'Writer' routes
@@ -33,7 +34,8 @@ Route::prefix('v1/writer')->middleware([
         Route::post('/upload-image', [NewsController::class, 'upload_news_image'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class
+                VerifyNewsExists::class,
+                VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
     });

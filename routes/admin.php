@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\v1\Admin\NewsController;
-use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 use App\Http\Middleware\CheckHeaders;
 use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\VerifyNewsExists;
 use App\Http\Middleware\CheckAuthentication;
-use App\Http\Controllers\v1\Admin\UsersController;
 use App\Http\Middleware\SanitizeHtmlContent;
 use App\Http\Middleware\VerifyImageUploadHeader;
-use App\Http\Middleware\VerifyNewsExists;
+use App\Http\Controllers\v1\Admin\NewsController;
+use App\Http\Controllers\v1\Admin\UsersController;
+use App\Http\Middleware\VerifyNewsImagesFolderExists;
+use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 
 Route::prefix('v1/admin')->middleware([
     CheckHeaders::class,
@@ -46,7 +47,8 @@ Route::prefix('v1/admin')->middleware([
         Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class
+                VerifyNewsExists::class,
+                VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
     });
