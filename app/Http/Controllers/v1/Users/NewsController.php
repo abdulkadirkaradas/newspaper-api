@@ -56,6 +56,7 @@ class NewsController extends Controller
         $post = new News();
         $post->title = $validated['title'];
         $post->content = $validated['content'];
+        $post->priority = $user->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority'];
 
         if ($user->news()->save($post)) {
             return CommonFunctions::response(SUCCESS, NEWS_CREATED, [
