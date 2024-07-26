@@ -23,3 +23,7 @@ const NEWS_CREATED = "News has been created successfully!";
 const NEWS_CREATION_FAILED = "News could not be created!";
 const NEWS_IMAGE_CREATED = "News image has been created successfully!";
 const NEWS_IMAGE_CREATION_FAILED = "News image could not be created!";
+
+// Default user constants
+const DEFAULT_USER_ROLE = "Writer";
+const DEFAULT_NEWS_PRIORITY = 3;
