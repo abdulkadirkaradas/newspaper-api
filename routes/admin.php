@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\v1\Admin\NewsController;
+use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 use App\Http\Middleware\CheckHeaders;
 use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Controllers\v1\Admin\UsersController;
+use App\Http\Middleware\SanitizeHtmlContent;
+use App\Http\Middleware\VerifyImageUploadHeader;
+use App\Http\Middleware\VerifyNewsExists;
 
 Route::prefix('v1/admin')->middleware([
     CheckHeaders::class,
@@ -35,6 +39,16 @@ Route::prefix('v1/admin')->middleware([
 
         // Delete news by user and news id
         Route::post('/delete', [NewsController::class, 'delete']);
+
+        // Create a new post
+        Route::post('/create', [UserNewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        // Create a new post image
+        Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
+            ->middleware([
+                VerifyImageUploadHeader::class,
+                VerifyNewsExists::class
+            ])
+            ->withoutMiddleware([CheckHeaders::class]);
     });
 
     // Notification based function routes
