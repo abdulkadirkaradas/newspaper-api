@@ -123,4 +123,8 @@ class NewsController extends Controller
 
         return CommonFunctions::response(FAIL, "News could not be found!");
     }
+
+    //TODO Add API function to allow admins or moderators to change the status of approved news
+    //TODO Also this function, needs the refactoring 'news' table, because new columns must be added
+    //TODO Columns are 'visibility' etc.
 }
