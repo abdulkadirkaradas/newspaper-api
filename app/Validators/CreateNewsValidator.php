@@ -13,6 +13,7 @@ class CreateNewsValidator
         $validations = [
             "title" => ['required', 'string', 'max:100'],
             "content" => ['required', 'string', 'max:4000'],
+            "priority" => ['nullable', 'integer', 'max:2'],
         ];
 
         $validator = Validator::make($request->all(), $validations);
