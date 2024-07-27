@@ -4,11 +4,14 @@ use App\Http\Middleware\CheckHeaders;
 use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\VerifyNewsExists;
+use App\Http\Middleware\VerifyBadgeExists;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Middleware\SanitizeHtmlContent;
 use App\Http\Middleware\VerifyImageUploadHeader;
 use App\Http\Controllers\v1\Admin\NewsController;
+use App\Http\Middleware\VerifyBadgesFolderExists;
 use App\Http\Controllers\v1\Admin\UsersController;
+use App\Http\Controllers\v1\Admin\BadgesController;
 use App\Http\Middleware\VerifyNewsImagesFolderExists;
 use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 
@@ -69,5 +72,18 @@ Route::prefix('v1/admin')->middleware([
 
         // Return user warnings
         Route::post('/create', [UsersController::class, 'create_warning']);
+    });
+
+    Route::prefix('badges')->group(function () {
+        // Create a new badge
+        Route::post('/create', [BadgesController::class, 'create']);
+        // Create a new badge image
+        Route::post('/upload-image', [BadgesController::class, 'upload_image'])
+            ->middleware([
+                VerifyImageUploadHeader::class,
+                VerifyBadgeExists::class,
+                VerifyBadgesFolderExists::class,
+            ])
+            ->withoutMiddleware([CheckHeaders::class]);
     });
 });
