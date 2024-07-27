@@ -23,6 +23,10 @@ const NEWS_CREATED = "News has been created successfully!";
 const NEWS_CREATION_FAILED = "News could not be created!";
 const NEWS_IMAGE_CREATED = "News image has been created successfully!";
 const NEWS_IMAGE_CREATION_FAILED = "News image could not be created!";
+const BADGE_CREATED = "Badge has been created succesfully!";
+const BADGE_CREATION_FAILED = "Badge could not be created!";
+const BADGE_IMAGE_CREATED = "Badge image has been created succesfully!";
+const BADGE_IMAGE_CREATION_FAILED = "Badge image could not be created!";
 
 // Default user constants
 const DEFAULT_USER_ROLE = "Writer";
