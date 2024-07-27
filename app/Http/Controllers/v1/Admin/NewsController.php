@@ -126,5 +126,5 @@ class NewsController extends Controller
 
     //TODO Add API function to allow admins or moderators to change the status of approved news
     //TODO Also this function, needs the refactoring 'news' table, because new columns must be added
-    //TODO Columns are 'visibility' etc.
+    //TODO Columns are 'visibility', 'status' etc.
 }
