@@ -29,7 +29,7 @@ class ValidateUserAndNewsIDs
 
         // If user couldn't be found, return response message
         if (!$instance) {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO, 'ID does not match!'));
+            return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
 
         $request['model'] = $instance;
