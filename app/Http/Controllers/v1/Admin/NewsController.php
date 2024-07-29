@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\v1\Admin;
 
 use App\Models\News;
+use App\Models\User;
+use App\Models\Warning;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
+use App\Validators\ChangePostVisiblityValidator;
 
 class NewsController extends Controller
 {
@@ -124,7 +127,80 @@ class NewsController extends Controller
         return CommonFunctions::response(FAIL, "News could not be found!");
     }
 
-    //TODO Add API function to allow admins or moderators to change the status of approved news
-    //TODO Also this function, needs the refactoring 'news' table, because new columns must be added
-    //TODO Columns are 'visibility', 'status' etc.
+    /**
+     * Change post visibility directly or with warning message
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function change_post_visibility(Request $request): array
+    {
+        // Get all parameters
+        $params = $request->only(['type', 'userId', 'newsId', 'warning']);
+
+        // Check if the mandatory parameters exists
+        if (count($params) === 0 || (!isset($params['type']) && !isset($params['userId']) && !isset($params['newsId']))) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
+
+        // Get user
+        $user = User::find($params['userId']);
+
+        // Check if the user exists
+        if (!$user) {
+            return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+        }
+
+        // Get news instance from the user relation with the 'newsId'
+        $news = $user->news()->find($params['newsId']);
+
+        // Check if the news exists
+        if (!$news) {
+            return CommonFunctions::response(BAD_REQUEST, NEWS_NOT_FOUND);
+        }
+
+        if ($params['type'] === 'message') {
+            // Validate request
+            $validated = CommonFunctions::validateRequest($request, ChangePostVisiblityValidator::class);
+
+            // Check if the validator returns error
+            if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+                return $validated;
+            }
+
+            // Extract values to the related variables
+            $message = $validated['message'];
+            $reason = $validated['reason'];
+            $warningLevel = $validated['warning_level'];
+
+            // Create a warning instance with the variables
+            $warning = new Warning();
+            $warning->message = $message;
+            $warning->reason = $reason;
+            $warning->warning_level = $warningLevel;
+
+            // Check if the warning instance saved
+            if ($user->warnings()->save($warning)) {
+                // If saved changes then change post visibility
+                $news->visibility = false;
+
+                //Check if the changes saved
+                if ($news->save()) {
+                    return CommonFunctions::response(SUCCESS, "News visibility has been changed successfully!");
+                }
+            }
+        }
+
+        //TODO In future should be added here default warning message instance
+        // Change the post visibility without warning message
+        if ($params['type'] === "directly") {
+            $news->visibility = false;
+
+            if ($news->save()) {
+                return CommonFunctions::response(SUCCESS, "News visibility has been changed successfully!");
+            }
+        }
+
+        return CommonFunctions::response(FAIL, "News visibility could not be changed!");
+    }
 }
