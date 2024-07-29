@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->longText('content');
             $table->integer('priority')->default(3);
+            $table->boolean('pinned')->default(false);
+            $table->boolean('visibility')->default(false);
             $table->boolean('approved')->default(false);
             $table->uuid('approved_by')->nullable();
             $table->uuid('removed_by')->nullable();

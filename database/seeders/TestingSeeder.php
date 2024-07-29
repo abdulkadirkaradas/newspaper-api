@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\News;
-use App\Models\Role;
 use App\Models\User;
 use App\Models\Badge;
 use App\Models\Warning;
@@ -11,13 +10,10 @@ use App\Models\Reaction;
 use App\Models\BadgeImage;
 use App\Models\NewsImages;
 use App\Models\Permission;
-use Illuminate\Support\Str;
 use App\Models\Notification;
 use App\Models\NewsReactions;
 use App\Models\UserAuthTokens;
-use App\Models\UserPermissions;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRoles as DefaultRoles;
@@ -74,6 +70,8 @@ class TestingSeeder extends Seeder
                 'title' => fake()->title(),
                 'content' => fake()->paragraph(),
                 'priority' => random_int(1, 3),
+                'pinned' => $randomBool,
+                'visibility' =>$randomBool,
                 'approved' => $randomBool,
                 'approved_by' => $randomBool === true ? $user->id : null,
                 'user_id' => $user->id,
