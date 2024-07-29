@@ -54,6 +54,9 @@ Route::prefix('v1/admin')->middleware([
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
+
+        // Update approved news visibility
+        Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);
     });
 
     // Notification based function routes
