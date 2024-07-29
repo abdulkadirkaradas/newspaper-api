@@ -57,4 +57,13 @@ class CommonFunctions {
 
         return $validated;
     }
+
+    public static function getEnumValues(string $enumClass): array
+    {
+        $valuesAndNames = [];
+        foreach ($enumClass::cases() as $case) {
+            $valuesAndNames[$case->value] = $case->name;
+        }
+        return $valuesAndNames;
+    }
 }
