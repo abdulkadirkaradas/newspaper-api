@@ -15,7 +15,7 @@ class CommonFunctions {
      * @param string $message
      * @return array
      */
-    public static function response(int $status, string $error, ?array $message = null) : array
+    public static function response(int $status, null|string|array $message = null, string $error = null) : array
     {
         return [
             'status' => $status,

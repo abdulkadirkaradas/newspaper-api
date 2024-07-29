@@ -59,9 +59,9 @@ class NewsController extends Controller
         $post->priority = $user->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority'];
 
         if ($user->news()->save($post)) {
-            return CommonFunctions::response(SUCCESS, NEWS_CREATED, [
+            return CommonFunctions::response(SUCCESS, [
                 'newsId' => $post->id
-            ]);
+            ], NEWS_CREATED);
         } else {
             return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
         }

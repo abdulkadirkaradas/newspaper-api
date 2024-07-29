@@ -32,9 +32,9 @@ class BadgesController extends Controller
         $badge->description = $validated['description'];
 
         if ($badge->save()) {
-            return CommonFunctions::response(SUCCESS, BADGE_CREATED, [
+            return CommonFunctions::response(SUCCESS, [
                 "badgeId" => $badge->id
-            ]);
+            ], BADGE_CREATED);
         }
 
         return CommonFunctions::response(FAIL, BADGE_CREATION_FAILED);
