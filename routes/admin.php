@@ -12,6 +12,7 @@ use App\Http\Controllers\v1\Admin\NewsController;
 use App\Http\Middleware\VerifyBadgesFolderExists;
 use App\Http\Controllers\v1\Admin\UsersController;
 use App\Http\Controllers\v1\Admin\BadgesController;
+use App\Http\Controllers\v1\Admin\HelpersController;
 use App\Http\Middleware\VerifyNewsImagesFolderExists;
 use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 
@@ -88,5 +89,12 @@ Route::prefix('v1/admin')->middleware([
                 VerifyBadgesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
+    });
+
+    Route::prefix('helpers')->group(function () {
+        // Return default user roles
+        Route::get('/user-roles', [HelpersController::class, 'user_roles']);
+        // Return default warning levels
+        Route::get('/warning-levels', [HelpersController::class, 'warning_levels']);
     });
 });
