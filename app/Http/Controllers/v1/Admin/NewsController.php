@@ -136,10 +136,10 @@ class NewsController extends Controller
     public function change_post_visibility(Request $request): array
     {
         // Get all parameters
-        $params = $request->only(['type', 'userId', 'newsId', 'warning']);
+        $params = $request->only(['type', 'userId', 'newsId', 'visibility', 'warning']);
 
         // Check if the mandatory parameters exists
-        if (count($params) === 0 || (!isset($params['type']) && !isset($params['userId']) && !isset($params['newsId']))) {
+        if (count($params) === 0 || !isset($params['type']) || !isset($params['userId']) || !isset($params['newsId']) || !isset($params['visibility'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
@@ -172,6 +172,7 @@ class NewsController extends Controller
             $message = $validated['message'];
             $reason = $validated['reason'];
             $warningLevel = $validated['warning_level'];
+            $visibility = $params['visibility'];
 
             // Create a warning instance with the variables
             $warning = new Warning();
@@ -182,7 +183,7 @@ class NewsController extends Controller
             // Check if the warning instance saved
             if ($user->warnings()->save($warning)) {
                 // If saved changes then change post visibility
-                $news->visibility = false;
+                $news->visibility = $visibility;
 
                 //Check if the changes saved
                 if ($news->save()) {
@@ -194,7 +195,7 @@ class NewsController extends Controller
         //TODO In future should be added here default warning message instance
         // Change the post visibility without warning message
         if ($params['type'] === "directly") {
-            $news->visibility = false;
+            $news->visibility = $visibility;
 
             if ($news->save()) {
                 return CommonFunctions::response(SUCCESS, "News visibility has been changed successfully!");
