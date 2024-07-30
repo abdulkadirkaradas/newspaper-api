@@ -20,6 +20,8 @@ class News extends Model
         "content",
         "priority",
         "approved",
+        "visibility",
+        "opposition",
         "approved_by",
         "removed_by",
         "user_id",

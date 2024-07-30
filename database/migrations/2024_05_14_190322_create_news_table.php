@@ -17,9 +17,11 @@ return new class extends Migration
             $table->longText('content');
             $table->integer('priority')->default(3);
             $table->boolean('pinned')->default(false);
-            $table->boolean('visibility')->default(false);
+            $table->boolean('visibility')->default(true);
+            $table->boolean('opposition')->default(false);
             $table->boolean('approved')->default(false);
             $table->uuid('approved_by')->nullable();
+            $table->uuid('opposition_news_id')->nullable();
             $table->uuid('removed_by')->nullable();
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
