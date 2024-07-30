@@ -11,17 +11,18 @@ class CommonFunctions {
      * Returns API responses
      *
      * @param int $status
+     * @param mixed $message
      * @param string $error
-     * @param string $message
      * @return array
      */
-    public static function response(int $status, null|string|array $message = null, string $error = null) : array
+    public static function response(int $status, mixed $message = null) : array
     {
-        return [
+        $response = [
             'status' => $status,
-            'error'  => $error,
             'message' => $message ?? '',
         ];
+
+        return $response;
     }
 
     /**
