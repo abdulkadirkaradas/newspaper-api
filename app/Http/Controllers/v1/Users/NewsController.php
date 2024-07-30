@@ -60,8 +60,9 @@ class NewsController extends Controller
 
         if ($user->news()->save($post)) {
             return CommonFunctions::response(SUCCESS, [
-                'newsId' => $post->id
-            ], NEWS_CREATED);
+                'newsId' => $post->id,
+                'message' => NEWS_CREATED
+            ]);
         } else {
             return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
         }

@@ -33,8 +33,9 @@ class BadgesController extends Controller
 
         if ($badge->save()) {
             return CommonFunctions::response(SUCCESS, [
-                "badgeId" => $badge->id
-            ], BADGE_CREATED);
+                "badgeId" => $badge->id,
+                'message' => BADGE_CREATED
+            ]);
         }
 
         return CommonFunctions::response(FAIL, BADGE_CREATION_FAILED);

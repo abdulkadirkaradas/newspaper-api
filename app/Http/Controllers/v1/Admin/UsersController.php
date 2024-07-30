@@ -184,8 +184,9 @@ class UsersController extends Controller
 
         if ($user->notifications()->save($notification)) {
             return CommonFunctions::response(SUCCESS, [
-                "notificationId" => $notification->id
-            ], NOTIFICATION_CREATED);
+                "notificationId" => $notification->id,
+                'meesage' => NOTIFICATION_CREATED
+            ]);
         } else {
             return CommonFunctions::response(FAIL, NOTIFICATION_CREATION_FAILED);
         }
@@ -237,8 +238,9 @@ class UsersController extends Controller
 
         if ($user->notifications()->save($warning)) {
             return CommonFunctions::response(SUCCESS, [
-                "warningId" => $warning->id
-            ], WARNING_CREATED);
+                "warningId" => $warning->id,
+                'message' => WARNING_CREATED
+            ]);
         } else {
             return CommonFunctions::response(FAIL, WARNING_CREATION_FAILED);
         }
