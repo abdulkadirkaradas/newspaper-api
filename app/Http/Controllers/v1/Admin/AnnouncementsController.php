@@ -44,6 +44,15 @@ class AnnouncementsController extends Controller
         ];
     }
 
+    public function latest_announcement(Request $request): array
+    {
+        $latest = Announcements::latest()->first();
+
+        return [
+            "announcement" => $latest
+        ];
+    }
+
     /**
      * Create an announcement
      *
