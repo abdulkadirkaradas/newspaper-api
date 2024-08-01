@@ -28,6 +28,8 @@ Route::prefix('v1/admin')->middleware([
     Route::prefix('announcements')->group(function () {
         // Return announcements | priority, from, to
         Route::get('/', [AnnouncementsController::class, 'announcements']);
+        // Return latest announcement
+        Route::get('/latest', [AnnouncementsController::class, 'latest_announcement']);
 
         // Create an announcement
         Route::post('/create', [AnnouncementsController::class, 'create']);
