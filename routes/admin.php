@@ -14,6 +14,7 @@ use App\Http\Controllers\v1\Admin\UsersController;
 use App\Http\Controllers\v1\Admin\BadgesController;
 use App\Http\Controllers\v1\Admin\HelpersController;
 use App\Http\Middleware\VerifyNewsImagesFolderExists;
+use App\Http\Controllers\v1\Admin\AnnouncementsController;
 use App\Http\Controllers\v1\Users\NewsController as UserNewsController;
 
 Route::prefix('v1/admin')->middleware([
@@ -23,6 +24,10 @@ Route::prefix('v1/admin')->middleware([
     'role:Admin',
     'throttle:30,1'
 ])->group(function () {
+
+    Route::prefix('announcements')->group(function () {
+        Route::post('/create', [AnnouncementsController::class, 'create']);
+    });
 
     // User based function routes
     Route::prefix('user')->group(function () {
