@@ -44,6 +44,12 @@ class AnnouncementsController extends Controller
         ];
     }
 
+    /**
+     * Return latest announcement
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
     public function latest_announcement(Request $request): array
     {
         $latest = Announcements::latest()->first();
