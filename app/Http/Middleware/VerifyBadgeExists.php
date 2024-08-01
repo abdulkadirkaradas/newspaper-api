@@ -3,13 +3,12 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\CommonFunctions;
-use App\Models\News;
-use App\Models\User;
+use App\Models\Badge;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateUserAndNewsIDs
+class VerifyBadgeExists
 {
     /**
      * Handle an incoming request.
@@ -18,21 +17,19 @@ class ValidateUserAndNewsIDs
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Take id parameter
-        $id = $request->route('id');
+        $badgeId = $request->input('badgeId');
 
-        if (!CommonFunctions::validateUUID($id)) {
+        if (!CommonFunctions::validateUUID($badgeId)) {
             return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
         }
 
-        $instance = str_contains($request->url(), '/post') ? News::find($id) : User::find($id);
+        $badge = Badge::find($badgeId);
 
-        // If user couldn't be found, return response message
-        if (!$instance) {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
+        if (!$badge) {
+            return response()->json(CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG));
         }
 
-        $request['model'] = $instance;
+        $request['badge'] = $badge;
 
         return $next($request);
     }

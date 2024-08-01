@@ -15,8 +15,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->longText('content');
-            $table->uuid('removed_by_user_id')->nullable();
-            $table->integer('priority')->nullable();
+            $table->integer('priority')->default(3);
+            $table->boolean('pinned')->default(false);
+            $table->boolean('visibility')->default(true);
+            $table->boolean('opposition')->default(false);
+            $table->boolean('approved')->default(false);
+            $table->uuid('approved_by')->nullable();
+            $table->uuid('opposition_news_id')->nullable();
+            $table->uuid('removed_by')->nullable();
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

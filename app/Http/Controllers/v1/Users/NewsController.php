@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\NewsImages;
+use App\Models\OppositeNews;
 use App\Validators\CreateNewsValidator;
 use App\Validators\UploadNewsImageValidator;
 
@@ -56,10 +57,12 @@ class NewsController extends Controller
         $post = new News();
         $post->title = $validated['title'];
         $post->content = $validated['content'];
+        $post->priority = $user->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority'];
 
         if ($user->news()->save($post)) {
-            return CommonFunctions::response(SUCCESS, NEWS_CREATED, [
-                'newsId' => $post->id
+            return CommonFunctions::response(SUCCESS, [
+                'newsId' => $post->id,
+                'message' => NEWS_CREATED
             ]);
         } else {
             return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
@@ -97,6 +100,59 @@ class NewsController extends Controller
     }
 
     /**
+     * Create opposition to an existing news
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function create_opposition(Request $request): array
+    {
+        $loggedUser = $request->user;
+        $providedUser = $request->providedUser;
+        $providedNews = $request->providedNews;
+
+        $validated = CommonFunctions::validateRequest($request, CreateNewsValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $post = new News([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'opposition' => true,
+            'priority' => $loggedUser->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority']
+        ]);
+
+        if (!$loggedUser->news()->save($post)) {
+            return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
+        }
+
+        $opNews = new OppositeNews([
+            'source_user_id' => $providedUser->id,
+            'opposite_user_id' => $loggedUser->id,
+            'source_news_id' => $providedNews->id,
+            'opposite_news_id' => $post->id
+        ]);
+
+        if (!$opNews->save()) {
+            $post->delete();
+            return CommonFunctions::response(FAIL, "Opposite news could not be created!");
+        }
+
+        $post->opposition_news_id = $opNews->id;
+
+        if (!$post->save()) {
+            return CommonFunctions::response(FAIL, "Failed to update opposition news ID!");
+        }
+
+        return CommonFunctions::response(SUCCESS, [
+            'oppositeNewsId' => $opNews->id,
+            'message' => "Opposite news has been created successfully!"
+        ]);
+    }
+
+    /**
      * Returns all news reactions of logged user
      *
      * @var Request $request
@@ -112,7 +168,6 @@ class NewsController extends Controller
                     $query->select('id', 'user_id', 'title', 'created_at')
                         ->with([
                             'newsReactions' => function ($query) {
-                                //TODO Add time-range based query
                                 $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
                             }
                         ]);

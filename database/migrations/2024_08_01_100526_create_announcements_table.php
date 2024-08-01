@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('warnings', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('message');
-            $table->string('reason');
-            $table->integer('warning_level')->default(1);
+        Schema::create('announcements', function (Blueprint $table) {
+            $table->uuid('id');
+            $table->string('title');
+            $table->longText('content');
+            $table->integer('priority');
             $table->foreignUuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('warnings');
+        Schema::dropIfExists('announcements');
     }
 };

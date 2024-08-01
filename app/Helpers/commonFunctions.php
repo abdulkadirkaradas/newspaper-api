@@ -11,17 +11,18 @@ class CommonFunctions {
      * Returns API responses
      *
      * @param int $status
+     * @param mixed $message
      * @param string $error
-     * @param string $message
      * @return array
      */
-    public static function response(int $status, string $error, ?array $message = null) : array
+    public static function response(int $status, mixed $message = null) : array
     {
-        return [
+        $response = [
             'status' => $status,
-            'error'  => $error,
             'message' => $message ?? '',
         ];
+
+        return $response;
     }
 
     /**
@@ -30,8 +31,13 @@ class CommonFunctions {
      * @param string $uuid
      * @return bool
      */
-    public static function validateUUID(string $uuid)
+    public static function validateUUID(string|array $uuid)
     {
+        if (is_array($uuid)) {
+            $result = array_map([Str::class, 'isUuid'], $uuid);
+            return !in_array(false, $result, true);
+        }
+
         return Str::isUuid($uuid);
     }
 
@@ -51,5 +57,14 @@ class CommonFunctions {
         }
 
         return $validated;
+    }
+
+    public static function getEnumValues(string $enumClass): array
+    {
+        $valuesAndNames = [];
+        foreach ($enumClass::cases() as $case) {
+            $valuesAndNames[$case->value] = $case->name;
+        }
+        return $valuesAndNames;
     }
 }

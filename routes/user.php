@@ -1,13 +1,15 @@
 <?php
 
 use App\Http\Middleware\CheckHeaders;
+use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\VerifyNewsExists;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Middleware\SanitizeHtmlContent;
+use App\Http\Middleware\VerifyImageUploadHeader;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
-use App\Http\Middleware\VerifyImageUploadHeader;
+use App\Http\Middleware\VerifyNewsImagesFolderExists;
 
 /**
  * 'Writer' routes
@@ -29,11 +31,18 @@ Route::prefix('v1/writer')->middleware([
         Route::get('/reactions', [NewsController::class, 'reactions']);
         // Create a new post
         Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        // Create opposition to an existing news
+        Route::post('/create-opposition', [NewsController::class, 'create_opposition'])
+            ->middleware([
+                SanitizeHtmlContent::class,
+                ValidateUUID::class,
+            ]);
         // Create a new post image
         Route::post('/upload-image', [NewsController::class, 'upload_news_image'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class
+                VerifyNewsExists::class,
+                VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
     });

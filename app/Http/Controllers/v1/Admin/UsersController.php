@@ -183,11 +183,12 @@ class UsersController extends Controller
         $notification->message = $validated['message'];
 
         if ($user->notifications()->save($notification)) {
-            return CommonFunctions::response(SUCCESS, NOTIFICATION_CREATED, [
-                "notificationId" => $notification->id
+            return CommonFunctions::response(SUCCESS, [
+                "notificationId" => $notification->id,
+                'meesage' => NOTIFICATION_CREATED
             ]);
         } else {
-            return CommonFunctions::response(SUCCESS, NOTIFICATION_CREATION_FAILED);
+            return CommonFunctions::response(FAIL, NOTIFICATION_CREATION_FAILED);
         }
     }
 
@@ -236,11 +237,12 @@ class UsersController extends Controller
         $warning->warning_level = $validated['warning_level'];
 
         if ($user->notifications()->save($warning)) {
-            return CommonFunctions::response(SUCCESS, WARNING_CREATED, [
-                "warningId" => $warning->id
+            return CommonFunctions::response(SUCCESS, [
+                "warningId" => $warning->id,
+                'message' => WARNING_CREATED
             ]);
         } else {
-            return CommonFunctions::response(SUCCESS, WARNING_CREATION_FAILED);
+            return CommonFunctions::response(FAIL, WARNING_CREATION_FAILED);
         }
     }
 }

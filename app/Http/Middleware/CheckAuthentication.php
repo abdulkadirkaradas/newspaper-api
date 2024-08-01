@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRoles;
 use Closure;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -53,6 +54,7 @@ class CheckAuthentication
             return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
         }
 
+        $user->role = UserRoles::getRole($user->role_id);
         $request['user'] = $user;
 
         return $next($request);
