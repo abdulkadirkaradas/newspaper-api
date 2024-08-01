@@ -26,6 +26,10 @@ Route::prefix('v1/admin')->middleware([
 ])->group(function () {
 
     Route::prefix('announcements')->group(function () {
+        // Return announcements | priority, from, to
+        Route::get('/', [AnnouncementsController::class, 'announcements']);
+
+        // Create an announcement
         Route::post('/create', [AnnouncementsController::class, 'create']);
     });
 
