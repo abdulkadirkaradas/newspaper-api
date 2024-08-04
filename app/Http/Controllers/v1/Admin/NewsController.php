@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\v1\Admin;
 
 use App\Models\News;
+use App\Models\NewsCategories;
 use App\Models\User;
 use App\Models\Warning;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
 use App\Validators\ChangePostVisiblityValidator;
+use App\Validators\CreateNewsCategoryValidator;
 
 class NewsController extends Controller
 {
@@ -203,5 +205,33 @@ class NewsController extends Controller
         }
 
         return CommonFunctions::response(FAIL, "News visibility could not be changed!");
+    }
+
+    /**
+     * Create a news category
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function create_category(Request $request): array
+    {
+        $validated = CommonFunctions::validateRequest($request, CreateNewsCategoryValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $category = new NewsCategories();
+        $category->name = $validated['name'];
+        $category->description = $validated['description'];
+
+        if ($category->save()) {
+            return CommonFunctions::response(SUCCESS, [
+                "categoryId" => $category->id,
+                "message" => "News category has been created successfully"
+            ]);
+        }
+
+        return CommonFunctions::response(FAIL, "Failed to create news category!");
     }
 }
