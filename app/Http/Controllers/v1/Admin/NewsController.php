@@ -208,6 +208,21 @@ class NewsController extends Controller
     }
 
     /**
+     * Return all news categories
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function categories(Request $request): array
+    {
+        $categories = NewsCategories::all();
+
+        return [
+            "categories" => $categories
+        ];
+    }
+
+    /**
      * Create a news category
      *
      * @param \Illuminate\Http\Request $request
