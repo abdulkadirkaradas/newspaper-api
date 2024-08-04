@@ -50,6 +50,9 @@ Route::prefix('v1/admin')->middleware([
         // Return news | id, type[all, approve, unapproved]
         Route::get('/', [NewsController::class, 'news']);
 
+        // Return all news categories
+        Route::get('/categories', [NewsController::class, 'categories']);
+
         // Approve news by user and news id
         Route::post('/approve', [NewsController::class, 'approve']);
 
