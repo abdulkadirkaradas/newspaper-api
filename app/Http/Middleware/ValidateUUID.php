@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Models\News;
+use App\Models\NewsCategories;
 use Symfony\Component\HttpFoundation\Response;
 
 class ValidateUUID
@@ -18,7 +19,7 @@ class ValidateUUID
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $params = $request->only(['user_id', 'news_id']);
+        $params = $request->only(['user_id', 'news_id', 'category_id']);
 
         if (count($params) === 0) {
             return $next($request);
@@ -30,7 +31,8 @@ class ValidateUUID
 
         $models = [
             'user' => [User::class, 'user_id', 'providedUser', USER_NOT_FOUND],
-            'news' => [News::class, 'news_id', 'providedNews', NEWS_NOT_FOUND]
+            'news' => [News::class, 'news_id', 'providedNews', NEWS_NOT_FOUND],
+            'newsCategory' => [NewsCategories::class, 'category_id', 'newsCategory', NEWS_CATEGORY_NOT_FOUND],
         ];
 
         foreach ($models as [$modelClass, $paramKey, $responseKey, $notFoundMessage]) {
