@@ -50,6 +50,9 @@ Route::prefix('v1/admin')->middleware([
         // Return news | id, type[all, approve, unapproved]
         Route::get('/', [NewsController::class, 'news']);
 
+        // Return all news categories
+        Route::get('/categories', [NewsController::class, 'categories']);
+
         // Approve news by user and news id
         Route::post('/approve', [NewsController::class, 'approve']);
 
@@ -66,6 +69,12 @@ Route::prefix('v1/admin')->middleware([
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
+
+        // Create a news category
+        Route::post('/create-category', [NewsController::class, 'create_category']);
+
+        // Update a category of news record
+        Route::put('/update-news-category', [NewsController::class, 'update_news_category']);
 
         // Update approved news visibility
         Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);

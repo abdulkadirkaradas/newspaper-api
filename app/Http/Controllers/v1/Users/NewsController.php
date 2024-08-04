@@ -47,6 +47,11 @@ class NewsController extends Controller
     public function create(Request $request)
     {
         $user = $request->user;
+        $newsCategory = $request->newsCategory;
+
+        if ($newsCategory === null) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
 
         $validated = CommonFunctions::validateRequest($request, CreateNewsValidator::class);
 
@@ -58,6 +63,7 @@ class NewsController extends Controller
         $post->title = $validated['title'];
         $post->content = $validated['content'];
         $post->priority = $user->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority'];
+        $post->category_id = $newsCategory->id;
 
         if ($user->news()->save($post)) {
             return CommonFunctions::response(SUCCESS, [

@@ -24,7 +24,9 @@ return new class extends Migration
             $table->uuid('opposition_news_id')->nullable();
             $table->uuid('removed_by')->nullable();
             $table->foreignUuid('user_id');
+            $table->foreignUuid('category_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('news_categories')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
