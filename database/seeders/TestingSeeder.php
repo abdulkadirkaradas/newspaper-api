@@ -17,6 +17,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRoles as DefaultRoles;
+use App\Models\NewsCategories;
 
 class TestingSeeder extends Seeder
 {
@@ -63,6 +64,15 @@ class TestingSeeder extends Seeder
         ]);
 
         // Create news
+        $categories = [];
+        for ($i = 0; $i < 5; $i++) {
+            $categories[$i] = NewsCategories::create([
+                'name' => fake()->word(),
+                'description' => fake()->paragraph(),
+            ]);
+        }
+
+        // Create news
         $news = [];
         for ($i = 0; $i < 5; $i++) {
             $randomBool = (bool)random_int(0, 1);
@@ -75,6 +85,7 @@ class TestingSeeder extends Seeder
                 'approved' => $randomBool,
                 'approved_by' => $randomBool === true ? $user->id : null,
                 'user_id' => $user->id,
+                'category_id' => $categories[$i]->id,
             ]);
 
             $user->news()->save($news[$i]);
