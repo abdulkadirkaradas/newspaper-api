@@ -249,4 +249,28 @@ class NewsController extends Controller
 
         return CommonFunctions::response(FAIL, "Failed to create news category!");
     }
+
+    /**
+     * Update a category of news record
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function update_news_category(Request $request): array
+    {
+        $news = $request->providedNews;
+        $category = $request->newsCategory;
+
+        if (is_null($news) || is_null($category)) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
+
+        $news->category_id = $category->id;
+
+        if ($news->save()) {
+            return CommonFunctions::response(SUCCESS, "The news record has been update successfully!");
+        }
+
+        return CommonFunctions::response(FAIL, "The news could not be update to the category!");
+    }
 }
