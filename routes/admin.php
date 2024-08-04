@@ -67,6 +67,9 @@ Route::prefix('v1/admin')->middleware([
             ])
             ->withoutMiddleware([CheckHeaders::class]);
 
+        // Create a news category
+        Route::post('/create-category', [NewsController::class, 'create_category']);
+
         // Update approved news visibility
         Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);
     });
