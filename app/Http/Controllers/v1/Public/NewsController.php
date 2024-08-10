@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\Public;
 
+use App\Helpers\CommonFunctions;
 use App\Models\News;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,7 +20,12 @@ class NewsController extends Controller
      */
     public function news(Request $request): array
     {
-        $news = $request->model;
+        $providedNews = $request->providedNews;
+        $type = $request->input('type');
+
+        if (!isset($type) || is_null($type) || empty($type)) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
 
         $news = News::select('id', 'title', 'content', 'created_at')
             ->with([
@@ -29,10 +35,14 @@ class NewsController extends Controller
                 'newsReactions' => function ($query) {
                     $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
                 }
-            ])->findOrFail($news->id);
+            ]);
+
+        if ($type === "user") {
+            $news->find($providedNews->id);
+        }
 
         return [
-            'news' => $news,
+            'news' => $news->get(),
         ];
     }
 }
