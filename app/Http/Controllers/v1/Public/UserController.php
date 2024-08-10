@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function user(Request $request): array
     {
-        $user = $request->model;
+        $user = $request->providedUser;
 
         $info = User::with([
             'news' => function ($query) {
