@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(append: [
-            App\Http\Middleware\CheckAuthentication::class,
+            // App\Http\Middleware\CheckAuthentication::class,
             App\Http\Middleware\CheckHeaders::class,
         ]);
         $middleware->alias([
