@@ -51,7 +51,11 @@ class CheckAuthentication
 
         // Check if the user session expired
         if (($expireDateTS < $currentTS) && !str_contains($request->route()->getActionName(), 'refreshAuthToken')) {
-            return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
+            $auth->expired = true;
+
+            if ($auth->save()) {
+                return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
+            }
         }
 
         $user->role = UserRoles::getRole($user->role_id);
