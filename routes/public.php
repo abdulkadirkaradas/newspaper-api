@@ -10,4 +10,6 @@ Route::prefix('v1/public')->middleware([ValidateUUID::class])->group(function ()
     Route::get('/user', [UserController::class, 'user']);
     // Return logged user news
     Route::get('/news', [NewsController::class, 'news']);
+    // Return all categories
+    Route::get('/news-categories', [NewsController::class, 'categories']);
 });
