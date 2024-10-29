@@ -6,6 +6,7 @@ use App\Helpers\CommonFunctions;
 use App\Models\News;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\NewsCategories;
 
 /**
  * All those functions have been added for unauthenticated users
@@ -43,6 +44,24 @@ class NewsController extends Controller
 
         return [
             'news' => $news->get(),
+        ];
+    }
+
+    /**
+     * Return all news categories
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function categories(Request $request): array
+    {
+        //TODO: Filtering categories by date in the future should be added..
+        $categories = NewsCategories::
+            select('name', 'description')
+            ->get();
+
+        return [
+            "categories" => $categories
         ];
     }
 }
