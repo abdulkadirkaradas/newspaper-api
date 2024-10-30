@@ -78,7 +78,7 @@ class TestingSeeder extends Seeder
             $randomBool = (bool)random_int(0, 1);
             $news[$i] = News::create([
                 'title' => fake()->title(),
-                'content' => fake()->paragraph(),
+                'content' => fake()->paragraph(10),
                 'priority' => random_int(1, 3),
                 'pinned' => $randomBool,
                 'visibility' =>$randomBool,
