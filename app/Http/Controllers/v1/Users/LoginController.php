@@ -99,4 +99,9 @@ class LoginController extends Controller
             ]
         ]);
     }
+
+    public function userInformation(Request $request)
+    {
+        return $request->user;
+    }
 }
