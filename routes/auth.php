@@ -33,6 +33,7 @@ Route::prefix('v1')->middleware([CheckAuthentication::class, CheckHeaders::class
         Route::middleware([UserLoginMiddleware::class])->group(function () {
             Route::post('/logout', [UsersLoginController::class, 'logout']);
             Route::post('/refresh-auth-token', [UsersLoginController::class, 'refreshAuthToken']);
+            Route::get('/user-information', [UsersLoginController::class, 'userInformation']);
         });
     });
 });
