@@ -39,6 +39,11 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
+    public function authTokens(): HasOne
+    {
+        return $this->hasOne(UserAuthTokens::class);
+    }
+
     public function roles(): HasOne
     {
         return $this->hasOne(Role::class);

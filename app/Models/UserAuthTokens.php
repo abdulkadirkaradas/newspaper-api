@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserAuthTokens extends Model
 {
     use HasFactory, HasUuids, HasApiTokens, SoftDeletes;
 
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         static::creating(function ($model) {
@@ -36,11 +38,18 @@ class UserAuthTokens extends Model
         "last_login"
     ];
 
-    private function setExpireDate() {
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    private function setExpireDate()
+    {
         $this->attributes['expire_date'] = now()->addDays(15);
     }
 
-    private function setLastLogin() {
+    private function setLastLogin()
+    {
         $this->attributes['last_login'] = now();
     }
 }
