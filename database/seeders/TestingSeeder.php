@@ -116,7 +116,7 @@ class TestingSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $badge = Badge::create([
                 'name' => fake()->title(),
-                'description' => fake()->paragraph(),
+                'description' => fake()->paragraph(1),
                 'type' => fake()->word(),
             ]);
 
