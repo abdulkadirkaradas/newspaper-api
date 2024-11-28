@@ -13,7 +13,7 @@ use App\Enums\UserRoles as DefaultRoles;
 
 class TestingSeeder extends Seeder
 {
-    private const ITEM_COUNT = 5; // Oluşturulacak öğe sayısı
+    private const ITEM_COUNT = 5;
 
     public function run(): void
     {
