@@ -9,6 +9,7 @@ use App\Http\Middleware\SanitizeHtmlContent;
 use App\Http\Middleware\VerifyImageUploadHeader;
 use App\Http\Controllers\v1\Users\NewsController;
 use App\Http\Controllers\v1\Users\UsersController;
+use App\Http\Controllers\v1\Users\BadgesController;
 use App\Http\Middleware\VerifyNewsImagesFolderExists;
 
 /**
@@ -55,5 +56,9 @@ Route::prefix('v1/writer')->middleware([
 
     Route::prefix('warnings')->group(function () {
         Route::get('/', [UsersController::class, 'warnings']);
+    });
+
+    Route::prefix('badges')->group(function () {
+        Route::get('/', [BadgesController::class, 'badges']);
     });
 });
