@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\News;
 use App\Models\User;
 use App\Enums\UserRoles;
+use App\Models\Badge;
 use App\Models\NewsCategories;
 use App\Models\Reaction;
 use App\Models\Notification;
@@ -49,6 +50,13 @@ class UserFactory extends Factory
                     'category_id' => NewsCategories::factory()->create()->id
                 ])
                 ->create();
+
+            Badge::factory()
+            ->count(5)
+            ->create();
+
+            $badges = Badge::inRandomOrder()->take(5)->pluck('id');
+            $user->badges()->attach($badges);
 
             Notification::factory()
                 ->count(5)
