@@ -25,6 +25,19 @@ Route::prefix('v1/writer')->middleware([
     // Returns logged user informations
     Route::get('/profile', [UsersController::class, 'profile']);
 
+    Route::prefix('notifications')->group(function () {
+        // Returns all notifications|all, read, unread, time-range based
+        Route::get('/', [UsersController::class, 'notifications']);
+    });
+
+    Route::prefix('warnings')->group(function () {
+        Route::get('/', [UsersController::class, 'warnings']);
+    });
+
+    Route::prefix('badges')->group(function () {
+        Route::get('/', [BadgesController::class, 'badges']);
+    });
+
     Route::prefix('news')->group(function () {
         // Return news by related id
         Route::get('/logged-user-news', [NewsController::class, 'logged_user_news']);
@@ -46,19 +59,5 @@ Route::prefix('v1/writer')->middleware([
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
-    });
-
-    // All routes support the return of notifications based on a time-range (optional).
-    Route::prefix('notifications')->group(function () {
-        // Returns all notifications|all, read, unread, time-range based
-        Route::get('/', [UsersController::class, 'notifications']);
-    });
-
-    Route::prefix('warnings')->group(function () {
-        Route::get('/', [UsersController::class, 'warnings']);
-    });
-
-    Route::prefix('badges')->group(function () {
-        Route::get('/', [BadgesController::class, 'badges']);
     });
 });
