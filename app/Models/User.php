@@ -71,12 +71,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function badges(): BelongsToMany
     {
-        return $this->belongsToMany(Badge::class, 'user_badges');
+        return $this->belongsToMany(Badge::class, 'user_badges')->withTimestamps();
     }
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'user_permissions');
+        return $this->belongsToMany(Permission::class, 'user_permissions')->withTimestamps();
     }
 
     // public function hasPermission(string $permission_id) {
