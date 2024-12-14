@@ -7,6 +7,7 @@ use App\Models\News;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\NewsCategories;
+use App\Models\User;
 
 /**
  * All those functions have been added for unauthenticated users
@@ -21,29 +22,35 @@ class NewsController extends Controller
      */
     public function news(Request $request): array
     {
-        $providedNews = $request->providedNews;
         $type = $request->input('type');
 
-        if (!isset($type) || is_null($type) || empty($type)) {
+        if (empty($type)) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
-        $news = News::select('id', 'title', 'content', 'created_at')
+        $news = News::select('id', 'user_id', 'title', 'content', 'created_at')
             ->with([
-                'newsImages' => function ($query) {
-                    $query->select('user_id', 'news_id', 'name', 'ext', 'fullpath', 'created_at');
-                },
-                'newsReactions' => function ($query) {
-                    $query->select('user_id', 'news_id', 'reaction', 'type', 'created_at');
-                }
-            ]);
+                'newsImages:id,news_id,name,ext,fullpath,created_at',
+                'newsReactions:id,news_id,reaction,type,created_at'
+            ])->get();
 
-        if ($type === "user") {
-            $news->find($providedNews->id);
+        $news->each(function ($item) {
+            $user = $item->user;
+            $item->unsetRelation('user');
+            $item->author = [
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'username' => $user->username,
+            ];
+        });
+
+        if ($type === 'user') {
+            $providedNews = $request->providedNews;
+            $news = $news->find($providedNews->id);
         }
 
         return [
-            'news' => $news->get(),
+            'news' => $news,
         ];
     }
 
