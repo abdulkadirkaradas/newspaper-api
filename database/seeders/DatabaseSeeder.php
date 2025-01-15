@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,10 @@ class DatabaseSeeder extends Seeder
          * Creates the test values
         */
         $this->call(TestingSeeder::class);
+
+        /**
+         * Create dummy users
+         */
+        User::factory()->count(2)->create();
     }
 }
