@@ -50,7 +50,7 @@ class UsersController extends Controller
             'name' => $user->name,
             'lastname' => $user->lastname,
             'username' => $user->username,
-            'membership_date' => $user->created_at,
+            'membershipDate' => $user->created_at,
             'news' => $userInfo->news,
             'notifications' => $userInfo->notifications,
             'warnings' => $userInfo->warnings,
