@@ -3,8 +3,19 @@
 namespace Database\Seeders;
 
 use App\Models\{
-    Badge, BadgeImage, News, NewsCategories, NewsImages, NewsReactions,
-    Notification, Permission, Reaction, User, UserAuthTokens, Warning
+    Announcement,
+    Badge,
+    BadgeImage,
+    News,
+    NewsCategories,
+    NewsImages,
+    NewsReactions,
+    Notification,
+    Permission,
+    Reaction,
+    User,
+    UserAuthTokens,
+    Warning
 };
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +39,7 @@ class TestingSeeder extends Seeder
         $this->createReactions($user);
         $this->createNotifications($user);
         $this->createWarnings($user);
+        $this->createAnnouncements();
     }
 
     private function createAdminUser(): User
@@ -48,7 +60,7 @@ class TestingSeeder extends Seeder
             $permission = Permission::create([
                 'name' => fake()->word(),
                 'description' => fake()->sentence(),
-                'granted' => (bool)random_int(0, 1),
+                'granted' => (bool) random_int(0, 1),
             ]);
             $user->permissions()->attach($permission->id, ['created_at' => now(), 'updated_at' => now()]);
         }
@@ -76,7 +88,7 @@ class TestingSeeder extends Seeder
     {
         $news = [];
         for ($i = 0; $i < self::ITEM_COUNT; $i++) {
-            $randomBool = (bool)random_int(0, 1);
+            $randomBool = (bool) random_int(0, 1);
             $news[] = News::create([
                 'title' => fake()->title(),
                 'content' => fake()->paragraph(10),
@@ -134,6 +146,11 @@ class TestingSeeder extends Seeder
         }
     }
 
+    private function createAnnouncements()
+    {
+        Announcement::factory()->count(self::ITEM_COUNT)->create();
+    }
+
     private function createReactions(User $user): void
     {
         for ($i = 0; $i < self::ITEM_COUNT; $i++) {
@@ -153,7 +170,7 @@ class TestingSeeder extends Seeder
                 'type' => fake()->word(),
                 'title' => fake()->sentence(),
                 'message' => fake()->paragraph(),
-                'is_read' => (bool)random_int(0, 1),
+                'is_read' => (bool) random_int(0, 1),
                 'user_id' => $user->id,
                 'created_at' => $randomDate,
                 'updated_at' => $randomDate,
