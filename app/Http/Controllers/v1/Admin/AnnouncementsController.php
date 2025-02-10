@@ -5,7 +5,7 @@ namespace App\Http\Controllers\v1\Admin;
 use App\Helpers\CommonFunctions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Announcements;
+use App\Models\Announcement;
 use App\Validators\CreateAnnouncementsValidator;
 
 class AnnouncementsController extends Controller
@@ -18,9 +18,9 @@ class AnnouncementsController extends Controller
      */
     public function announcements(Request $request): array
     {
-        $params = $request->only(['priority', 'from', 'to']);
+        $params = $request->only(['priority', 'from', 'to', 'latest']);
 
-        $announces = Announcements::query();
+        $announces = Announcement::query();
 
         if (!empty($params['priority'])) {
             $announces->where('priority', $params['priority']);
@@ -39,23 +39,12 @@ class AnnouncementsController extends Controller
             }
         }
 
+        if (!empty($params['latest']) && $params['latest'] === true) {
+            $announces->latest()->first();
+        }
+
         return [
             "announcements" => $announces->get()
-        ];
-    }
-
-    /**
-     * Return latest announcement
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function latest_announcement(Request $request): array
-    {
-        $latest = Announcements::latest()->first();
-
-        return [
-            "announcement" => $latest
         ];
     }
 
@@ -79,7 +68,7 @@ class AnnouncementsController extends Controller
         $content = $validated['content'];
         $priority = $validated['priority'];
 
-        $announce = new Announcements();
+        $announce = new Announcement();
         $announce->title = $title;
         $announce->content = $content;
         $announce->priority = $priority;
