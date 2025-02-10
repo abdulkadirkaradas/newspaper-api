@@ -16,7 +16,7 @@ class AnnouncementsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function announcements(Request $request): array
+    public function index(Request $request): array
     {
         $params = $request->only(['priority', 'from', 'to', 'latest']);
 
@@ -54,7 +54,7 @@ class AnnouncementsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create(Request $request): array
+    public function store(Request $request): array
     {
         $user = $request->user;
 

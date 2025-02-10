@@ -22,17 +22,15 @@ Route::prefix('v1/admin')->middleware([
     CheckAuthentication::class,
     ValidateUUID::class,
     'role:Admin',
-    'throttle:30,1'
+    'throttle:30,1',
+    'api'
 ])->group(function () {
 
     Route::prefix('announcements')->group(function () {
-        // Return announcements | priority, from, to
-        Route::get('/', [AnnouncementsController::class, 'announcements']);
-        // Return latest announcement
-        Route::get('/latest', [AnnouncementsController::class, 'latest_announcement']);
-
+        // Return announcements | priority, from, to, latest
+        Route::get('/', [AnnouncementsController::class, 'index']);
         // Create an announcement
-        Route::post('/create', [AnnouncementsController::class, 'create']);
+        Route::post('/', [AnnouncementsController::class, 'store']);
     });
 
     // User based function routes
