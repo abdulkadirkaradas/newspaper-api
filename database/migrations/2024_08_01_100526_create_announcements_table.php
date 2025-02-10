@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->longText('content');
             $table->integer('priority');
-            $table->foreignUuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
