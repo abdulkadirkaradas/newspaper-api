@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\News;
 use App\Models\User;
 use App\Enums\UserRoles;
+use App\Models\Announcement;
 use App\Models\Badge;
 use App\Models\NewsCategories;
 use App\Models\Reaction;
@@ -40,23 +41,27 @@ class UserFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (User $user) {
-            $adminId = '9d7ca52c-440e-405e-816b-13361167368e';
+            $admin = User::where('role_id', UserRoles::Admin->value)->first();
 
             News::factory()
                 ->count(5)
                 ->state([
                     'user_id' => $user->id,
-                    'approved_by' => $adminId,
+                    'approved_by' => $admin->id,
                     'category_id' => NewsCategories::factory()->create()->id
                 ])
                 ->create();
 
             Badge::factory()
-            ->count(5)
-            ->create();
+                ->count(5)
+                ->create();
 
             $badges = Badge::inRandomOrder()->take(5)->pluck('id');
             $user->badges()->attach($badges);
+
+            Announcement::factory()
+                ->count(5)
+                ->create();
 
             Notification::factory()
                 ->count(5)
