@@ -9,6 +9,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
+use App\Validators\BlockUserValidator;
 use App\Validators\CreateWarningValidator;
 use App\Validators\CreateNotificationValidator;
 
@@ -22,7 +23,7 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function user(Request $request): array
+    public function index(Request $request): array
     {
         $params = $request->only(['id', 'type']);
 
@@ -88,12 +89,15 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function change_user_role(Request $request): array
+    public function updateRole(User $user, Request $request): array
     {
-        $params = $request->only(['id', 'role_id']);
+        $request->validate([
+            'role_id' => 'required|integer|in:1,2,3'
+        ]);
 
-        $user = User::find($params['id']);
-        $user->role_id = $params['role_id'];
+        $roleId = $request->input('role_id');
+
+        $user->role_id = $roleId;
 
         if ($user->save()) {
             return CommonFunctions::response(SUCCESS, "User role has been changed successfully!");
@@ -103,24 +107,35 @@ class UsersController extends Controller
     }
 
     /**
-     * Block user by id no
+     * Block or unblock an user by id no
      *
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function block_user(Request $request): array
+    public function block(User $user, Request $request)
     {
-        $user = $request->providedUser;
+        $validated = CommonFunctions::validateRequest($request, BlockUserValidator::class);
 
-        if ($user->blocked === true) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $block = (bool) $validated['block'];
+
+        if ($block && $user->blocked) {
             return CommonFunctions::response(BAD_REQUEST, "User already blocked!");
         }
 
-        $user->blocked = true;
+        if (!$block && !$user->blocked) {
+            return CommonFunctions::response(BAD_REQUEST, "User is not blocked!");
+        }
+
+        $user->blocked = $block;
+        $message = $block ? "User has been blocked!" : "User has been unblocked!";
 
         return $user->save()
-            ? CommonFunctions::response(SUCCESS, "User has been blocked!")
-            : CommonFunctions::response(FAIL, "Failed to block user.");
+            ? CommonFunctions::response(SUCCESS, $message)
+            : CommonFunctions::response(FAIL, "Failed to update block status.");
     }
 
     /**

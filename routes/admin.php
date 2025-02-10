@@ -36,12 +36,11 @@ Route::prefix('v1/admin')->middleware([
     // User based function routes
     Route::prefix('user')->group(function () {
         // Return user informations | id, type['all, blocked']
-        Route::get('/', [UsersController::class, 'user']);
-
+        Route::get('/', [UsersController::class, 'index']);
         // Change user role
-        Route::put('change-role', [UsersController::class, 'change_user_role']);
+        Route::put('/{user}/role', [UsersController::class, 'updateRole']);
         // Block user
-        Route::post('/block', [UsersController::class, 'block_user']);
+        Route::put('/{user}/block', [UsersController::class, 'block']);
     });
 
     Route::prefix('news')->group(function () {
