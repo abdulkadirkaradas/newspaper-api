@@ -92,7 +92,7 @@ Route::prefix('v1/admin')->middleware([
         Route::get('/{user}', [UsersController::class, 'getUserWarnings']);
 
         // Return user warnings
-        Route::post('/create', [UsersController::class, 'create_warning']);
+        Route::post('/{user}', [UsersController::class, 'createWarning']);
     });
 
     Route::prefix('badges')->group(function () {

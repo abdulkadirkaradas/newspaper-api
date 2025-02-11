@@ -238,10 +238,8 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create_warning(Request $request): array
+    public function createWarning(User $user, Request $request)
     {
-        $user = $request->providedUser;
-
         $validated = CommonFunctions::validateRequest($request, CreateWarningValidator::class);
 
         if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
@@ -255,11 +253,11 @@ class UsersController extends Controller
 
         if ($user->notifications()->save($warning)) {
             return CommonFunctions::response(SUCCESS, [
-                "warningId" => $warning->id,
+                "warning" => $warning,
                 'message' => WARNING_CREATED
             ]);
         } else {
-            return CommonFunctions::response(FAIL, WARNING_CREATION_FAILED);
+            return CommonFunctions::response(BAD_REQUEST, WARNING_CREATION_FAILED);
         }
     }
 }
