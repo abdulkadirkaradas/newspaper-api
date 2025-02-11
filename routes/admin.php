@@ -80,7 +80,7 @@ Route::prefix('v1/admin')->middleware([
     // Notification based function routes
     Route::prefix('notifications')->group(function () {
         // Return user notifications|all, read, unread, time-range based
-        Route::get('/', [UsersController::class, 'get_user_notifications']);
+        Route::get('/', [UsersController::class, 'getUserNotifications']);
 
         // Create notification for the provided user
         Route::post('/create', [UsersController::class, 'create_notification']);
