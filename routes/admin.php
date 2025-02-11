@@ -97,7 +97,7 @@ Route::prefix('v1/admin')->middleware([
 
     Route::prefix('badges')->group(function () {
         // Create a new badge
-        Route::post('/create', [BadgesController::class, 'create']);
+        Route::post('/', [BadgesController::class, 'store']);
         // Create a new badge image
         Route::post('/upload-image', [BadgesController::class, 'upload_image'])
             ->middleware([
