@@ -18,7 +18,7 @@ class BadgesController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create(Request $request): array
+    public function store(Request $request)
     {
         $validated = CommonFunctions::validateRequest($request, CreateBadgeValidator::class);
 
@@ -33,12 +33,12 @@ class BadgesController extends Controller
 
         if ($badge->save()) {
             return CommonFunctions::response(SUCCESS, [
-                "badgeId" => $badge->id,
+                "badge" => $badge,
                 'message' => BADGE_CREATED
             ]);
         }
 
-        return CommonFunctions::response(FAIL, BADGE_CREATION_FAILED);
+        return CommonFunctions::response(BAD_REQUEST, BADGE_CREATION_FAILED);
     }
 
     /**
