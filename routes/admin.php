@@ -83,7 +83,7 @@ Route::prefix('v1/admin')->middleware([
         Route::get('/', [UsersController::class, 'getUserNotifications']);
 
         // Create notification for the provided user
-        Route::post('/create', [UsersController::class, 'create_notification']);
+        Route::post('/{user}', [UsersController::class, 'createNotification']);
     });
 
     // Notification based function routes

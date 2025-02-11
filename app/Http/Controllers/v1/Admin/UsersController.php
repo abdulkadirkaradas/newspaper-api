@@ -188,10 +188,8 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create_notification(Request $request): array
+    public function createNotification(User $user, Request $request)
     {
-        $user = $request->providedUser;
-
         $validated = CommonFunctions::validateRequest($request, CreateNotificationValidator::class);
 
         if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
@@ -208,9 +206,9 @@ class UsersController extends Controller
                 "notificationId" => $notification->id,
                 'meesage' => NOTIFICATION_CREATED
             ]);
-        } else {
-            return CommonFunctions::response(FAIL, NOTIFICATION_CREATION_FAILED);
         }
+
+        return CommonFunctions::response(BAD_REQUEST, NOTIFICATION_CREATION_FAILED);
     }
 
     /**
