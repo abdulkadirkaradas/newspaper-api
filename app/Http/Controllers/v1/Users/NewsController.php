@@ -77,10 +77,9 @@ class NewsController extends Controller
         return CommonFunctions::response(BAD_REQUEST, NEWS_CREATION_FAILED);
     }
 
-    public function upload_news_image(Request $request)
+    public function uploadImage(News $news, Request $request)
     {
         $user = $request->user;
-        $news = $request->news;
 
         $validated = CommonFunctions::validateRequest($request, UploadNewsImageValidator::class);
 
@@ -92,12 +91,12 @@ class NewsController extends Controller
         $compoundKey = substr($user->id, 19) . '-' . substr($news->id, 19);
 
         $fullpath = time() . '_' . $compoundKey . '_' . $validated['name'] . '.' . $request['ext'];
-        $request->image->move(public_path('images'), $fullpath);
+        $request->image->move(public_path('newsImages'), $fullpath);
 
         $newsImage = new NewsImages();
         $newsImage->name = $validated['name'];
         $newsImage->ext = $validated['ext'];
-        $newsImage->fullpath = $fullpath;
+        $newsImage->fullpath = $fullpath; 
         $newsImage->user_id = $user->id;
 
         if ($news->newsImages()->save($newsImage)) {
