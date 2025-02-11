@@ -53,11 +53,9 @@ Route::prefix('v1/admin')->middleware([
         // Approve news by user and news id
         Route::post('{news}/approve', [NewsController::class, 'approve']);
 
-        // Delete news by user and news id
-        Route::post('/delete', [NewsController::class, 'delete']);
-
         // Create a new post
         Route::post('/create', [UserNewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+
         // Create a new post image
         Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
             ->middleware([
@@ -75,6 +73,9 @@ Route::prefix('v1/admin')->middleware([
 
         // Update approved news visibility
         Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);
+
+        // Delete news by user and news id
+        Route::delete('/{news}/delete', [NewsController::class, 'delete']);
     });
 
     // Notification based function routes
