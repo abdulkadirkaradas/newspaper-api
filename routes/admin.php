@@ -57,10 +57,9 @@ Route::prefix('v1/admin')->middleware([
         Route::post('/', [UserNewsController::class, 'store'])->middleware([SanitizeHtmlContent::class]);
 
         // Create a new post image
-        Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
+        Route::post('{news}/images', [UserNewsController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class,
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
