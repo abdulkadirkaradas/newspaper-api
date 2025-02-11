@@ -96,13 +96,13 @@ class NewsController extends Controller
         $newsImage = new NewsImages();
         $newsImage->name = $validated['name'];
         $newsImage->ext = $validated['ext'];
-        $newsImage->fullpath = $fullpath; 
+        $newsImage->fullpath = $fullpath;
         $newsImage->user_id = $user->id;
 
         if ($news->newsImages()->save($newsImage)) {
             return CommonFunctions::response(SUCCESS, NEWS_IMAGE_CREATED);
         } else {
-            return CommonFunctions::response(FAIL, NEWS_IMAGE_CREATION_FAILED);
+            return CommonFunctions::response(BAD_REQUEST, NEWS_IMAGE_CREATION_FAILED);
         }
     }
 
