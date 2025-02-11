@@ -45,7 +45,7 @@ Route::prefix('v1/admin')->middleware([
 
     Route::prefix('news')->group(function () {
         // Return news | id, type[all, approve, unapproved]
-        Route::get('/', [NewsController::class, 'news']);
+        Route::get('/', [NewsController::class, 'index']);
 
         // Return all news categories
         Route::get('/categories', [NewsController::class, 'categories']);
