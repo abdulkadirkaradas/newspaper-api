@@ -44,7 +44,7 @@ Route::prefix('v1/writer')->middleware([
         // Return all news reactions
         Route::get('/reactions', [NewsController::class, 'reactions']);
         // Create a new post
-        Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        Route::post('/', [NewsController::class, 'store'])->middleware([SanitizeHtmlContent::class]);
         // Create opposition to an existing news
         Route::post('/{sourceNews}/opposition', [NewsController::class, 'createOpposition'])
             ->middleware([
