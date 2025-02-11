@@ -9,6 +9,7 @@ use App\Models\Warning;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
+use App\Validators\ApproveNewsValidator;
 use App\Validators\ChangePostVisiblityValidator;
 use App\Validators\CreateNewsCategoryValidator;
 
@@ -20,7 +21,7 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function news(Request $request): array
+    public function index(Request $request): array
     {
         $user = $request->providedUser;
         $params = $request->only(['type']);
@@ -74,28 +75,39 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function approve(Request $request): array
+    public function approve(News $news, Request $request)
     {
-        $loggedUser = $request->user;
-        $user = $request->providedUser;
-        $news = $request->providedNews;
+        $validated = CommonFunctions::validateRequest($request, ApproveNewsValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $authorizedUser = $request->user;
+        $user = User::find($validated['userId']);
+        $approve = (bool) $validated['approve'];
 
         $userNews = $user->news()->find($news->id);
 
-        if ($userNews->approved === true) {
-            return CommonFunctions::response(FAIL, "News has been already approved!");
+        if ($userNews === null) {
+            return CommonFunctions::response(BAD_REQUEST, "News could not be found!");
         }
 
-        if ($userNews) {
-            $userNews->approved = true;
-            $userNews->approved_by = $loggedUser->id;
-
-            if ($userNews->save()) {
-                return CommonFunctions::response(SUCCESS, "News succesfully approved!");
-            }
+        if ($approve && $userNews->approved) {
+            return CommonFunctions::response(BAD_REQUEST, "News has been already approved!");
         }
 
-        return CommonFunctions::response(FAIL, "News could not be found!");
+        if (!$approve && !$userNews->approved) {
+            return CommonFunctions::response(BAD_REQUEST, "News has been already unapproved!");
+        }
+
+        $userNews->approved = $approve;
+        $userNews->approved_by = $authorizedUser->id;
+        $message = $approve ? "News succesfully approved!" : "News succesfully unapproved!";
+
+        return $userNews->save()
+        ? CommonFunctions::response(SUCCESS, $message)
+        : CommonFunctions::response(SUCCESS, "Failed to update approvment status");
     }
 
     /**
