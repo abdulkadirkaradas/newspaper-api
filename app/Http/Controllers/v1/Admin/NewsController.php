@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Validators\ApproveNewsValidator;
 use App\Validators\ChangePostVisiblityValidator;
 use App\Validators\CreateNewsCategoryValidator;
+use App\Validators\DeleteNewsValidator;
 
 class NewsController extends Controller
 {
@@ -106,8 +107,8 @@ class NewsController extends Controller
         $message = $approve ? "News succesfully approved!" : "News succesfully unapproved!";
 
         return $userNews->save()
-        ? CommonFunctions::response(SUCCESS, $message)
-        : CommonFunctions::response(SUCCESS, "Failed to update approvment status");
+            ? CommonFunctions::response(SUCCESS, $message)
+            : CommonFunctions::response(SUCCESS, "Failed to update approvment status");
     }
 
     /**
@@ -116,29 +117,36 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function delete(Request $request): array
+    public function delete(News $news, Request $request)
     {
+        $validated = CommonFunctions::validateRequest($request, DeleteNewsValidator::class);
+
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
         $loggedUser = $request->user;
-        $user = $request->providedUser;
-        $news = $request->providedNews;
+        $user = User::find($validated['userId']);
 
         $userNews = $user->news()->find($news->id);
 
+        if ($userNews === null) {
+            return CommonFunctions::response(BAD_REQUEST, "News could not be found!");
+        }
+
         if ($userNews->deleted_at !== null) {
-            return CommonFunctions::response(FAIL, "News has been already deleted!");
+            return CommonFunctions::response(BAD_REQUEST, "News has been already deleted!");
         }
 
-        if ($userNews) {
-            $userNews->removed_by = $loggedUser->id;
+        $userNews->removed_by = $loggedUser->id;
 
-            if ($userNews->save()) {
-                $userNews->delete();
+        if ($userNews->save()) {
+            $userNews->delete();
 
-                return CommonFunctions::response(SUCCESS, "News successfully deleted!");
-            }
+            return CommonFunctions::response(SUCCESS, "News successfully deleted!");
         }
 
-        return CommonFunctions::response(FAIL, "News could not be found!");
+        return CommonFunctions::response(BAD_REQUEST, "News could not be deleted!");
     }
 
     /**
