@@ -46,11 +46,10 @@ class UsersController extends Controller
         $userInfo->role = UserRoles::getRole($user->role_id);
 
         return [
-            'id' => $user->id,
             'name' => $user->name,
             'lastname' => $user->lastname,
             'username' => $user->username,
-            'membership_date' => $user->created_at,
+            'membershipDate' => $user->created_at,
             'news' => $userInfo->news,
             'notifications' => $userInfo->notifications,
             'warnings' => $userInfo->warnings,

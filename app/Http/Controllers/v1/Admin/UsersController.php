@@ -9,6 +9,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
+use App\Validators\BlockUserValidator;
 use App\Validators\CreateWarningValidator;
 use App\Validators\CreateNotificationValidator;
 
@@ -22,7 +23,7 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function user(Request $request): array
+    public function index(Request $request): array
     {
         $params = $request->only(['id', 'type']);
 
@@ -88,12 +89,15 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function change_user_role(Request $request): array
+    public function updateRole(User $user, Request $request): array
     {
-        $params = $request->only(['id', 'role_id']);
+        $request->validate([
+            'role_id' => 'required|integer|in:1,2,3'
+        ]);
 
-        $user = User::find($params['id']);
-        $user->role_id = $params['role_id'];
+        $roleId = $request->input('role_id');
+
+        $user->role_id = $roleId;
 
         if ($user->save()) {
             return CommonFunctions::response(SUCCESS, "User role has been changed successfully!");
@@ -103,24 +107,35 @@ class UsersController extends Controller
     }
 
     /**
-     * Block user by id no
+     * Block or unblock an user by id no
      *
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function block_user(Request $request): array
+    public function block(User $user, Request $request)
     {
-        $user = $request->providedUser;
+        $validated = CommonFunctions::validateRequest($request, BlockUserValidator::class);
 
-        if ($user->blocked === true) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $block = (bool) $validated['block'];
+
+        if ($block && $user->blocked) {
             return CommonFunctions::response(BAD_REQUEST, "User already blocked!");
         }
 
-        $user->blocked = true;
+        if (!$block && !$user->blocked) {
+            return CommonFunctions::response(BAD_REQUEST, "User is not blocked!");
+        }
+
+        $user->blocked = $block;
+        $message = $block ? "User has been blocked!" : "User has been unblocked!";
 
         return $user->save()
-            ? CommonFunctions::response(SUCCESS, "User has been blocked!")
-            : CommonFunctions::response(FAIL, "Failed to block user.");
+            ? CommonFunctions::response(SUCCESS, $message)
+            : CommonFunctions::response(FAIL, "Failed to update block status.");
     }
 
     /**
@@ -129,37 +144,43 @@ class UsersController extends Controller
      * @var Request $request
      * @return array
      */
-    public function get_user_notifications(Request $request): array
+    public function getUserNotifications(Request $request)
     {
-        $user = $request->providedUser;
-        $params = $request->only(['type', 'from', 'to']);
+        $params = $request->only(['type', 'from', 'to', 'userId']);
 
-        if (count($params) === 0 || !isset($params['type'])) {
+        if (!isset($params['type'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
-        $info = User::with([
-            'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'title', 'message', 'created_at');
+        $query = User::select('id', 'name', 'lastname', 'username')
+            ->with([
+                'notifications' => function ($query) use ($params) {
+                    $query->select('user_id', 'type', 'title', 'message', 'created_at');
 
-                // Check if 'from' and 'to' parameters exists
-                // and make query by the creation time
-                if (isset($params['from']) || isset($params['to'])) {
-                    $query->whereBetween('created_at', [$params['from'], $params['to']]);
-                }
+                    if (isset($params['from'])) {
+                        $query->where('created_at', '>=', date($params['from']));
+                    }
+                    if (isset($params['to'])) {
+                        $query->where('created_at', '<=', date($params['to']));
+                    }
 
-                // Check if 'type' parameter is not equal 'all' value
-                // and make query by the 'is_read' column
-                if ($params['type'] !== 'all') {
-                    $query->where('is_read', $params['type'] === 'read');
+                    if ($params['type'] !== 'read' || 'unread') {
+                        $query->where('is_read', $params['type'] === 'read');
+                    }
                 }
-            }
-        ])->find($user->id);
+            ]);
+
+        if (isset($params['userId'])) {
+            $notifications = $query->find($params['userId']);
+        } else {
+            $notifications = $query->get();
+        }
 
         return [
-            'notifications' => $info->notifications
+            'notifications' => $notifications ?? []
         ];
     }
+
 
     /**
      * Create notification for user by id
@@ -167,10 +188,8 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create_notification(Request $request): array
+    public function createNotification(User $user, Request $request)
     {
-        $user = $request->providedUser;
-
         $validated = CommonFunctions::validateRequest($request, CreateNotificationValidator::class);
 
         if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
@@ -187,21 +206,19 @@ class UsersController extends Controller
                 "notificationId" => $notification->id,
                 'meesage' => NOTIFICATION_CREATED
             ]);
-        } else {
-            return CommonFunctions::response(FAIL, NOTIFICATION_CREATION_FAILED);
         }
+
+        return CommonFunctions::response(BAD_REQUEST, NOTIFICATION_CREATION_FAILED);
     }
 
     /**
      * Returns logged user warnings
      *
-     * @var Request $request
+     * @var User $user
      * @return array
      */
-    public function get_user_warnings(Request $request): array
+    public function getUserWarnings(User $user): array
     {
-        $user = $request->providedUser;
-
         $warnings = User::select('id', 'name', 'lastname', 'username')
             ->with([
                 'warnings' => function ($query) {
@@ -221,10 +238,8 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create_warning(Request $request): array
+    public function createWarning(User $user, Request $request)
     {
-        $user = $request->providedUser;
-
         $validated = CommonFunctions::validateRequest($request, CreateWarningValidator::class);
 
         if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
@@ -238,11 +253,11 @@ class UsersController extends Controller
 
         if ($user->notifications()->save($warning)) {
             return CommonFunctions::response(SUCCESS, [
-                "warningId" => $warning->id,
+                "warning" => $warning,
                 'message' => WARNING_CREATED
             ]);
         } else {
-            return CommonFunctions::response(FAIL, WARNING_CREATION_FAILED);
+            return CommonFunctions::response(BAD_REQUEST, WARNING_CREATION_FAILED);
         }
     }
 }

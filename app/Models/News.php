@@ -25,6 +25,7 @@ class News extends Model
         "approved_by",
         "removed_by",
         "user_id",
+        "category_id",
     ];
 
     public function user(): belongsTo

@@ -16,7 +16,7 @@ class VerifyNewsImagesFolderExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $imageFolderPath = public_path('images');
+        $imageFolderPath = public_path('newsImages');
 
         if (!File::exists($imageFolderPath)) {
             File::makeDirectory($imageFolderPath, 0755, true);

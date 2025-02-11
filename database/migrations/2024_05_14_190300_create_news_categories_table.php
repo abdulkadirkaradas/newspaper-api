@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('announcements', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->string('title');
-            $table->longText('content');
-            $table->integer('priority');
-            $table->softDeletes();
+        Schema::create('news_categories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->text('description');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('announcements');
+        Schema::dropIfExists('news_categories');
     }
 };

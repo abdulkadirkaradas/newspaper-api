@@ -5,14 +5,16 @@ namespace App\Validators;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CreateWarningValidator
+class CreateOppositeNewsValidator
 {
     public static function validate(Request $request)
     {
         $validations = [
-            "message" => ['required', 'string', 'max:255'],
-            "reason" => ['required', 'string', 'max:25'],
-            "warning_level" => ['required', 'integer', 'min:1', 'max:5'],
+            "sourceUserId" => ['required', 'uuid'],
+            "categoryId" => ['required', 'uuid'],
+            "title" => ['required', 'string', 'max:100'],
+            "content" => ['required', 'string', 'max:4000'],
+            "priority" => ['nullable', 'integer', 'max:2'],
         ];
 
         $validator = Validator::make($request->all(), $validations);

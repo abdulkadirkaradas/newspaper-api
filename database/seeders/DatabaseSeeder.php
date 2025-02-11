@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,8 +19,13 @@ class DatabaseSeeder extends Seeder
         Role::create(["name" => "Writer", "type" => "writer"]);
 
         /**
-         * Creates the test values
+         * Create dummy Admin user
         */
         $this->call(TestingSeeder::class);
+
+        /**
+         * Create dummy users
+         */
+        User::factory()->count(2)->create();
     }
 }

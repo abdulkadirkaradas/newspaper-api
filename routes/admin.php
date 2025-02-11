@@ -22,81 +22,86 @@ Route::prefix('v1/admin')->middleware([
     CheckAuthentication::class,
     ValidateUUID::class,
     'role:Admin',
-    'throttle:30,1'
+    'throttle:30,1',
+    'api'
 ])->group(function () {
 
     Route::prefix('announcements')->group(function () {
-        // Return announcements | priority, from, to
-        Route::get('/', [AnnouncementsController::class, 'announcements']);
-        // Return latest announcement
-        Route::get('/latest', [AnnouncementsController::class, 'latest_announcement']);
-
+        // Return announcements | priority, from, to, latest
+        Route::get('/', [AnnouncementsController::class, 'index']);
         // Create an announcement
-        Route::post('/create', [AnnouncementsController::class, 'create']);
+        Route::post('/', [AnnouncementsController::class, 'store']);
     });
 
     // User based function routes
     Route::prefix('user')->group(function () {
         // Return user informations | id, type['all, blocked']
-        Route::get('/', [UsersController::class, 'user']);
-
+        Route::get('/', [UsersController::class, 'index']);
         // Change user role
-        Route::put('change-role', [UsersController::class, 'change_user_role']);
+        Route::put('/{user}/role', [UsersController::class, 'updateRole']);
         // Block user
-        Route::post('/block', [UsersController::class, 'block_user']);
+        Route::put('/{user}/block', [UsersController::class, 'block']);
     });
 
     Route::prefix('news')->group(function () {
         // Return news | id, type[all, approve, unapproved]
-        Route::get('/', [NewsController::class, 'news']);
+        Route::get('/', [NewsController::class, 'index']);
+
+        // Return all news categories
+        Route::get('/categories', [NewsController::class, 'categories']);
 
         // Approve news by user and news id
-        Route::post('/approve', [NewsController::class, 'approve']);
-
-        // Delete news by user and news id
-        Route::post('/delete', [NewsController::class, 'delete']);
+        Route::post('{news}/approve', [NewsController::class, 'approve']);
 
         // Create a new post
-        Route::post('/create', [UserNewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        Route::post('/', [UserNewsController::class, 'store'])->middleware([SanitizeHtmlContent::class]);
+
         // Create a new post image
-        Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
+        Route::post('{news}/images', [UserNewsController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class,
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
 
+        // Create a news category
+        Route::post('/categories', [NewsController::class, 'createCategory']);
+
+        // Update a category of news record
+        Route::put('/categories/{category}', [NewsController::class, 'updateCategory']);
+
         // Update approved news visibility
-        Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);
+        Route::put('{news}/visibility', [NewsController::class, 'updateVisibility']);
+
+        // Delete news by user and news id
+        Route::delete('/{news}/delete', [NewsController::class, 'delete']);
     });
 
     // Notification based function routes
     Route::prefix('notifications')->group(function () {
         // Return user notifications|all, read, unread, time-range based
-        Route::get('/', [UsersController::class, 'get_user_notifications']);
+        Route::get('/', [UsersController::class, 'getUserNotifications']);
 
         // Create notification for the provided user
-        Route::post('/create', [UsersController::class, 'create_notification']);
+        Route::post('/{user}', [UsersController::class, 'createNotification']);
     });
 
     // Notification based function routes
     Route::prefix('warnings')->group(function () {
         // Return user warnings
-        Route::get('/', [UsersController::class, 'get_user_warnings']);
+        Route::get('/{user}', [UsersController::class, 'getUserWarnings']);
 
         // Return user warnings
-        Route::post('/create', [UsersController::class, 'create_warning']);
+        Route::post('/{user}', [UsersController::class, 'createWarning']);
     });
 
     Route::prefix('badges')->group(function () {
         // Create a new badge
-        Route::post('/create', [BadgesController::class, 'create']);
+        Route::post('/', [BadgesController::class, 'store']);
         // Create a new badge image
-        Route::post('/upload-image', [BadgesController::class, 'upload_image'])
+        Route::post('{badge}/image', [BadgesController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyBadgeExists::class,
                 VerifyBadgesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
@@ -104,8 +109,8 @@ Route::prefix('v1/admin')->middleware([
 
     Route::prefix('helpers')->group(function () {
         // Return default user roles
-        Route::get('/user-roles', [HelpersController::class, 'user_roles']);
+        Route::get('/user-roles', [HelpersController::class, 'userRoles']);
         // Return default warning levels
-        Route::get('/warning-levels', [HelpersController::class, 'warning_levels']);
+        Route::get('/warning-levels', [HelpersController::class, 'warningLevels']);
     });
 });

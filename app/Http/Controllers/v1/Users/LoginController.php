@@ -50,23 +50,27 @@ class LoginController extends Controller
             ]);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $user = $request->user;
 
-        $auth = UserAuthTokens::where('user_id', $user->id)->first();
-        if ($auth) {
-            $auth->expire_date = now();
-            $auth->last_login = now();
-            $auth->expired = true;
-            $auth->save();
-            $auth->delete();
+        $authTokens = UserAuthTokens::where('user_id', $user->id)->get();
+
+        if ($authTokens->isNotEmpty()) {
+            foreach ($authTokens as $auth) {
+                $auth->expire_date = now();
+                $auth->last_login = now();
+                $auth->expired = true;
+                $auth->save();
+                $auth->delete();
+            }
         }
 
         Auth::guard('api')->logout();
 
         return response()->json([
             'status' => SUCCESS,
-            'message' => 'You have been logged out.'
+            'message' => 'You have been logged out.',
         ]);
     }
 
@@ -97,6 +101,14 @@ class LoginController extends Controller
                 'token' => $userAuth->token,
                 'type' => 'bearer',
             ]
+        ]);
+    }
+
+    public function userInformation(Request $request)
+    {
+        return response()->json([
+            'status' => SUCCESS,
+            'userInformation' => $request->user
         ]);
     }
 }

@@ -16,7 +16,7 @@ class HelpersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function user_roles(Request $request): array
+    public function userRoles(Request $request): array
     {
         return CommonFunctions::getEnumValues(UserRoles::class);
     }
@@ -27,7 +27,7 @@ class HelpersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function warning_levels(Request $request): array
+    public function warningLevels(Request $request): array
     {
         return CommonFunctions::getEnumValues(WarningLevels::class);
     }
