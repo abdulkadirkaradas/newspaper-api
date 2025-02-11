@@ -65,7 +65,7 @@ Route::prefix('v1/admin')->middleware([
             ->withoutMiddleware([CheckHeaders::class]);
 
         // Create a news category
-        Route::post('/create-category', [NewsController::class, 'create_category']);
+        Route::post('/categories', [NewsController::class, 'createCategory']);
 
         // Update a category of news record
         Route::put('/update-news-category', [NewsController::class, 'update_news_category']);

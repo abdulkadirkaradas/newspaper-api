@@ -248,7 +248,7 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function create_category(Request $request): array
+    public function createCategory(Request $request)
     {
         $validated = CommonFunctions::validateRequest($request, CreateNewsCategoryValidator::class);
 
@@ -262,7 +262,7 @@ class NewsController extends Controller
 
         if ($category->save()) {
             return CommonFunctions::response(SUCCESS, [
-                "categoryId" => $category->id,
+                "category" => $category,
                 "message" => "News category has been created successfully"
             ]);
         }
