@@ -46,7 +46,7 @@ Route::prefix('v1/writer')->middleware([
         // Create a new post
         Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
         // Create opposition to an existing news
-        Route::post('/create-opposition', [NewsController::class, 'create_opposition'])
+        Route::post('/{sourceNews}/opposition', [NewsController::class, 'createOpposition'])
             ->middleware([
                 SanitizeHtmlContent::class,
                 ValidateUUID::class,
