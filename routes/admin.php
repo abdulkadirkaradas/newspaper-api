@@ -51,7 +51,7 @@ Route::prefix('v1/admin')->middleware([
         Route::get('/categories', [NewsController::class, 'categories']);
 
         // Approve news by user and news id
-        Route::post('/approve', [NewsController::class, 'approve']);
+        Route::post('{news}/approve', [NewsController::class, 'approve']);
 
         // Delete news by user and news id
         Route::post('/delete', [NewsController::class, 'delete']);
