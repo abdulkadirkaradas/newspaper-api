@@ -7,6 +7,7 @@ use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\NewsCategories;
 use App\Models\NewsImages;
 use App\Models\OppositeNews;
 use App\Validators\CreateNewsValidator;
@@ -44,14 +45,9 @@ class NewsController extends Controller
         ];
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $user = $request->user;
-        $newsCategory = $request->newsCategory;
-
-        if ($newsCategory === null) {
-            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
-        }
 
         $validated = CommonFunctions::validateRequest($request, CreateNewsValidator::class);
 
@@ -59,20 +55,26 @@ class NewsController extends Controller
             return $validated;
         }
 
+        $category = NewsCategories::find($validated['categoryId']);
+
+        if ($category === null) {
+            return CommonFunctions::response(BAD_REQUEST, "Category could not be found!");
+        }
+
         $post = new News();
         $post->title = $validated['title'];
         $post->content = $validated['content'];
         $post->priority = $user->role === DEFAULT_USER_ROLE ? DEFAULT_NEWS_PRIORITY : $validated['priority'];
-        $post->category_id = $newsCategory->id;
+        $post->category_id = $category->id;
 
         if ($user->news()->save($post)) {
             return CommonFunctions::response(SUCCESS, [
-                'newsId' => $post->id,
+                'news' => $post,
                 'message' => NEWS_CREATED
             ]);
-        } else {
-            return CommonFunctions::response(FAIL, NEWS_CREATION_FAILED);
         }
+
+        return CommonFunctions::response(BAD_REQUEST, NEWS_CREATION_FAILED);
     }
 
     public function upload_news_image(Request $request)
