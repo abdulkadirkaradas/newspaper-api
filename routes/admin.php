@@ -89,7 +89,7 @@ Route::prefix('v1/admin')->middleware([
     // Notification based function routes
     Route::prefix('warnings')->group(function () {
         // Return user warnings
-        Route::get('/', [UsersController::class, 'get_user_warnings']);
+        Route::get('/{user}', [UsersController::class, 'getUserWarnings']);
 
         // Return user warnings
         Route::post('/create', [UsersController::class, 'create_warning']);

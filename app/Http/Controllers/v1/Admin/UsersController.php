@@ -214,13 +214,11 @@ class UsersController extends Controller
     /**
      * Returns logged user warnings
      *
-     * @var Request $request
+     * @var User $user
      * @return array
      */
-    public function get_user_warnings(Request $request): array
+    public function getUserWarnings(User $user): array
     {
-        $user = $request->providedUser;
-
         $warnings = User::select('id', 'name', 'lastname', 'username')
             ->with([
                 'warnings' => function ($query) {
