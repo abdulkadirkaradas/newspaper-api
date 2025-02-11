@@ -54,7 +54,7 @@ Route::prefix('v1/admin')->middleware([
         Route::post('{news}/approve', [NewsController::class, 'approve']);
 
         // Create a new post
-        Route::post('/create', [UserNewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        Route::post('/', [UserNewsController::class, 'store'])->middleware([SanitizeHtmlContent::class]);
 
         // Create a new post image
         Route::post('/upload-image', [UserNewsController::class, 'upload_news_image'])
