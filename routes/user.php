@@ -52,10 +52,9 @@ Route::prefix('v1/writer')->middleware([
                 ValidateUUID::class,
             ]);
         // Create a new post image
-        Route::post('/upload-image', [NewsController::class, 'upload_news_image'])
+        Route::post('/{news}/image', [NewsController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class,
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
