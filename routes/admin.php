@@ -99,10 +99,9 @@ Route::prefix('v1/admin')->middleware([
         // Create a new badge
         Route::post('/', [BadgesController::class, 'store']);
         // Create a new badge image
-        Route::post('/upload-image', [BadgesController::class, 'upload_image'])
+        Route::post('{badge}/image', [BadgesController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyBadgeExists::class,
                 VerifyBadgesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
