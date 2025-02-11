@@ -71,7 +71,7 @@ Route::prefix('v1/admin')->middleware([
         Route::put('/categories/{category}', [NewsController::class, 'updateCategory']);
 
         // Update approved news visibility
-        Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);
+        Route::put('{news}/visibility', [NewsController::class, 'updateVisibility']);
 
         // Delete news by user and news id
         Route::delete('/{news}/delete', [NewsController::class, 'delete']);
