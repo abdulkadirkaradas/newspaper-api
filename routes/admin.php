@@ -109,8 +109,8 @@ Route::prefix('v1/admin')->middleware([
 
     Route::prefix('helpers')->group(function () {
         // Return default user roles
-        Route::get('/user-roles', [HelpersController::class, 'user_roles']);
+        Route::get('/user-roles', [HelpersController::class, 'userRoles']);
         // Return default warning levels
-        Route::get('/warning-levels', [HelpersController::class, 'warning_levels']);
+        Route::get('/warning-levels', [HelpersController::class, 'warningLevels']);
     });
 });
