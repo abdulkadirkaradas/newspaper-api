@@ -6,10 +6,15 @@ use App\Http\Middleware\ValidateUUID;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/public')->middleware([ValidateUUID::class])->group(function () {
-    // Returns requested user informations
-    Route::get('/user', [UserController::class, 'user']);
-    // Return all user news
-    Route::get('/news', [NewsController::class, 'news']);
-    // Return all categories
-    Route::get('/news-categories', [NewsController::class, 'categories']);
+    Route::prefix('user')->group(function () {
+        // Returns requested user informations
+        Route::get('/', [UserController::class, 'user']);
+    });
+
+    Route::prefix('news')->group(function () {
+        // Return all user news
+        Route::get('/', [NewsController::class, 'news']);
+        // Return all categories
+        Route::get('/categories', [NewsController::class, 'categories']);
+    });
 });

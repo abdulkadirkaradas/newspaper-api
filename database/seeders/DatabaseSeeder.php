@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         Role::create(["name" => "Writer", "type" => "writer"]);
 
         /**
-         * Creates the test values
+         * Create dummy Admin user
         */
         $this->call(TestingSeeder::class);
 

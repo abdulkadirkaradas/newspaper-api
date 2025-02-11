@@ -15,14 +15,12 @@ class CommonFunctions {
      * @param string $error
      * @return array
      */
-    public static function response(int $status, mixed $message = null) : array
+    public static function response(int $status, mixed $message = null)
     {
-        $response = [
+        return response()->json([
             'status' => $status,
             'message' => $message ?? '',
-        ];
-
-        return $response;
+        ], $status);
     }
 
     /**

@@ -10,7 +10,7 @@ class CreateNotificationValidator
     public static function validate(Request $request)
     {
         $validations = [
-            "type" => ['required', 'string', 'max:3'], // This column should be integer
+            "type" => ['required', 'integer', 'min:1', 'max:3'],
             "title" => ['required', 'string', 'max:100'],
             "message" => ['required', 'string', 'max:1200'],
         ];

@@ -5,14 +5,18 @@ namespace App\Validators;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CreateWarningValidator
+class ChangeNewsVisibilityValidator
 {
     public static function validate(Request $request)
     {
         $validations = [
-            "message" => ['required', 'string', 'max:255'],
-            "reason" => ['required', 'string', 'max:25'],
-            "warning_level" => ['required', 'integer', 'min:1', 'max:5'],
+            "userId" => ['required', 'uuid'],
+            "type" => ['required', 'string'],
+            "visibility" => ['required', 'boolean'],
+            "warning" => ['required', 'array'],
+            "warning.message" => ['required', 'string'],
+            "warning.reason" => ['required', 'string'],
+            "warning.warningLevel" => ['required', 'integer', 'min:1', 'max:5'],
         ];
 
         $validator = Validator::make($request->all(), $validations);

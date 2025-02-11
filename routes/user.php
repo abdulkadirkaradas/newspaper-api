@@ -44,18 +44,17 @@ Route::prefix('v1/writer')->middleware([
         // Return all news reactions
         Route::get('/reactions', [NewsController::class, 'reactions']);
         // Create a new post
-        Route::post('/create', [NewsController::class, 'create'])->middleware([SanitizeHtmlContent::class]);
+        Route::post('/', [NewsController::class, 'store'])->middleware([SanitizeHtmlContent::class]);
         // Create opposition to an existing news
-        Route::post('/create-opposition', [NewsController::class, 'create_opposition'])
+        Route::post('/{sourceNews}/opposition', [NewsController::class, 'createOpposition'])
             ->middleware([
                 SanitizeHtmlContent::class,
                 ValidateUUID::class,
             ]);
         // Create a new post image
-        Route::post('/upload-image', [NewsController::class, 'upload_news_image'])
+        Route::post('/{news}/image', [NewsController::class, 'uploadImage'])
             ->middleware([
                 VerifyImageUploadHeader::class,
-                VerifyNewsExists::class,
                 VerifyNewsImagesFolderExists::class,
             ])
             ->withoutMiddleware([CheckHeaders::class]);
