@@ -68,7 +68,7 @@ Route::prefix('v1/admin')->middleware([
         Route::post('/categories', [NewsController::class, 'createCategory']);
 
         // Update a category of news record
-        Route::put('/update-news-category', [NewsController::class, 'update_news_category']);
+        Route::put('/categories/{category}', [NewsController::class, 'updateCategory']);
 
         // Update approved news visibility
         Route::put('/change-post-visibility', [NewsController::class, 'change_post_visibility']);

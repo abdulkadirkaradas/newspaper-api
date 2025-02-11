@@ -13,6 +13,7 @@ use App\Validators\ApproveNewsValidator;
 use App\Validators\ChangePostVisiblityValidator;
 use App\Validators\CreateNewsCategoryValidator;
 use App\Validators\DeleteNewsValidator;
+use App\Validators\UpdateNewsCategoryValidator;
 
 class NewsController extends Controller
 {
@@ -276,12 +277,17 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function update_news_category(Request $request): array
+    public function updateCategory(NewsCategories $category, Request $request)
     {
-        $news = $request->providedNews;
-        $category = $request->newsCategory;
+        $validated = CommonFunctions::validateRequest($request, UpdateNewsCategoryValidator::class);
 
-        if (is_null($news) || is_null($category)) {
+        if (isset($validated['status']) && $validated['status'] === BAD_REQUEST) {
+            return $validated;
+        }
+
+        $news = News::find($validated['newsId']);
+
+        if ($news === null) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
