@@ -22,7 +22,7 @@ class NewsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(Request $request)
     {
         $user = $request->providedUser;
         $params = $request->only(['type']);
