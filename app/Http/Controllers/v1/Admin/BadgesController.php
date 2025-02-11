@@ -6,6 +6,7 @@ use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
 use App\Models\Badge;
 use App\Models\BadgeImage;
+use App\Models\User;
 use App\Validators\CreateBadgeValidator;
 use App\Validators\UploadBadgeImageValidator;
 use Illuminate\Http\Request;
@@ -44,13 +45,12 @@ class BadgesController extends Controller
     /**
      * Upload badge image
      *
+     * @param Badge $badge
      * @param \Illuminate\Http\Request $request
-     * @return array
      */
-    public function upload_image(Request $request): array
+    public function uploadImage(Badge $badge, Request $request)
     {
         $user = $request->user;
-        $badge = $request->badge;
 
         $validated = CommonFunctions::validateRequest($request, UploadBadgeImageValidator::class);
 
@@ -72,7 +72,7 @@ class BadgesController extends Controller
         if ($badge->badgeImages()->save($newsImage)) {
             return CommonFunctions::response(SUCCESS, BADGE_IMAGE_CREATED);
         } else {
-            return CommonFunctions::response(FAIL, BADGE_IMAGE_CREATION_FAILED);
+            return CommonFunctions::response(BAD_REQUEST, BADGE_IMAGE_CREATION_FAILED);
         }
     }
 }
