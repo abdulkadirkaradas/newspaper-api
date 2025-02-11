@@ -12,7 +12,7 @@ class CreateWarningValidator
         $validations = [
             "message" => ['required', 'string', 'max:255'],
             "reason" => ['required', 'string', 'max:25'],
-            "warning_level" => ['required', 'int'],
+            "warning_level" => ['required', 'integer', 'min:1', 'max:5'],
         ];
 
         $validator = Validator::make($request->all(), $validations);
