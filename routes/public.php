@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1/public')->middleware([ValidateUUID::class])->group(function () {
     Route::prefix('user')->group(function () {
         // Returns requested user informations
-        Route::get('/', [UserController::class, 'user']);
+        Route::get('/{user}', [UserController::class, 'user']);
     });
 
     Route::prefix('news')->group(function () {

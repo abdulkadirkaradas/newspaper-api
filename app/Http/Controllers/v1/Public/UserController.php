@@ -17,10 +17,8 @@ class UserController extends Controller
      * @var Request $request
      * @return array
      */
-    public function user(Request $request): array
+    public function user(User $user)
     {
-        $user = $request->providedUser;
-
         $info = User::with([
             'news' => function ($query) {
                 $query->select('user_id', 'title', 'created_at');
