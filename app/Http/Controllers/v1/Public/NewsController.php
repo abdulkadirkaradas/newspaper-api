@@ -20,11 +20,16 @@ class NewsController extends Controller
      * @var Request $request
      * @return array
      */
-    public function news(Request $request): array
+    public function news(Request $request)
     {
         $type = $request->input('type');
+        $newsId = $request->input('newsId');
 
-        if (empty($type)) {
+        if ($type === null) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
+
+        if ($type === 'user' && $newsId === null) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
@@ -45,8 +50,7 @@ class NewsController extends Controller
         });
 
         if ($type === 'user') {
-            $providedNews = $request->providedNews;
-            $news = $news->find($providedNews->id);
+            $news = $news->find($newsId);
         }
 
         return [
