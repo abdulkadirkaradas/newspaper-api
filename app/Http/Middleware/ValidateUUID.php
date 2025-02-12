@@ -3,11 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\CommonFunctions;
-use App\Models\News;
-use App\Models\NewsCategories;
 use Symfony\Component\HttpFoundation\Response;
 
 class ValidateUUID
