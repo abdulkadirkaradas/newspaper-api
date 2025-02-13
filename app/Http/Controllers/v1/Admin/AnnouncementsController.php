@@ -81,6 +81,6 @@ class AnnouncementsController extends Controller
             ]);
         }
 
-        return CommonFunctions::response(FAIL, "Announcements could not be created!");
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, "Announcements could not be created!");
     }
 }

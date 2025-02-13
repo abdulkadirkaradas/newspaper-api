@@ -68,7 +68,7 @@ class UsersController extends Controller
             $user = $userQuery->find($params['userId']);
 
             if ($user === null) {
-                return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+                return CommonFunctions::response(NOT_FOUND, USER_NOT_FOUND);
             }
 
             $user->role = UserRoles::getRole($user->role_id);
@@ -104,7 +104,7 @@ class UsersController extends Controller
         if ($user->save()) {
             return CommonFunctions::response(SUCCESS, "User role has been changed successfully!");
         } else {
-            return CommonFunctions::response(FAIL, "User role could not be changed!");
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, "User role could not be changed!");
         }
     }
 
@@ -125,11 +125,11 @@ class UsersController extends Controller
         $block = (bool) $validated['block'];
 
         if ($block && $user->blocked) {
-            return CommonFunctions::response(BAD_REQUEST, "User already blocked!");
+            return CommonFunctions::response(CONFLICT, "User already blocked!");
         }
 
         if (!$block && !$user->blocked) {
-            return CommonFunctions::response(BAD_REQUEST, "User is not blocked!");
+            return CommonFunctions::response(CONFLICT, "User is not blocked!");
         }
 
         $user->blocked = $block;
@@ -137,7 +137,7 @@ class UsersController extends Controller
 
         return $user->save()
             ? CommonFunctions::response(SUCCESS, $message)
-            : CommonFunctions::response(FAIL, "Failed to update block status.");
+            : CommonFunctions::response(INTERNAL_SERVER_ERROR, "Failed to update block status.");
     }
 
     /**
@@ -210,7 +210,7 @@ class UsersController extends Controller
             ]);
         }
 
-        return CommonFunctions::response(BAD_REQUEST, NOTIFICATION_CREATION_FAILED);
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, NOTIFICATION_CREATION_FAILED);
     }
 
     /**
@@ -259,7 +259,7 @@ class UsersController extends Controller
                 'message' => WARNING_CREATED
             ]);
         } else {
-            return CommonFunctions::response(BAD_REQUEST, WARNING_CREATION_FAILED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, WARNING_CREATION_FAILED);
         }
     }
 }

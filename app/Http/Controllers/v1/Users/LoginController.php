@@ -36,9 +36,9 @@ class LoginController extends Controller
 
         if (!$userAuth) {
             return response()->json([
-                'status' => FAIL,
+                'status' => INTERNAL_SERVER_ERROR,
                 'message' => AN_ERROR_OCCURED,
-            ], FAIL);
+            ], INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
@@ -81,9 +81,9 @@ class LoginController extends Controller
 
         if (!$auth) {
             return response()->json([
-                'status' => FAIL,
+                'status' => UNAUTHORIZED,
                 'message' => "Invalid token"
-            ]);
+            ], UNAUTHORIZED);
         }
 
         $auth->expired = true;

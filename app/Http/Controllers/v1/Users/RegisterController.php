@@ -35,7 +35,7 @@ class RegisterController extends Controller
         ]);
 
         if (!$user) {
-            return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, AN_ERROR_OCCURED);
         }
 
         $token = Auth::guard('api')->login($user);
@@ -46,7 +46,7 @@ class RegisterController extends Controller
         ]);
 
         if (!$userAuth) {
-            return CommonFunctions::response(FAIL, AN_ERROR_OCCURED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, AN_ERROR_OCCURED);
         }
 
         return [

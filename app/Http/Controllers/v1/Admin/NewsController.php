@@ -58,7 +58,7 @@ class NewsController extends Controller
             $user = User::find($params['userId']);
 
             if ($user === null) {
-                return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+                return CommonFunctions::response(NOT_FOUND, USER_NOT_FOUND);
             }
 
             $newsInfo = $news->where('user_id', $user->id);
@@ -98,15 +98,15 @@ class NewsController extends Controller
         $userNews = $user->news()->find($news->id);
 
         if ($userNews === null) {
-            return CommonFunctions::response(BAD_REQUEST, "News could not be found!");
+            return CommonFunctions::response(NOT_FOUND, "News could not be found!");
         }
 
         if ($approve && $userNews->approved) {
-            return CommonFunctions::response(BAD_REQUEST, "News has been already approved!");
+            return CommonFunctions::response(CONFLICT, "News has been already approved!");
         }
 
         if (!$approve && !$userNews->approved) {
-            return CommonFunctions::response(BAD_REQUEST, "News has been already unapproved!");
+            return CommonFunctions::response(CONFLICT, "News has been already unapproved!");
         }
 
         $userNews->approved = $approve;
@@ -138,11 +138,11 @@ class NewsController extends Controller
         $userNews = $user->news()->find($news->id);
 
         if ($userNews === null) {
-            return CommonFunctions::response(BAD_REQUEST, "News could not be found!");
+            return CommonFunctions::response(NOT_FOUND, "News could not be found!");
         }
 
         if ($userNews->deleted_at !== null) {
-            return CommonFunctions::response(BAD_REQUEST, "News has been already deleted!");
+            return CommonFunctions::response(CONFLICT, "News has been already deleted!");
         }
 
         $userNews->removed_by = $loggedUser->id;
@@ -153,7 +153,7 @@ class NewsController extends Controller
             return CommonFunctions::response(SUCCESS, "News successfully deleted!");
         }
 
-        return CommonFunctions::response(BAD_REQUEST, "News could not be deleted!");
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, "News could not be deleted!");
     }
 
     /**
@@ -173,7 +173,7 @@ class NewsController extends Controller
         $user = User::find($validated['userId']);
 
         if (!$user) {
-            return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+            return CommonFunctions::response(NOT_FOUND, USER_NOT_FOUND);
         }
 
         if ($validated['type'] === 'message') {
@@ -204,7 +204,7 @@ class NewsController extends Controller
             }
         }
 
-        return CommonFunctions::response(BAD_REQUEST, "News visibility could not be changed!");
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, "News visibility could not be changed!");
     }
 
     /**
@@ -247,7 +247,7 @@ class NewsController extends Controller
             ]);
         }
 
-        return CommonFunctions::response(FAIL, "Failed to create news category!");
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, "Failed to create news category!");
     }
 
     /**
@@ -276,6 +276,6 @@ class NewsController extends Controller
             return CommonFunctions::response(SUCCESS, "The news record has been update successfully!");
         }
 
-        return CommonFunctions::response(FAIL, "The news could not be update to the category!");
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, "The news could not be update to the category!");
     }
 }

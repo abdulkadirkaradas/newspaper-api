@@ -59,7 +59,7 @@ class NewsController extends Controller
         $category = NewsCategories::find($validated['categoryId']);
 
         if ($category === null) {
-            return CommonFunctions::response(BAD_REQUEST, "Category could not be found!");
+            return CommonFunctions::response(NOT_FOUND, "Category could not be found!");
         }
 
         $post = new News();
@@ -75,7 +75,7 @@ class NewsController extends Controller
             ]);
         }
 
-        return CommonFunctions::response(BAD_REQUEST, NEWS_CREATION_FAILED);
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, NEWS_CREATION_FAILED);
     }
 
     public function uploadImage(News $news, Request $request)
@@ -103,7 +103,7 @@ class NewsController extends Controller
         if ($news->newsImages()->save($newsImage)) {
             return CommonFunctions::response(SUCCESS, NEWS_IMAGE_CREATED);
         } else {
-            return CommonFunctions::response(BAD_REQUEST, NEWS_IMAGE_CREATION_FAILED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, NEWS_IMAGE_CREATION_FAILED);
         }
     }
 
@@ -130,7 +130,7 @@ class NewsController extends Controller
 
         // Check if source user is exists
         if ($sourceUser === null) {
-            return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+            return CommonFunctions::response(NOT_FOUND, USER_NOT_FOUND);
         }
 
         // Create opposition news
@@ -144,7 +144,7 @@ class NewsController extends Controller
 
         // Check if opposition news is created
         if (!$loggedUser->news()->save($post)) {
-            return CommonFunctions::response(BAD_REQUEST, NEWS_CREATION_FAILED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, NEWS_CREATION_FAILED);
         }
 
         // Create opposition reacord to the pivot table
@@ -159,7 +159,7 @@ class NewsController extends Controller
         if (!$oppositeNews->save()) {
             // if not created remove opposition news
             $post->delete();
-            return CommonFunctions::response(BAD_REQUEST, "Opposite news could not be created!");
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, "Opposite news could not be created!");
         }
 
         $post->opposition_news_id = $oppositeNews->id;
@@ -168,7 +168,7 @@ class NewsController extends Controller
             // If post could not be updated, delete opposition news and pivot table record
             $oppositeNews->delete();
             $post->delete();
-            return CommonFunctions::response(BAD_REQUEST, "Failed to update opposition news ID!");
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, "Failed to update opposition news ID!");
         }
 
         // Update 'opposition_news_id' column of source news

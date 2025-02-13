@@ -28,7 +28,7 @@ class UserRegisterMiddleware
 
         if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
             return response()
-                ->json(CommonFunctions::response(BAD_REQUEST, "This email|username has already been obtained!"));
+                ->json(CommonFunctions::response(CONFLICT, "This email|username has already been obtained!"));
         }
 
         return $next($request);

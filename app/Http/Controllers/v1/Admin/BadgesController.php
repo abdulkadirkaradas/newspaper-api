@@ -39,7 +39,7 @@ class BadgesController extends Controller
             ]);
         }
 
-        return CommonFunctions::response(BAD_REQUEST, BADGE_CREATION_FAILED);
+        return CommonFunctions::response(INTERNAL_SERVER_ERROR, BADGE_CREATION_FAILED);
     }
 
     /**
@@ -72,7 +72,7 @@ class BadgesController extends Controller
         if ($badge->badgeImages()->save($newsImage)) {
             return CommonFunctions::response(SUCCESS, BADGE_IMAGE_CREATED);
         } else {
-            return CommonFunctions::response(BAD_REQUEST, BADGE_IMAGE_CREATION_FAILED);
+            return CommonFunctions::response(INTERNAL_SERVER_ERROR, BADGE_IMAGE_CREATION_FAILED);
         }
     }
 }
