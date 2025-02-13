@@ -67,33 +67,38 @@ class UsersController extends Controller
      */
     public function notifications(Request $request): array
     {
-        $user = $request->user;
-        $params = $request->only(['type', 'from', 'to']);
+        $params = $request->only(['type', 'from', 'to', 'userId']);
 
-        if (count($params) === 0 || !isset($params['type'])) {
+        if (!isset($params['type'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
-        $info = User::with([
-            'notifications' => function ($query) use ($params) {
-                $query->select('user_id', 'type', 'title', 'message', 'created_at');
+        $query = User::select('id', 'name', 'lastname', 'username')
+            ->with([
+                'notifications' => function ($query) use ($params) {
+                    $query->select('user_id', 'type', 'title', 'message', 'created_at');
 
-                // Check if 'from' and 'to' parameters exists
-                // and make query by the creation time
-                if (isset($params['from']) || isset($params['to'])) {
-                    $query->whereBetween('created_at', [$params['from'], $params['to']]);
-                }
+                    if (isset($params['from'])) {
+                        $query->where('created_at', '>=', date($params['from']));
+                    }
+                    if (isset($params['to'])) {
+                        $query->where('created_at', '<=', date($params['to']));
+                    }
 
-                // Check if 'type' parameter is not equal 'all' value
-                // and make query by the 'is_read' column
-                if ($params['type'] !== 'all') {
-                    $query->where('is_read', $params['type'] === 'read');
+                    if ($params['type'] !== 'all') {
+                        $query->where('is_read', $params['type'] === 'read');
+                    }
                 }
-            }
-        ])->findOrFail($user->id);
+            ]);
+
+        if (isset($params['userId'])) {
+            $notifications = $query->find($params['userId']);
+        } else {
+            $notifications = $query->get();
+        }
 
         return [
-            'notifications' => $info->notifications
+            'notifications' => $notifications ?? []
         ];
     }
 
