@@ -166,7 +166,7 @@ class UsersController extends Controller
                         $query->where('created_at', '<=', date($params['to']));
                     }
 
-                    if ($params['type'] !== 'read' || 'unread') {
+                    if ($params['type'] !== 'all') {
                         $query->where('is_read', $params['type'] === 'read');
                     }
                 }
