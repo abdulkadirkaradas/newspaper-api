@@ -12,11 +12,17 @@ class BadgesController extends Controller
     {
         $user = $request->user;
 
-        $userBadges = $user->badges()->get();
+        $userBadges = $user->badges()->
+            select('id', 'name', 'description', 'type')
+            ->with([
+                'badgeImages' => function ($query) {
+                    $query->select('badge_id', 'name', 'fullpath');
+                }
+            ])->get();
 
         return [
             'badgeCount' => $userBadges->count(),
-            'userBadges' => $userBadges,
+            'userBadges' => $userBadges->makeHidden('pivot'),
         ];
     }
 }
