@@ -26,10 +26,13 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->providedUser;
-        $params = $request->only(['type']);
+        $params = $request->only(['type', 'userId']);
 
-        if (count($params) === 0 && !$user) {
+        if (empty($params)) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
+
+        if (!isset($params['type'])) {
             return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
         }
 
@@ -51,19 +54,21 @@ class NewsController extends Controller
                 }
             ]);
 
-        if ($user) {
+        if (isset($params['userId'])) {
+            $user = User::find($params['userId']);
+
+            if ($user === null) {
+                return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
+            }
+
             $newsInfo = $news->where('user_id', $user->id);
         }
 
-        if (isset($params['type']) && ($params['type'] === "all")) {
+        if (($params['type'] === "all")) {
             $newsInfo = $news;
-        }
-
-        if (isset($params['type']) && ($params['type'] === "approved")) {
+        } elseif (($params['type'] === "approved")) {
             $newsInfo = $news->where('approved', true);
-        }
-
-        if (isset($params['type']) && ($params['type'] === "unapproved")) {
+        } else {
             $newsInfo = $news->where('approved', false);
         }
 
