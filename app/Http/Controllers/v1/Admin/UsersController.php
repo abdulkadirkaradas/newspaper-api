@@ -23,9 +23,13 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(Request $request)
     {
-        $params = $request->only(['id', 'type']);
+        $params = $request->only(['userId', 'type']);
+
+        if (empty($params)) {
+            return CommonFunctions::response(BAD_REQUEST, BAD_REQUEST_MSG);
+        }
 
         $userQuery = User::select(
             'id',
@@ -60,16 +64,14 @@ class UsersController extends Controller
                 }
             ]);
 
-        if (!isset($params['type'])) {
-            $user = $userQuery->find($params['id']);
+        if (isset($params['userId'])) {
+            $user = $userQuery->find($params['userId']);
 
-            if ($user) {
-                $user->role = UserRoles::getRole($user->role_id);
+            if ($user === null) {
+                return CommonFunctions::response(BAD_REQUEST, USER_NOT_FOUND);
             }
 
-            return [
-                'user' => $user
-            ];
+            $user->role = UserRoles::getRole($user->role_id);
         }
 
         if (isset($params['type']) && $params['type'] === 'blocked') {
