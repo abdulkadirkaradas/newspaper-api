@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\v1\Users;
 
-use App\Helpers\CommonFunctions;
-use App\Validators\UserLoginValidator;
-use App\Http\Controllers\Controller;
-use App\Models\UserAuthTokens;
 use Illuminate\Http\Request;
+use App\Models\UserAuthTokens;
+use App\Helpers\CommonFunctions;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Validators\UserLoginValidator;
 
 class LoginController extends Controller
 {
@@ -18,7 +18,7 @@ class LoginController extends Controller
             return $validated;
         }
 
-        $token = Auth::guard('api')->attempt($validated);
+        $token = auth()->attempt($validated);
 
         if ($token === false) {
             return response()->json([
@@ -27,7 +27,7 @@ class LoginController extends Controller
             ], UNAUTHORIZED);
         }
 
-        $user = auth()->guard('api')->user();
+        $user = auth()->user();
 
         $userAuth = UserAuthTokens::create([
             'token' => $token,
@@ -66,7 +66,7 @@ class LoginController extends Controller
             }
         }
 
-        Auth::guard('api')->logout();
+        auth()->logout();
 
         return response()->json([
             'status' => SUCCESS,
@@ -76,7 +76,8 @@ class LoginController extends Controller
 
     public function refreshAuthToken(Request $request) {
         $user = $request->user;
-        $token = Auth::guard('api')->refresh();
+        $token = auth()->refresh();
+
         $auth = UserAuthTokens::where('user_id', $request->user->id)->latest()->first();
 
         if (!$auth) {
@@ -85,6 +86,8 @@ class LoginController extends Controller
                 'message' => "Invalid token"
             ], UNAUTHORIZED);
         }
+
+        $this->expireAllTokens($user);
 
         $auth->expired = true;
         $auth->save();
@@ -110,5 +113,20 @@ class LoginController extends Controller
             'status' => SUCCESS,
             'userInformation' => $request->user
         ]);
+    }
+
+    protected function expireAllTokens($user)
+    {
+        $authTokens = UserAuthTokens::where('user_id', $user->id)->get();
+
+        if ($authTokens->isNotEmpty()) {
+            foreach ($authTokens as $auth) {
+                $auth->expire_date = now();
+                $auth->last_login = now();
+                $auth->expired = true;
+                $auth->save();
+                $auth->delete();
+            }
+        }
     }
 }
