@@ -38,7 +38,7 @@ class RegisterController extends Controller
             return CommonFunctions::response(INTERNAL_SERVER_ERROR, AN_ERROR_OCCURED);
         }
 
-        $token = Auth::guard('api')->login($user);
+        $token = auth()->login($user);
 
         $userAuth = UserAuthTokens::create([
             'token' => $token,
