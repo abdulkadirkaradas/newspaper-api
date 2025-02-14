@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\UserAuthTokens;
 use App\Helpers\CommonFunctions;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Validators\UserLoginValidator;
 
 class LoginController extends Controller
@@ -76,8 +75,6 @@ class LoginController extends Controller
 
     public function refreshAuthToken(Request $request) {
         $user = $request->user;
-        $token = auth()->refresh();
-
         $auth = UserAuthTokens::where('user_id', $request->user->id)->latest()->first();
 
         if (!$auth) {
@@ -87,6 +84,7 @@ class LoginController extends Controller
             ], UNAUTHORIZED);
         }
 
+        $token = auth()->refresh();
         $this->expireAllTokens($user);
 
         $auth->expired = true;
