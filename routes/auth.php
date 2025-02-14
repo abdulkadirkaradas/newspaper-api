@@ -18,7 +18,10 @@ Route::prefix('v1/admin')->group(function () {
 /**
  * User authentication routes
  */
-Route::prefix('v1')->middleware([CheckHeaders::class])->group(function () {
+Route::prefix('v1')->middleware([
+    CheckHeaders::class,
+    'auth:api',
+])->group(function () {
     Route::prefix('auth')->group(function () {
         // User registration
         Route::post('/register', [UsersRegisterController::class, 'register'])
