@@ -15,20 +15,18 @@ class UserRegisterMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $username = $request->bodyContent['username'] ?? null;
         $email = $request->bodyContent['email'] ?? null;
         $password = $request->bodyContent['password'] ?? null;
 
         if (!isset($username) || !isset($email) || !isset($password)) {
-            return response()
-                ->json(CommonFunctions::response(BAD_REQUEST, "The mandatory fields should be filled!"));
+            return CommonFunctions::response(BAD_REQUEST, "The mandatory fields should be filled!");
         }
 
         if ($this->checkValueExists('email', $email) || $this->checkValueExists('username', $username)) {
-            return response()
-                ->json(CommonFunctions::response(CONFLICT, "This email|username has already been obtained!"));
+            return CommonFunctions::response(CONFLICT, "This email|username has already been obtained!");
         }
 
         return $next($request);

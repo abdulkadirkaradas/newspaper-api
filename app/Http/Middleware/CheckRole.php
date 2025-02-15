@@ -15,13 +15,13 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = $request->user;
         $userRole = UserRoles::getRole($user->role_id);
 
         if (!$user || !in_array($userRole, $roles)) {
-            return response()->json(CommonFunctions::response(FORBIDDEN, INVALID_ROLE));
+            return CommonFunctions::response(FORBIDDEN, INVALID_ROLE);
         }
 
         return $next($request);

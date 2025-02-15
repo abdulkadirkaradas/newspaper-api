@@ -14,7 +14,7 @@ class ValidateUUID
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // Take specified parameters
         $params = $request->only(['userId', 'newsId', 'categoryId']);
@@ -25,7 +25,7 @@ class ValidateUUID
 
         // Validate UUID parameters
         if (!CommonFunctions::validateUUID($params)) {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO));
+            return CommonFunctions::response(BAD_REQUEST, INVALID_ID_NO);
         }
 
         return $next($request);

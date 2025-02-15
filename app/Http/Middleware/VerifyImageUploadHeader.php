@@ -14,10 +14,10 @@ class VerifyImageUploadHeader
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         if (!str_contains($request->header('Content-Type'), 'multipart/form-data')) {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INCORRECT_IMAGE_UPLOAD_CONTENT_TYPE));
+            return CommonFunctions::response(BAD_REQUEST, INCORRECT_IMAGE_UPLOAD_CONTENT_TYPE);
         }
 
         return $next($request);

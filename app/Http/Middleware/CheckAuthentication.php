@@ -22,11 +22,11 @@ class CheckAuthentication
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // Refuse request if its not have bearer token
         if (!$request->bearerToken()) {
-            return response()->json(CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS);
         }
 
         $authToken = $request->bearerToken();
@@ -34,16 +34,16 @@ class CheckAuthentication
         // Check if the user deactived or session expired
         $auth = UserAuthTokens::whereNull('deleted_at')->where('expired', '!=', true)->where('token', $authToken)->first();
         if (!$auth) {
-            return response()->json(CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS));
+            return CommonFunctions::response(UNAUTHORIZED, UNAUTHORIZED_ACCESS);
         } else if ($auth->expired === true) {
-            return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
+            return CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED);
         }
 
         $user = User::find($auth->user_id);
 
         // Check if the user blocked
         if ($user->blocked === true) {
-            return response()->json(CommonFunctions::response(FORBIDDEN, "User '{$user->username}' has been blocked!"));
+            return CommonFunctions::response(FORBIDDEN, "User '{$user->username}' has been blocked!");
         }
 
         $expireDateTS = strtotime($auth->expire_date);
@@ -54,7 +54,7 @@ class CheckAuthentication
             $auth->expired = true;
 
             if ($auth->save()) {
-                return response()->json(CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED));
+                return CommonFunctions::response(UNAUTHORIZED, SESSION_EXPIRED);
             }
         }
 

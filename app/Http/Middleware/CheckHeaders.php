@@ -14,10 +14,10 @@ class CheckHeaders
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         if ($request->header('Content-Type') !== 'application/json') {
-            return response()->json(CommonFunctions::response(BAD_REQUEST, INCORRECT_CONTENT_TYPE));
+            return CommonFunctions::response(BAD_REQUEST, INCORRECT_CONTENT_TYPE);
         }
 
         $bodyContent = $request->getContent();
@@ -25,7 +25,7 @@ class CheckHeaders
             $data = json_decode($bodyContent, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                return response()->json(CommonFunctions::response(BAD_REQUEST, "The fields must be made with JSON!"));
+                return CommonFunctions::response(BAD_REQUEST, "The fields must be made with JSON!");
             }
 
             $request['bodyContent'] = $data;
