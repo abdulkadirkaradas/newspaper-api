@@ -53,17 +53,7 @@ class LoginController extends Controller
     {
         $user = $request->user;
 
-        $authTokens = UserAuthTokens::where('user_id', $user->id)->get();
-
-        if ($authTokens->isNotEmpty()) {
-            foreach ($authTokens as $auth) {
-                $auth->expire_date = now();
-                $auth->last_login = now();
-                $auth->expired = true;
-                $auth->save();
-                $auth->delete();
-            }
-        }
+        $this->expireAllTokens($user);
 
         auth()->logout();
 
